@@ -1,0 +1,39 @@
+import { BrandIcon } from "@/components/brand-icons";
+import { profile } from "@/data/profile";
+
+export function Footer() {
+  return (
+    <footer className="border-t border-border/60 py-10">
+      <div className="container flex flex-col items-center justify-between gap-6 sm:flex-row">
+        <div className="text-center sm:text-left">
+          <p className="font-display text-lg font-semibold tracking-tight">
+            {profile.name}
+            <span className="text-brand-coral">.</span>
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {profile.role}
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          {profile.socials.map((social) => (
+            <a
+              key={social.platform}
+              href={social.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={social.label}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-border/60 text-muted-foreground transition-colors hover:border-primary/50 hover:bg-secondary hover:text-foreground"
+            >
+              <BrandIcon platform={social.platform} />
+            </a>
+          ))}
+        </div>
+
+        <p className="text-xs text-muted-foreground">
+          © {new Date().getFullYear()} {profile.name}. All rights reserved.
+        </p>
+      </div>
+    </footer>
+  );
+}
