@@ -7,7 +7,6 @@ import { profile, type Testimonial } from "@/data/profile";
 const accentBorders = [
   "border-t-brand-violet",
   "border-t-brand-coral",
-  "border-t-brand-teal",
   "border-t-brand-amber",
 ];
 

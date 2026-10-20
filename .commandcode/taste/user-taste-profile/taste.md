@@ -17,4 +17,6 @@
 - Likes portrait/photo imagery presented in stylish, on-theme non-rectangular shapes (e.g. arch/cameo with rounded top and soft bottom, gradient frame, slight tilt) rather than plain vertical rectangles. Confidence: 0.6
 - Prefers the site header/nav as a centered floating pill (rounded capsule, segmented logo | links | CTA, hover/frosted) rather than a full-width bar. Confidence: 0.6
 - For structural/shape changes, wants the existing color palette and branding retained ("just the shape") — reshape, don't restyle. Confidence: 0.55
+- Prefers a tightly limited color palette — wants the site reduced to a small set of core hues (e.g. only 3 vivid brand colors) with stray/one-off hues folded into the kept set, rather than many competing colors. Confidence: 0.6
+- Comfortable giving the agent latitude to make design decisions on its own (e.g. chooses which colors to keep, decides the detail plan) and trusts it to pick sensible defaults without asking first. Confidence: 0.6
 - Prefers hosting/deployment via GitHub connected to Netlify (explicitly chose Netlify over Vercel), favoring a zero-config setup that keeps Next.js image optimization. Confidence: 0.5

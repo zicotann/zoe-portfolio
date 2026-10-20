@@ -18,9 +18,9 @@
     --secondary-foreground: 262 45% 28%;
     --muted: 250 35% 96%;
     --muted-foreground: 250 12% 44%;
-    --accent: 330 90% 96%;
-    --accent-foreground: 330 60% 32%;
-    --destructive: 0 84% 58%;
+    --accent: 262 55% 95%;
+    --accent-foreground: 262 45% 28%;
+    --destructive: 12 85% 45%;
     --destructive-foreground: 0 0% 100%;
     --border: 262 32% 90%;
     --input: 262 32% 88%;
@@ -29,7 +29,6 @@
 
     --brand-coral: 12 95% 64%;
     --brand-amber: 42 96% 56%;
-    --brand-teal: 172 68% 45%;
     --brand-violet: 262 85% 62%;
   }
 }

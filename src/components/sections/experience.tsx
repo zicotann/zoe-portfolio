@@ -8,7 +8,6 @@ import { profile } from "@/data/profile";
 const dotColors = [
   "bg-brand-violet",
   "bg-brand-coral",
-  "bg-brand-teal",
   "bg-brand-amber",
 ];
 

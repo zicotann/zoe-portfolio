@@ -5,7 +5,6 @@ import { profile } from "@/data/profile";
 const accents = [
   "bg-brand-violet",
   "bg-brand-coral",
-  "bg-brand-teal",
   "bg-brand-amber",
 ];
 
