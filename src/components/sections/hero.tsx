@@ -21,7 +21,7 @@ export function Hero() {
       >
         <div className="absolute -left-28 -top-32 h-[26rem] w-[26rem] animate-blob rounded-full bg-brand-violet/25 blur-3xl" />
         <div className="absolute -right-16 top-16 h-80 w-80 animate-blob rounded-full bg-brand-coral/25 blur-3xl [animation-delay:3s]" />
-        <div className="absolute bottom-0 left-1/3 h-72 w-72 animate-blob rounded-full bg-brand-teal/20 blur-3xl [animation-delay:6s]" />
+        <div className="absolute bottom-0 left-1/3 h-72 w-72 animate-blob rounded-full bg-brand-amber/20 blur-3xl [animation-delay:6s]" />
         <div className="absolute inset-0 bg-grid opacity-50 [mask-image:radial-gradient(ellipse_at_top,black,transparent_72%)]" />
       </div>
 
@@ -126,7 +126,7 @@ export function Hero() {
 
             <div
               aria-hidden
-              className="absolute -bottom-10 -right-8 -z-10 h-28 w-28 rounded-full border-2 border-dashed border-brand-teal/40"
+              className="absolute -bottom-10 -right-8 -z-10 h-28 w-28 rounded-full border-2 border-dashed border-brand-coral/40"
             />
           </div>
         </div>

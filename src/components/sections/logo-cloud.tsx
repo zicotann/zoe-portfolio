@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 const tileColors = [
   "bg-brand-violet/10 text-brand-violet",
   "bg-brand-coral/10 text-brand-coral",
-  "bg-brand-teal/20 text-brand-teal",
   "bg-brand-amber/20 text-brand-amber",
 ];
 
