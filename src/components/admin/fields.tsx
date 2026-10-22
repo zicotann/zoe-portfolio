@@ -6,6 +6,7 @@ import {
   ChevronUp,
   ExternalLink,
   FileText,
+  GripVertical,
   ImagePlus,
   Loader2,
   Plus,
@@ -718,6 +719,79 @@ export function GlobalFields({
   );
 }
 
+function moveItem<T>(items: T[], from: number, to: number): T[] {
+  if (from === to || from < 0 || to < 0 || from >= items.length || to >= items.length) {
+    return items;
+  }
+  const next = [...items];
+  const [item] = next.splice(from, 1);
+  next.splice(to, 0, item);
+  return next;
+}
+
+function DragHandle({
+  index,
+  onDragStart,
+  onDragEnd,
+}: {
+  index: number;
+  onDragStart: () => void;
+  onDragEnd: () => void;
+}) {
+  return (
+    <span
+      role="button"
+      tabIndex={-1}
+      draggable
+      aria-label="Drag to reorder"
+      title="Drag to reorder"
+      onClick={(event) => {
+        event.preventDefault();
+        event.stopPropagation();
+      }}
+      onDragStart={(event) => {
+        event.stopPropagation();
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData("text/plain", String(index));
+        onDragStart();
+      }}
+      onDragEnd={onDragEnd}
+      className="cursor-grab touch-none rounded-md p-1 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground active:cursor-grabbing"
+    >
+      <GripVertical className="h-4 w-4" />
+    </span>
+  );
+}
+
+function ReorderButton({
+  direction,
+  disabled,
+  onClick,
+}: {
+  direction: -1 | 1;
+  disabled: boolean;
+  onClick: () => void;
+}) {
+  const Icon = direction === -1 ? ChevronUp : ChevronDown;
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      size="icon"
+      className="h-9 w-9 shrink-0 text-muted-foreground hover:text-foreground disabled:opacity-30"
+      disabled={disabled}
+      onClick={(event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        onClick();
+      }}
+      aria-label={direction === -1 ? "Move up" : "Move down"}
+    >
+      <Icon className="h-4 w-4" />
+    </Button>
+  );
+}
+
 export function StringListEditor({
   items,
   onChange,
@@ -731,11 +805,53 @@ export function StringListEditor({
   placeholder?: string;
   label?: string;
 }) {
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+
+  const resetDrag = () => {
+    setDragIndex(null);
+    setDragOverIndex(null);
+  };
+
   return (
     <Field label={label}>
       <div className="space-y-2">
         {items.map((item, index) => (
-          <div key={index} className="flex items-center gap-2">
+          <div
+            key={index}
+            onDragOver={(event) => {
+              if (dragIndex === null) return;
+              event.preventDefault();
+              setDragOverIndex(index);
+            }}
+            onDragLeave={(event) => {
+              if (
+                !event.currentTarget.contains(event.relatedTarget as Node | null)
+              ) {
+                setDragOverIndex(null);
+              }
+            }}
+            onDrop={(event) => {
+              event.preventDefault();
+              const raw = event.dataTransfer.getData("text/plain");
+              const from = Number(raw);
+              if (raw !== "" && Number.isInteger(from)) {
+                onChange(moveItem(items, from, index));
+              }
+              resetDrag();
+            }}
+            className={cn(
+              "flex items-center gap-2 rounded-xl border border-transparent p-1 transition-colors",
+              dragOverIndex === index &&
+                dragIndex !== index &&
+                "border-primary/50 bg-primary/5",
+            )}
+          >
+            <DragHandle
+              index={index}
+              onDragStart={() => setDragIndex(index)}
+              onDragEnd={resetDrag}
+            />
             <Input
               value={item}
               placeholder={placeholder}
@@ -745,16 +861,28 @@ export function StringListEditor({
                 onChange(next);
               }}
             />
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              className="h-9 w-9 shrink-0 text-muted-foreground hover:text-destructive"
-              onClick={() => onChange(items.filter((_, i) => i !== index))}
-              aria-label="Remove item"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
+            <span className="flex items-center gap-1">
+              <ReorderButton
+                direction={-1}
+                disabled={index === 0}
+                onClick={() => onChange(moveItem(items, index, index - 1))}
+              />
+              <ReorderButton
+                direction={1}
+                disabled={index === items.length - 1}
+                onClick={() => onChange(moveItem(items, index, index + 1))}
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9 shrink-0 text-muted-foreground hover:text-destructive"
+                onClick={() => onChange(items.filter((_, i) => i !== index))}
+                aria-label="Remove item"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </span>
           </div>
         ))}
         <Button
@@ -796,13 +924,16 @@ export function ArrayEditor<T>({
   defaultOpenFirst = true,
   deleteBlocked,
 }: ArrayEditorProps<T>) {
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+
+  const resetDrag = () => {
+    setDragIndex(null);
+    setDragOverIndex(null);
+  };
+
   const move = (index: number, direction: -1 | 1) => {
-    const target = index + direction;
-    if (target < 0 || target >= items.length) return;
-    const next = [...items];
-    const [item] = next.splice(index, 1);
-    next.splice(target, 0, item);
-    onChange(next);
+    onChange(moveItem(items, index, index + direction));
   };
 
   return (
@@ -811,9 +942,40 @@ export function ArrayEditor<T>({
         <details
           key={index}
           open={defaultOpenFirst && index === 0}
-          className="group rounded-2xl border border-border bg-background/50"
+          onDragOver={(event) => {
+            if (dragIndex === null) return;
+            event.preventDefault();
+            setDragOverIndex(index);
+          }}
+          onDragLeave={(event) => {
+            if (
+              !event.currentTarget.contains(event.relatedTarget as Node | null)
+            ) {
+              setDragOverIndex(null);
+            }
+          }}
+          onDrop={(event) => {
+            event.preventDefault();
+            const raw = event.dataTransfer.getData("text/plain");
+            const from = Number(raw);
+            if (raw !== "" && Number.isInteger(from)) {
+              onChange(moveItem(items, from, index));
+            }
+            resetDrag();
+          }}
+          className={cn(
+            "group rounded-2xl border border-border bg-background/50 transition-colors",
+            dragOverIndex === index &&
+              dragIndex !== index &&
+              "border-primary/60 bg-primary/5 ring-2 ring-primary/15",
+          )}
         >
           <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-3 [&::-webkit-details-marker]:hidden">
+            <DragHandle
+              index={index}
+              onDragStart={() => setDragIndex(index)}
+              onDragEnd={resetDrag}
+            />
             <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-secondary text-[10px] font-semibold text-secondary-foreground">
               {index + 1}
             </span>
@@ -821,32 +983,16 @@ export function ArrayEditor<T>({
               {itemLabel(item, index) || "Untitled"}
             </span>
             <span className="flex items-center gap-1">
-              <button
-                type="button"
-                aria-label="Move up"
+              <ReorderButton
+                direction={-1}
                 disabled={index === 0}
-                onClick={(event) => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  move(index, -1);
-                }}
-                className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground disabled:opacity-30"
-              >
-                <ChevronUp className="h-3.5 w-3.5" />
-              </button>
-              <button
-                type="button"
-                aria-label="Move down"
+                onClick={() => move(index, -1)}
+              />
+              <ReorderButton
+                direction={1}
                 disabled={index === items.length - 1}
-                onClick={(event) => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  move(index, 1);
-                }}
-                className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground disabled:opacity-30"
-              >
-                <ChevronDown className="h-3.5 w-3.5" />
-              </button>
+                onClick={() => move(index, 1)}
+              />
               <button
                 type="button"
                 aria-label="Delete item"

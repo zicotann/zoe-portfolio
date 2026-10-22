@@ -20,6 +20,7 @@ import type {
   ImageSample,
   Metric,
   VideoSample,
+  VideoSource,
 } from "@/content/schema";
 import { newId, slugify } from "@/lib/id";
 
@@ -27,6 +28,12 @@ const aspectRatioOptions = [
   { value: "9:16", label: "9:16 — vertical" },
   { value: "16:9", label: "16:9 — landscape" },
   { value: "1:1", label: "1:1 — square" },
+];
+
+const videoSourceOptions = [
+  { value: "instagram", label: "Instagram post" },
+  { value: "linkedin", label: "LinkedIn post" },
+  { value: "url", label: "Hosted video URL" },
 ];
 
 export function CampaignsView({ content, onChange }: AdminViewProps) {
@@ -416,6 +423,7 @@ export function CampaignsView({ content, onChange }: AdminViewProps) {
                     title: "New video",
                     aspectRatio: "9:16",
                     thumbnail: "",
+                    source: "instagram",
                   })}
                   itemLabel={(video) => video.title}
                   addLabel="Add video sample"
@@ -441,24 +449,43 @@ export function CampaignsView({ content, onChange }: AdminViewProps) {
                       />
                       <ImageField
                         label="Thumbnail"
+                        hint="Poster image shown in the video grid before playback starts."
                         value={video.thumbnail}
                         onChange={(thumbnail) => updateVideo({ thumbnail })}
                         aspect="portrait"
                       />
-                      <div className="grid gap-4 sm:grid-cols-2">
+                      {/* TODO: Add playback for hosted video URLs. */}
+                      <Select
+                        label="Video source"
+                        hint="Instagram and LinkedIn posts play in an embedded dialog. Hosted video playback is coming later."
+                        value={video.source ?? "url"}
+                        onChange={(source) =>
+                          updateVideo({ source: source as VideoSource })
+                        }
+                        options={videoSourceOptions}
+                      />
+                      {video.source === "instagram" ||
+                      video.source === "linkedin" ? (
                         <TextInput
-                          label="Video URL (optional)"
+                          label={
+                            video.source === "instagram"
+                              ? "Instagram post URL"
+                              : "LinkedIn post URL"
+                          }
+                          hint="Paste the public post or reel URL. It opens in an embedded player on the site."
+                          value={video.postUrl ?? ""}
+                          onChange={(postUrl) => updateVideo({ postUrl })}
+                          mono
+                        />
+                      ) : (
+                        <TextInput
+                          label="Video URL"
+                          hint="Direct link to a hosted video file. Playback will be integrated later."
                           value={video.videoUrl ?? ""}
                           onChange={(videoUrl) => updateVideo({ videoUrl })}
                           mono
                         />
-                        <TextInput
-                          label="Embed URL (optional)"
-                          value={video.embedUrl ?? ""}
-                          onChange={(embedUrl) => updateVideo({ embedUrl })}
-                          mono
-                        />
-                      </div>
+                      )}
                     </div>
                   )}
                 </ArrayEditor>

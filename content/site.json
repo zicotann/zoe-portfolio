@@ -312,25 +312,33 @@
               "id": "video_1_1",
               "title": "3-second hook: 'Your serum is lying to you'",
               "aspectRatio": "9:16",
-              "thumbnail": "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=900&h=1600&q=80"
+              "thumbnail": "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=900&h=1600&q=80",
+              "source": "instagram",
+              "postUrl": "https://www.instagram.com/reel/DL2LjHGsrpb/"
             },
             {
               "id": "video_1_2",
               "title": "Founder POV: behind the formulation",
               "aspectRatio": "9:16",
-              "thumbnail": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=900&h=1600&q=80"
+              "thumbnail": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=900&h=1600&q=80",
+              "source": "instagram",
+              "postUrl": "https://www.instagram.com/reel/DNJRR_RplwZ/"
             },
             {
               "id": "video_1_3",
               "title": "Before/after 30-day skin diary",
               "aspectRatio": "9:16",
-              "thumbnail": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&h=1600&q=80"
+              "thumbnail": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&h=1600&q=80",
+              "source": "linkedin",
+              "postUrl": "https://www.linkedin.com/posts/rovan-media_brandedcontent-promotionalcontent-promotionalvideography-activity-7111056956370407424-E_Aj"
             },
             {
               "id": "video_1_4",
               "title": "Trend-jack: 'Get ready with me'",
               "aspectRatio": "9:16",
-              "thumbnail": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=900&h=1600&q=80"
+              "thumbnail": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=900&h=1600&q=80",
+              "source": "url",
+              "videoUrl": "https://media.w3.org/2010/05/sintel/trailer.mp4"
             }
           ],
           "imageSamples": [
@@ -407,25 +415,33 @@
               "id": "video_2_1",
               "title": "Room tour: the cliffside suite",
               "aspectRatio": "9:16",
-              "thumbnail": "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=900&h=1600&q=80"
+              "thumbnail": "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=900&h=1600&q=80",
+              "source": "instagram",
+              "postUrl": "https://www.instagram.com/reel/C4CLt5fxLvj/"
             },
             {
               "id": "video_2_2",
               "title": "48 hours at the property",
               "aspectRatio": "9:16",
-              "thumbnail": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=900&h=1600&q=80"
+              "thumbnail": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=900&h=1600&q=80",
+              "source": "linkedin",
+              "postUrl": "https://www.linkedin.com/posts/ally-berry-71a53299_brand-brandphotoshoot-brandvideo-activity-7158802550526234624-Lc28"
             },
             {
               "id": "video_2_3",
               "title": "Sunrise timelapse from the deck",
               "aspectRatio": "16:9",
-              "thumbnail": "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?auto=format&fit=crop&w=1600&h=900&q=80"
+              "thumbnail": "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?auto=format&fit=crop&w=1600&h=900&q=80",
+              "source": "url",
+              "videoUrl": "https://test-videos.co.uk/vids/sintel/mp4/h264/720/Sintel_720_10s_1MB.mp4"
             },
             {
               "id": "video_2_4",
               "title": "Chef's table teaser",
               "aspectRatio": "9:16",
-              "thumbnail": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&h=1600&q=80"
+              "thumbnail": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&h=1600&q=80",
+              "source": "instagram",
+              "postUrl": "https://www.instagram.com/reel/DImHuZMzAw_/"
             }
           ],
           "imageSamples": [
@@ -500,19 +516,25 @@
               "id": "video_3_1",
               "title": "Answering the top comment (series)",
               "aspectRatio": "9:16",
-              "thumbnail": "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=900&h=1600&q=80"
+              "thumbnail": "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=900&h=1600&q=80",
+              "source": "instagram",
+              "postUrl": "https://www.instagram.com/reel/DP9trlqgc1r/"
             },
             {
               "id": "video_3_2",
               "title": "5-minute morning routine",
               "aspectRatio": "9:16",
-              "thumbnail": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&h=1600&q=80"
+              "thumbnail": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&h=1600&q=80",
+              "source": "linkedin",
+              "postUrl": "https://www.linkedin.com/posts/amymuffley_digitalagency-videoproduction-tellyourstory-activity-7132849486355173376-Vqzu"
             },
             {
               "id": "video_3_3",
               "title": "Myth-busting with our nutritionist",
               "aspectRatio": "9:16",
-              "thumbnail": "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=900&h=1600&q=80"
+              "thumbnail": "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=900&h=1600&q=80",
+              "source": "url",
+              "videoUrl": "https://test-videos.co.uk/vids/jellyfish/mp4/h264/1080/Jellyfish_1080_10s_1MB.mp4"
             }
           ],
           "imageSamples": [
@@ -582,25 +604,33 @@
               "id": "video_4_1",
               "title": "Founder: 'We almost didn't make this'",
               "aspectRatio": "9:16",
-              "thumbnail": "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=900&h=1600&q=80"
+              "thumbnail": "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=900&h=1600&q=80",
+              "source": "instagram",
+              "postUrl": "https://www.instagram.com/reel/DLzCPskq_a1/"
             },
             {
               "id": "video_4_2",
               "title": "How the jacket is actually made",
               "aspectRatio": "9:16",
-              "thumbnail": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=900&h=1600&q=80"
+              "thumbnail": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=900&h=1600&q=80",
+              "source": "instagram",
+              "postUrl": "https://www.instagram.com/reel/DR8NeWfkvSo/"
             },
             {
               "id": "video_4_3",
               "title": "Customer review reaction",
               "aspectRatio": "9:16",
-              "thumbnail": "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=900&h=1600&q=80"
+              "thumbnail": "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=900&h=1600&q=80",
+              "source": "linkedin",
+              "postUrl": "https://www.linkedin.com/posts/jasonlandro_creativeagency-videography-productvideo-activity-7063113802728263680-ABAz"
             },
             {
               "id": "video_4_4",
               "title": "Lookbook in motion",
               "aspectRatio": "1:1",
-              "thumbnail": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&h=1200&q=80"
+              "thumbnail": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&h=1200&q=80",
+              "source": "url",
+              "videoUrl": "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_2MB.mp4"
             }
           ],
           "imageSamples": [
@@ -677,19 +707,25 @@
               "id": "video_5_1",
               "title": "Day 1 challenge kickoff",
               "aspectRatio": "9:16",
-              "thumbnail": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=900&h=1600&q=80"
+              "thumbnail": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=900&h=1600&q=80",
+              "source": "instagram",
+              "postUrl": "https://www.instagram.com/reel/DP2PvGgD75i/"
             },
             {
               "id": "video_5_2",
               "title": "Coach tip: form fix",
               "aspectRatio": "9:16",
-              "thumbnail": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=900&h=1600&q=80"
+              "thumbnail": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=900&h=1600&q=80",
+              "source": "linkedin",
+              "postUrl": "https://www.linkedin.com/posts/finnthormeier_contentmarketing-videomarketing-branding-activity-6869231361249554434-uiNq"
             },
             {
               "id": "video_5_3",
               "title": "Winner announcement",
               "aspectRatio": "9:16",
-              "thumbnail": "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=900&h=1600&q=80"
+              "thumbnail": "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=900&h=1600&q=80",
+              "source": "url",
+              "videoUrl": "https://media.w3.org/2010/05/bunny/trailer.mp4"
             }
           ],
           "imageSamples": [

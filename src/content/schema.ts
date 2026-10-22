@@ -187,11 +187,15 @@ export const metricSchema = z.object({
 
 export const videoAspectRatioSchema = z.enum(["9:16", "16:9", "1:1"]);
 
+export const videoSourceSchema = z.enum(["instagram", "linkedin", "url"]);
+
 export const videoSampleSchema = z.object({
   id: z.string().min(1),
   title: z.string(),
   aspectRatio: videoAspectRatioSchema,
   thumbnail: z.string().min(1),
+  source: videoSourceSchema.default("url"),
+  postUrl: z.string().optional(),
   videoUrl: z.string().optional(),
   embedUrl: z.string().optional(),
 });
@@ -445,6 +449,7 @@ export type Seo = z.infer<typeof seoSchema>;
 export type CampaignCategory = z.infer<typeof campaignCategorySchema>;
 export type Metric = z.infer<typeof metricSchema>;
 export type VideoAspectRatio = z.infer<typeof videoAspectRatioSchema>;
+export type VideoSource = z.infer<typeof videoSourceSchema>;
 export type VideoSample = z.infer<typeof videoSampleSchema>;
 export type ImageSample = z.infer<typeof imageSampleSchema>;
 export type StrategyBreakdown = z.infer<typeof strategyBreakdownSchema>;

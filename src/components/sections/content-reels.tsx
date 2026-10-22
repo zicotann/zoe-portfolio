@@ -1,8 +1,6 @@
-import Image from "next/image";
-import { Play } from "lucide-react";
-
 import { Badge } from "@/components/ui/badge";
 import { Reveal } from "@/components/magicui/reveal";
+import { VideoSamplePlayer } from "@/components/video-sample-player";
 import { getReels } from "@/content/helpers";
 import type { SiteContent } from "@/content/schema";
 
@@ -35,21 +33,12 @@ export function ContentReels({ content }: { content: SiteContent }) {
           {reels.map((reel, index) => (
             <Reveal key={reel.id} delay={index * 0.05}>
               <figure className="group space-y-2">
-                <div className="relative aspect-[9/16] overflow-hidden rounded-2xl border border-border bg-secondary shadow-sm transition-all duration-300 group-hover:-translate-y-1.5 group-hover:shadow-xl">
-                  <Image
-                    src={reel.thumbnail}
-                    alt={reel.title}
-                    fill
+                <div className="relative transition-all duration-300 group-hover:-translate-y-1.5">
+                  <VideoSamplePlayer
+                    video={reel}
                     sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 22vw"
-                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-transparent to-transparent opacity-70" />
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    <span className="flex h-12 w-12 items-center justify-center rounded-full bg-card text-primary shadow-lg">
-                      <Play className="h-5 w-5 translate-x-px fill-current" />
-                    </span>
-                  </div>
-                  <Badge className="absolute left-3 top-3 border-transparent bg-card/90 text-foreground backdrop-blur">
+                  <Badge className="pointer-events-none absolute left-3 top-3 border-transparent bg-card/90 text-foreground backdrop-blur">
                     {reel.client}
                   </Badge>
                 </div>

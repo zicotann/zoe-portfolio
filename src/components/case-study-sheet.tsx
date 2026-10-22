@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowRight, CalendarDays, Play, Sparkles } from "lucide-react";
+import { ArrowRight, CalendarDays, Sparkles } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,14 +12,13 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { NumberTicker } from "@/components/magicui/number-ticker";
+import { VideoSamplePlayer } from "@/components/video-sample-player";
 import { getCategoryName } from "@/content/helpers";
 import type {
   Campaign,
   CampaignCategory,
   CaseStudyCopy,
-  VideoSample,
 } from "@/content/schema";
-import { cn } from "@/lib/utils";
 
 interface CaseStudySheetProps {
   campaign: Campaign | null;
@@ -28,12 +27,6 @@ interface CaseStudySheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
-
-const aspectClass: Record<VideoSample["aspectRatio"], string> = {
-  "9:16": "aspect-[9/16]",
-  "16:9": "aspect-video",
-  "1:1": "aspect-square",
-};
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
@@ -149,29 +142,16 @@ export function CaseStudySheet({
 
               {campaign.videoSamples?.length ? (
                 <section>
+                  {/* TODO: Add playback for hosted video URLs. */}
                   <Eyebrow>{copy.videoShowcaseHeading}</Eyebrow>
-                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                  <div className="grid grid-cols-2 gap-3">
                     {campaign.videoSamples.map((video) => (
                       <div key={video.id} className="space-y-2">
-                        <div
-                          className={cn(
-                            "group relative overflow-hidden rounded-xl border border-border bg-secondary",
-                            aspectClass[video.aspectRatio],
-                          )}
-                        >
-                          <Image
-                            src={video.thumbnail}
-                            alt={video.title}
-                            fill
-                            sizes="(max-width: 768px) 40vw, 200px"
-                            className="object-cover transition-transform duration-500 group-hover:scale-105"
-                          />
-                          <div className="absolute inset-0 flex items-center justify-center bg-foreground/25 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-card text-primary">
-                              <Play className="h-4 w-4 translate-x-px fill-current" />
-                            </span>
-                          </div>
-                        </div>
+                        <VideoSamplePlayer
+                          video={video}
+                          sizes="(max-width: 768px) 40vw, 280px"
+                          className="rounded-xl"
+                        />
                         <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
                           {video.title}
                         </p>
