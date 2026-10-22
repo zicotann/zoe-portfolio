@@ -252,7 +252,7 @@
         "strategyHeading": "The Strategy",
         "resultsHeading": "The Results",
         "videoShowcaseHeading": "Video showcase",
-        "contentSamplesHeading": "Content samples",
+        "contentSamplesHeading": "Content Showcase",
         "deliverablesLabel": "Deliverables",
         "closeLabel": "Close & View More Results",
         "backLabel": "Back to work",
@@ -338,6 +338,13 @@
             }
           ],
           "imageSamples": [
+            {
+              "id": "image_linkedin_sample",
+              "caption": "LinkedIn post sample",
+              "source": "linkedin",
+              "aspectRatio": "1:1",
+              "postUrl": "https://www.linkedin.com/posts/rovan-media_brandedcontent-promotionalcontent-promotionalvideography-activity-7111056956370407424-E_Aj"
+            },
             {
               "id": "image_1_1",
               "caption": "Product launch carousel",

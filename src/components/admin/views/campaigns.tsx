@@ -17,12 +17,18 @@ import type {
   Campaign,
   CampaignCategory,
   CampaignsContent,
+  ImageAspectRatio,
   ImageSample,
+  ImageSource,
   Metric,
   VideoSample,
   VideoSource,
 } from "@/content/schema";
 import { newId, slugify } from "@/lib/id";
+import {
+  getInstagramEmbedUrl,
+  getLinkedInEmbedUrl,
+} from "@/lib/video-embed";
 
 const aspectRatioOptions = [
   { value: "9:16", label: "9:16 — vertical" },
@@ -30,10 +36,23 @@ const aspectRatioOptions = [
   { value: "1:1", label: "1:1 — square" },
 ];
 
+const imageAspectRatioOptions = [
+  { value: "1:1", label: "1:1 — square (default)" },
+  { value: "4:5", label: "4:5 — portrait" },
+  { value: "16:9", label: "16:9 — landscape" },
+  { value: "9:16", label: "9:16 — vertical" },
+];
+
 const videoSourceOptions = [
   { value: "instagram", label: "Instagram post" },
   { value: "linkedin", label: "LinkedIn post" },
   { value: "url", label: "Hosted video URL" },
+];
+
+const imageSourceOptions = [
+  { value: "url", label: "Hosted image URL" },
+  { value: "instagram", label: "Instagram post" },
+  { value: "linkedin", label: "LinkedIn post" },
 ];
 
 export function CampaignsView({ content, onChange }: AdminViewProps) {
@@ -187,7 +206,7 @@ export function CampaignsView({ content, onChange }: AdminViewProps) {
             }
           />
           <TextInput
-            label="Content samples heading"
+            label="Content showcase heading"
             value={campaignsContent.caseStudy.contentSamplesHeading}
             onChange={(contentSamplesHeading) =>
               patchCaseStudy({ contentSamplesHeading })
@@ -485,7 +504,7 @@ export function CampaignsView({ content, onChange }: AdminViewProps) {
 
               <div className="space-y-2">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                  Image samples
+                  Content showcase images
                 </p>
                 <ArrayEditor<ImageSample>
                   items={campaign.imageSamples ?? []}
@@ -493,33 +512,145 @@ export function CampaignsView({ content, onChange }: AdminViewProps) {
                   create={() => ({
                     id: newId("image"),
                     caption: "New image",
-                    imageUrl: "",
+                    source: "url",
+                    aspectRatio: "1:1",
                   })}
                   itemLabel={(image) => image.caption}
                   addLabel="Add image sample"
                   defaultOpenFirst={false}
                 >
-                  {(image, updateImage) => (
-                    <div className="space-y-4">
-                      <TextInput
-                        label="Caption"
-                        value={image.caption}
-                        onChange={(caption) => updateImage({ caption })}
-                      />
-                      <ImageField
-                        label="Image"
-                        value={image.imageUrl}
-                        onChange={(imageUrl) => updateImage({ imageUrl })}
-                        aspect="square"
-                      />
-                    </div>
-                  )}
+                  {(image, updateImage) => {
+                    const source = (image.source ?? "url") as ImageSource;
+
+                    return (
+                      <div className="space-y-4">
+                        <TextInput
+                          label="Caption"
+                          value={image.caption}
+                          onChange={(caption) => updateImage({ caption })}
+                        />
+                        <Select
+                          label="Image source"
+                          hint="Hosted images use the selected aspect ratio. Instagram and LinkedIn posts render as official embeds."
+                          value={source}
+                          onChange={(value) =>
+                            updateImage({ source: value as ImageSource })
+                          }
+                          options={imageSourceOptions}
+                        />
+                        {source === "url" ? (
+                          <div className="space-y-4">
+                            <Select
+                              label="Aspect ratio"
+                              hint="Applies to hosted images only."
+                              value={image.aspectRatio ?? "1:1"}
+                              onChange={(value) =>
+                                updateImage({
+                                  aspectRatio: value as ImageAspectRatio,
+                                })
+                              }
+                              options={imageAspectRatioOptions}
+                            />
+                            <ImageField
+                              label="Image"
+                              hint="Paste a hosted image URL, upload an image, or choose an existing image from Cloudflare R2."
+                              value={image.imageUrl ?? ""}
+                              onChange={(imageUrl) =>
+                                updateImage({ imageUrl })
+                              }
+                              aspect={image.aspectRatio ?? "1:1"}
+                            />
+                          </div>
+                        ) : (
+                          <div className="space-y-4">
+                            <TextInput
+                              label={
+                                source === "instagram"
+                                  ? "Instagram post URL"
+                                  : "LinkedIn post URL"
+                              }
+                              hint={
+                                source === "instagram"
+                                  ? "Paste the public post or reel URL. It renders as an official Instagram embed; multi-image posts get carousel arrows."
+                                  : "Paste the public post URL. It renders as an official LinkedIn embed."
+                              }
+                              value={image.postUrl ?? ""}
+                              onChange={(postUrl) =>
+                                updateImage({ postUrl })
+                              }
+                              mono
+                            />
+                            <SocialImagePreview
+                              key={`${source}:${image.postUrl ?? ""}`}
+                              source={source}
+                              postUrl={image.postUrl ?? ""}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  }}
                 </ArrayEditor>
               </div>
             </div>
           )}
         </ArrayEditor>
       </SectionCard>
+    </div>
+  );
+}
+
+function SocialImagePreview({
+  source,
+  postUrl,
+}: {
+  source: ImageSource;
+  postUrl: string;
+}) {
+  if (source === "url") return null;
+
+  const platform = source === "instagram" ? "Instagram" : "LinkedIn";
+  const trimmed = postUrl.trim();
+
+  if (!trimmed) {
+    return (
+      <p className="rounded-xl border border-border bg-secondary/40 p-3 text-[11px] leading-relaxed text-muted-foreground">
+        Paste a public {platform} post URL to see a live embed preview.
+      </p>
+    );
+  }
+
+  const embedUrl =
+    source === "instagram"
+      ? getInstagramEmbedUrl(trimmed)
+      : getLinkedInEmbedUrl(trimmed);
+
+  if (!embedUrl) {
+    return (
+      <p className="rounded-xl border border-border bg-secondary/40 p-3 text-[11px] leading-relaxed text-destructive">
+        This does not look like a valid {platform} post URL. Use the public post
+        URL copied from {platform}.
+      </p>
+    );
+  }
+
+  return (
+    <div className="space-y-1.5">
+      <div className="w-full max-w-sm overflow-hidden rounded-xl border border-border bg-secondary">
+        <iframe
+          src={embedUrl}
+          title={`${platform} post preview`}
+          loading="lazy"
+          allow="encrypted-media; picture-in-picture; web-share"
+          allowFullScreen
+          scrolling="no"
+          className="h-[480px] w-full border-0"
+        />
+      </div>
+      <p className="text-[11px] leading-relaxed text-muted-foreground">
+        Official {platform} embed preview. The live site renders this embed in
+        the content showcase.
+      </p>
     </div>
   );
 }

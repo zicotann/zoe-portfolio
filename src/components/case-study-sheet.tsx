@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { ArrowRight, CalendarDays, Sparkles } from "lucide-react";
 
+import { ImageSampleCard } from "@/components/image-sample-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -166,20 +167,11 @@ export function CaseStudySheet({
                   <Eyebrow>{copy.contentSamplesHeading}</Eyebrow>
                   <div className="grid grid-cols-2 gap-3">
                     {campaign.imageSamples.map((image) => (
-                      <figure key={image.id} className="space-y-2">
-                        <div className="relative aspect-square overflow-hidden rounded-xl border border-border">
-                          <Image
-                            src={image.imageUrl}
-                            alt={image.caption}
-                            fill
-                            sizes="(max-width: 768px) 40vw, 240px"
-                            className="object-cover"
-                          />
-                        </div>
-                        <figcaption className="text-xs text-muted-foreground">
-                          {image.caption}
-                        </figcaption>
-                      </figure>
+                      <ImageSampleCard
+                        key={image.id}
+                        image={image}
+                        sizes="(max-width: 768px) 40vw, 240px"
+                      />
                     ))}
                   </div>
                 </section>

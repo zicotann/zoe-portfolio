@@ -21,13 +21,13 @@ npm run dev
 - **Publish** opens a confirmation dialog, commits `content/site.json` to `GITHUB_BRANCH` (default `main`), and triggers the Netlify rebuild.
 - Category records are managed in Global → Categories. Campaigns select a category from a dropdown.
 - The resume is a PDF stored in `public/resumes` and uploaded from Global → Profile & Identity. Uploads are committed to `GITHUB_BRANCH` through the GitHub Contents API and appear in the admin's existing-PDF picker.
-- Image and video fields take public URLs. The Cloudflare R2 upload dropzone is present but disabled until the R2 upload endpoint is implemented.
+- Image fields accept a public URL, an upload to Cloudflare R2, or a selection from existing R2 images. Images can be replaced or deleted from the field. Campaign content-showcase images can also link to an Instagram or LinkedIn post.
 
 Publishing uses the GitHub Contents API from a server route; the token is never sent to the browser. The studio loads the latest published JSON from GitHub on open so a refresh immediately after publishing does not restore stale content.
 
 ### Cloudflare R2 assets
 
-Set `R2_PUBLIC_HOSTNAME` to the public R2 hostname (without `https://`) so `next/image` can optimize R2-hosted media. The admin preview uses plain `<img>` tags, so URL previews work before this is configured.
+Set `R2_PUBLIC_HOSTNAME` to the public R2 hostname (without `https://`) so `next/image` can optimize R2-hosted media. For uploads and the R2 image picker, also set `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`, and `R2_PUBLIC_URL`. Uploads are written to the `images/` folder in the bucket. The admin preview uses plain `<img>` tags, so URL previews work before this is configured.
 
 ## Getting Started
 
