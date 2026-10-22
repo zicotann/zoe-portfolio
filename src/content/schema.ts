@@ -5,7 +5,33 @@ export const socialPlatformSchema = z.enum([
   "tiktok",
   "linkedin",
   "youtube",
+  "x",
+  "facebook",
+  "threads",
+  "pinterest",
+  "snapchat",
+  "twitch",
+  "whatsapp",
+  "telegram",
+  "discord",
+  "spotify",
+  "soundcloud",
+  "reddit",
+  "tumblr",
+  "vimeo",
+  "behance",
+  "dribbble",
+  "github",
+  "medium",
+  "substack",
+  "bluesky",
+  "mastodon",
+  "linktree",
+  "signal",
+  "viber",
   "email",
+  "phone",
+  "link",
 ]);
 
 export const socialLinkSchema = z.object({
@@ -94,7 +120,9 @@ export const navLinkSchema = z.object({
   icon: navIconSchema,
 });
 
-export const profileSchema = z.object({
+export const availabilityColorSchema = z.enum(["green", "yellow", "red"]);
+
+const profileShape = z.object({
   name: z.string(),
   firstName: z.string(),
   role: z.string(),
@@ -104,12 +132,31 @@ export const profileSchema = z.object({
   portraitImage: z.string().min(1),
   location: z.string(),
   timezone: z.string(),
-  available: z.boolean(),
-  availabilityLabel: z.string(),
+  availability: z.string(),
+  availabilityColor: availabilityColorSchema,
   email: z.string(),
   calendlyUrl: z.string(),
   resumeUrl: z.string(),
 });
+
+export const profileSchema = z.preprocess((value) => {
+  if (!value || typeof value !== "object") return value;
+  const record = value as Record<string, unknown>;
+  const availability =
+    typeof record.availability === "string"
+      ? record.availability
+      : record.available === false
+        ? ""
+        : typeof record.availabilityLabel === "string"
+          ? record.availabilityLabel
+          : "";
+
+  return {
+    ...record,
+    availability,
+    availabilityColor: record.availabilityColor ?? "green",
+  };
+}, profileShape);
 
 export const navigationSchema = z.object({
   links: z.array(navLinkSchema),
@@ -181,6 +228,7 @@ export const campaignSchema = z.object({
 });
 
 export const heroContentSchema = z.object({
+  visible: z.boolean().default(true),
   primaryCtaLabel: z.string(),
   primaryCtaHref: z.string(),
   secondaryCtaLabel: z.string(),
@@ -193,10 +241,12 @@ export const heroContentSchema = z.object({
 });
 
 export const metricsContentSchema = z.object({
+  visible: z.boolean().default(true),
   stats: z.array(summaryStatSchema),
 });
 
 export const clientsContentSchema = z.object({
+  visible: z.boolean().default(true),
   eyebrow: z.string(),
   clients: z.array(clientLogoSchema),
 });
@@ -218,6 +268,7 @@ export const caseStudyCopySchema = z.object({
 });
 
 export const campaignsContentSchema = z.object({
+  visible: z.boolean().default(true),
   eyebrow: z.string(),
   headingLead: z.string(),
   headingAccent: z.string(),
@@ -230,6 +281,7 @@ export const campaignsContentSchema = z.object({
 });
 
 export const experienceContentSchema = z.object({
+  visible: z.boolean().default(true),
   eyebrow: z.string(),
   heading: z.string(),
   description: z.string(),
@@ -239,6 +291,7 @@ export const experienceContentSchema = z.object({
 });
 
 export const reelsContentSchema = z.object({
+  visible: z.boolean().default(true),
   eyebrow: z.string(),
   headingLead: z.string(),
   headingAccent: z.string(),
@@ -247,6 +300,7 @@ export const reelsContentSchema = z.object({
 });
 
 export const testimonialsContentSchema = z.object({
+  visible: z.boolean().default(true),
   eyebrow: z.string(),
   heading: z.string(),
   testimonials: z.array(testimonialSchema),
@@ -269,6 +323,7 @@ export const contactFormCopySchema = z.object({
 });
 
 export const contactContentSchema = z.object({
+  visible: z.boolean().default(true),
   eyebrow: z.string(),
   headingLead: z.string(),
   headingAccent: z.string(),
@@ -383,6 +438,7 @@ export type ServiceIcon = z.infer<typeof serviceIconSchema>;
 export type ServiceItem = z.infer<typeof serviceItemSchema>;
 export type NavIcon = z.infer<typeof navIconSchema>;
 export type NavLink = z.infer<typeof navLinkSchema>;
+export type AvailabilityColor = z.infer<typeof availabilityColorSchema>;
 export type Profile = z.infer<typeof profileSchema>;
 export type Navigation = z.infer<typeof navigationSchema>;
 export type Seo = z.infer<typeof seoSchema>;

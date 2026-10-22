@@ -4,7 +4,6 @@ export type AdminView =
   | "profile"
   | "navigation"
   | "socials"
-  | "contact-details"
   | "seo"
   | "hero"
   | "metrics"
@@ -25,20 +24,17 @@ export interface AdminViewProps {
 
 export const VIEW_LABELS: Record<AdminView, string> = {
   profile: "Profile & Identity",
-  navigation: "Navigation",
+  navigation: "Header",
   socials: "Social Links",
-  "contact-details": "Contact & Booking",
   seo: "SEO",
   hero: "Hero",
   metrics: "Metrics",
   clients: "Clients",
   campaigns: "Campaigns",
-  categories: "Categories",
+  categories: "Campaign Categories",
   experience: "Experience",
   reels: "Reels",
   testimonials: "Testimonials",
   contact: "Contact",
   footer: "Footer",
 };
-
-

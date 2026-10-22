@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 import type { AdminView } from "@/components/admin/types";
 import { VIEW_LABELS } from "@/components/admin/types";
@@ -25,6 +25,30 @@ function isAdminView(value: unknown): value is AdminView {
   );
 }
 
+function SectionFrame({
+  visible,
+  label,
+  children,
+}: {
+  visible: boolean;
+  label: string;
+  children: ReactNode;
+}) {
+  if (visible) return <>{children}</>;
+
+  return (
+    <div className="flex min-h-screen items-center justify-center p-6">
+      <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 text-center shadow-sm">
+        <p className="text-sm font-semibold">{label} is hidden</p>
+        <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+          This section is hidden on the live site. Check “Show this section on
+          the website” in the Content tab to make it visible again.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 function ViewPreview({
   view,
   content,
@@ -33,60 +57,76 @@ function ViewPreview({
   content: SiteContent;
 }) {
   switch (view) {
-    case "profile":
-      return <Hero content={content} />;
     case "navigation":
       return <SiteHeader content={content} />;
     case "socials":
       return <Footer content={content} />;
-    case "contact-details":
-      return <Contact content={content} />;
-    case "seo":
-      return (
-        <div className="flex min-h-screen items-center justify-center p-6">
-          <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-sm">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-              SEO
-            </p>
-            <h1 className="mt-2 text-2xl font-semibold tracking-tight">
-              Metadata only
-            </h1>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              These settings change the page title, description, and social
-              preview. They don’t alter the visible layout.
-            </p>
-            <div className="mt-5 space-y-2 rounded-xl border border-border bg-secondary/50 p-4">
-              <p className="text-sm font-semibold">
-                {content.seo.titleTemplate}
-              </p>
-              <p className="text-xs leading-relaxed text-muted-foreground">
-                {content.seo.description}
-              </p>
-              <p className="truncate text-[11px] text-muted-foreground">
-                {content.seo.siteUrl}
-              </p>
-            </div>
-          </div>
-        </div>
-      );
     case "hero":
-      return <Hero content={content} />;
+      return (
+        <SectionFrame visible={content.sections.hero.visible} label="Hero">
+          <Hero content={content} />
+        </SectionFrame>
+      );
     case "metrics":
-      return <MetricsBar content={content} />;
+      return (
+        <SectionFrame visible={content.sections.metrics.visible} label="Metrics">
+          <MetricsBar content={content} />
+        </SectionFrame>
+      );
     case "clients":
-      return <LogoCloud content={content} />;
+      return (
+        <SectionFrame visible={content.sections.clients.visible} label="Clients">
+          <LogoCloud content={content} />
+        </SectionFrame>
+      );
     case "campaigns":
-      return <CampaignGrid content={content} />;
+      return (
+        <SectionFrame
+          visible={content.sections.campaigns.visible}
+          label="Campaigns"
+        >
+          <CampaignGrid content={content} />
+        </SectionFrame>
+      );
     case "categories":
-      return <CampaignGrid content={content} />;
+      return (
+        <SectionFrame
+          visible={content.sections.campaigns.visible}
+          label="Campaigns"
+        >
+          <CampaignGrid content={content} />
+        </SectionFrame>
+      );
     case "experience":
-      return <Experience content={content} />;
+      return (
+        <SectionFrame
+          visible={content.sections.experience.visible}
+          label="Experience"
+        >
+          <Experience content={content} />
+        </SectionFrame>
+      );
     case "reels":
-      return <ContentReels content={content} />;
+      return (
+        <SectionFrame visible={content.sections.reels.visible} label="Reels">
+          <ContentReels content={content} />
+        </SectionFrame>
+      );
     case "testimonials":
-      return <Testimonials content={content} />;
+      return (
+        <SectionFrame
+          visible={content.sections.testimonials.visible}
+          label="Testimonials"
+        >
+          <Testimonials content={content} />
+        </SectionFrame>
+      );
     case "contact":
-      return <Contact content={content} />;
+      return (
+        <SectionFrame visible={content.sections.contact.visible} label="Contact">
+          <Contact content={content} />
+        </SectionFrame>
+      );
     case "footer":
       return <Footer content={content} />;
     default:

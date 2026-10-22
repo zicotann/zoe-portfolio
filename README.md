@@ -19,8 +19,9 @@ npm run dev
 
 - **Save** keeps the draft in the current browser tab (`sessionStorage`). Closing the tab/browser discards it.
 - **Publish** opens a confirmation dialog, commits `content/site.json` to `GITHUB_BRANCH` (default `main`), and triggers the Netlify rebuild.
-- Category records are managed in Content → Categories. Campaigns select a category from a dropdown.
-- Image and video fields take public URLs. The Cloudflare R2 upload dropzone is present but disabled until the upload endpoint is implemented.
+- Category records are managed in Global → Categories. Campaigns select a category from a dropdown.
+- The resume is a PDF stored in `public/resumes` and uploaded from Global → Profile & Identity. Uploads are committed to `GITHUB_BRANCH` through the GitHub Contents API and appear in the admin's existing-PDF picker.
+- Image and video fields take public URLs. The Cloudflare R2 upload dropzone is present but disabled until the R2 upload endpoint is implemented.
 
 Publishing uses the GitHub Contents API from a server route; the token is never sent to the browser. The studio loads the latest published JSON from GitHub on open so a refresh immediately after publishing does not restore stale content.
 

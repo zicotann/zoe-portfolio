@@ -15,14 +15,28 @@ export function SiteShell({ content }: { content: SiteContent }) {
     <div className="relative min-h-screen">
       <SiteHeader content={content} />
       <main className="pb-24 md:pb-0">
-        <Hero content={content} />
-        <MetricsBar content={content} />
-        <LogoCloud content={content} />
-        <CampaignGrid content={content} />
-        <Experience content={content} />
-        <ContentReels content={content} />
-        <Testimonials content={content} />
-        <Contact content={content} />
+        {content.sections.hero.visible ? <Hero content={content} /> : null}
+        {content.sections.metrics.visible ? (
+          <MetricsBar content={content} />
+        ) : null}
+        {content.sections.clients.visible ? (
+          <LogoCloud content={content} />
+        ) : null}
+        {content.sections.campaigns.visible ? (
+          <CampaignGrid content={content} />
+        ) : null}
+        {content.sections.experience.visible ? (
+          <Experience content={content} />
+        ) : null}
+        {content.sections.reels.visible ? (
+          <ContentReels content={content} />
+        ) : null}
+        {content.sections.testimonials.visible ? (
+          <Testimonials content={content} />
+        ) : null}
+        {content.sections.contact.visible ? (
+          <Contact content={content} />
+        ) : null}
       </main>
       <Footer content={content} />
     </div>

@@ -5,6 +5,7 @@ import {
   ImageField,
   NumberInput,
   SectionCard,
+  SectionVisibility,
   Select,
   StringListEditor,
   TextArea,
@@ -77,6 +78,10 @@ export function CampaignsView({ content, onChange }: AdminViewProps) {
 
   return (
     <div className="space-y-5">
+      <SectionVisibility
+        checked={campaignsContent.visible}
+        onChange={(visible) => patch({ visible })}
+      />
       <SectionCard
         title="Campaign grid copy"
         description="Section headings, filter labels, and card labels."
@@ -510,7 +515,7 @@ export function CategoriesView({ content, onChange }: AdminViewProps) {
   return (
     <div className="space-y-5">
       <SectionCard
-        title="Campaign categories"
+        title="Campaign Categories"
         description="Campaigns choose a category from a dropdown. Category names also appear on filter chips and case-study badges."
       >
         <ArrayEditor<CampaignCategory>

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrayEditor, GlobalFields, NumberInput, SectionCard, Select, StringListEditor, TextArea, TextInput } from "@/components/admin/fields";
+import { ArrayEditor, ColorChoice, GlobalFields, ImageField, NumberInput, SectionCard, SectionVisibility, Select, StringListEditor, TextArea, TextInput } from "@/components/admin/fields";
 import type { AdminViewProps } from "@/components/admin/types";
 import { Button } from "@/components/ui/button";
 import { getReels } from "@/content/helpers";
@@ -34,52 +34,42 @@ const clientCategoryOptions = [
   { value: "Award", label: "Award" },
 ];
 
+const availabilityColorOptions = [
+  { value: "green", label: "Green", swatch: "bg-emerald-500" },
+  { value: "yellow", label: "Yellow", swatch: "bg-amber-400" },
+  { value: "red", label: "Red", swatch: "bg-red-500" },
+];
+
 export function HeroView({ content, onChange, onNavigate }: AdminViewProps) {
   const hero = content.sections.hero;
+  const profile = content.profile;
   const patch = (value: Partial<typeof hero>) =>
     onChange({
       ...content,
       sections: { ...content.sections, hero: { ...hero, ...value } },
     });
+  const patchProfile = (value: Partial<typeof profile>) =>
+    onChange({ ...content, profile: { ...profile, ...value } });
 
   return (
     <div className="space-y-5">
+      <SectionVisibility
+        checked={hero.visible}
+        onChange={(visible) => patch({ visible })}
+      />
       <GlobalFields
         onNavigate={onNavigate}
         items={[
-          { label: "Name", value: content.profile.name, view: "profile" },
-          { label: "Role", value: content.profile.role, view: "profile" },
-          {
-            label: "Headline",
-            value: `${content.profile.headlineLead} & ${content.profile.headlineAccent}`,
-            view: "profile",
-          },
-          {
-            label: "Subheadline",
-            value: content.profile.subheadline,
-            view: "profile",
-          },
-          {
-            label: "Availability",
-            value: content.profile.available
-              ? content.profile.availabilityLabel
-              : "Not available",
-            view: "profile",
-          },
+          { label: "Name", value: profile.name, view: "profile" },
           {
             label: "Location",
-            value: `${content.profile.location} · ${content.profile.timezone}`,
-            view: "profile",
-          },
-          {
-            label: "Portrait",
-            value: content.profile.portraitImage,
+            value: `${profile.location} · ${profile.timezone}`,
             view: "profile",
           },
           {
             label: "Booking URL",
-            value: content.profile.calendlyUrl,
-            view: "contact-details",
+            value: profile.calendlyUrl,
+            view: "profile",
           },
           {
             label: "Social links",
@@ -90,8 +80,69 @@ export function HeroView({ content, onChange, onNavigate }: AdminViewProps) {
       />
 
       <SectionCard
-        title="Hero"
-        description="Hero-specific labels and floating cards. Global identity fields are edited in Singletons."
+        title="Hero identity"
+        description="The copy and portrait shown at the top of the site. Role is also used in the footer and page metadata."
+      >
+        <div className="grid gap-4 sm:grid-cols-2">
+          <TextInput
+            label="Role"
+            value={profile.role}
+            onChange={(role) => patchProfile({ role })}
+          />
+          <TextInput
+            label="Availability"
+            hint="Leave empty to hide the availability badge from the hero."
+            value={profile.availability}
+            onChange={(availability) => patchProfile({ availability })}
+          />
+          <TextInput
+            label="Headline — lead"
+            hint="The plain part of the hero headline."
+            value={profile.headlineLead}
+            onChange={(headlineLead) => patchProfile({ headlineLead })}
+          />
+          <TextInput
+            label="Headline — gradient accent"
+            hint="Rendered after an “&” with the gradient treatment."
+            value={profile.headlineAccent}
+            onChange={(headlineAccent) => patchProfile({ headlineAccent })}
+          />
+        </div>
+        <div className="mt-4">
+          <TextArea
+            label="Subheadline"
+            value={profile.subheadline}
+            onChange={(subheadline) => patchProfile({ subheadline })}
+            rows={3}
+          />
+        </div>
+        <div className="mt-4">
+          <ColorChoice
+            label="Availability color"
+            hint="Sets the colour of the availability badge."
+            value={profile.availabilityColor}
+            onChange={(value) =>
+              patchProfile({
+                availabilityColor:
+                  value as typeof profile.availabilityColor,
+              })
+            }
+            options={availabilityColorOptions}
+          />
+        </div>
+        <div className="mt-4">
+          <ImageField
+            label="Portrait image"
+            value={profile.portraitImage}
+            onChange={(portraitImage) => patchProfile({ portraitImage })}
+            aspect="portrait"
+          />
+        </div>
+      </SectionCard>
+
+      <SectionCard
+        title="Hero call-to-action"
+        description="Buttons, labels, and the floating cards beside the portrait."
       >
         <div className="grid gap-4 sm:grid-cols-2">
           <TextInput
@@ -147,32 +198,38 @@ export function HeroView({ content, onChange, onNavigate }: AdminViewProps) {
 
 export function MetricsView({ content, onChange }: AdminViewProps) {
   const metrics = content.sections.metrics;
+  const patch = (value: Partial<typeof metrics>) =>
+    onChange({
+      ...content,
+      sections: {
+        ...content.sections,
+        metrics: { ...metrics, ...value },
+      },
+    });
+
   return (
-    <SectionCard
-      title="Metrics bar"
-      description="The four summary statistics under the hero."
-    >
-      <ArrayEditor<SummaryStat>
-        items={metrics.stats}
-        onChange={(stats) =>
-          onChange({
-            ...content,
-            sections: {
-              ...content.sections,
-              metrics: { ...metrics, stats },
-            },
-          })
-        }
-        create={() => ({
-          id: newId("stat"),
-          label: "New metric",
-          value: 0,
-          suffix: "",
-          description: "",
-        })}
-        itemLabel={(stat) => `${stat.label} (${stat.value}${stat.suffix})`}
-        addLabel="Add metric"
+    <div className="space-y-5">
+      <SectionVisibility
+        checked={metrics.visible}
+        onChange={(visible) => patch({ visible })}
+      />
+      <SectionCard
+        title="Metrics bar"
+        description="The four summary statistics under the hero."
       >
+        <ArrayEditor<SummaryStat>
+          items={metrics.stats}
+          onChange={(stats) => patch({ stats })}
+          create={() => ({
+            id: newId("stat"),
+            label: "New metric",
+            value: 0,
+            suffix: "",
+            description: "",
+          })}
+          itemLabel={(stat) => `${stat.label} (${stat.value}${stat.suffix})`}
+          addLabel="Add metric"
+        >
         {(stat, update) => (
           <div className="grid gap-4 sm:grid-cols-2">
             <TextInput
@@ -211,71 +268,71 @@ export function MetricsView({ content, onChange }: AdminViewProps) {
             </div>
           </div>
         )}
-      </ArrayEditor>
-    </SectionCard>
+        </ArrayEditor>
+      </SectionCard>
+    </div>
   );
 }
 
 export function ClientsView({ content, onChange }: AdminViewProps) {
   const clients = content.sections.clients;
+  const patch = (value: Partial<typeof clients>) =>
+    onChange({
+      ...content,
+      sections: {
+        ...content.sections,
+        clients: { ...clients, ...value },
+      },
+    });
+
   return (
-    <SectionCard
-      title="Clients & features"
-      description="Names in the two logo marquees. Category controls which row they appear in."
-    >
-      <TextInput
-        label="Marquee intro text"
-        value={clients.eyebrow}
-        onChange={(eyebrow) =>
-          onChange({
-            ...content,
-            sections: {
-              ...content.sections,
-              clients: { ...clients, eyebrow },
-            },
-          })
-        }
+    <div className="space-y-5">
+      <SectionVisibility
+        checked={clients.visible}
+        onChange={(visible) => patch({ visible })}
       />
-      <div className="mt-6">
-        <ArrayEditor<ClientLogo>
-          items={clients.clients}
-          onChange={(next) =>
-            onChange({
-              ...content,
-              sections: {
-                ...content.sections,
-                clients: { ...clients, clients: next },
-              },
-            })
-          }
-          create={() => ({
-            id: newId("client"),
-            name: "New client",
-            category: "Client",
-          })}
-          itemLabel={(client) => client.name}
-          addLabel="Add client or feature"
-        >
-          {(client, update) => (
-            <div className="grid gap-4 sm:grid-cols-2">
-              <TextInput
-                label="Name"
-                value={client.name}
-                onChange={(name) => update({ name })}
-              />
-              <Select
-                label="Category"
-                value={client.category}
-                onChange={(category) =>
-                  update({ category: category as ClientLogo["category"] })
-                }
-                options={clientCategoryOptions}
-              />
-            </div>
-          )}
-        </ArrayEditor>
-      </div>
-    </SectionCard>
+      <SectionCard
+        title="Clients & features"
+        description="Names in the two logo marquees. Category controls which row they appear in."
+      >
+        <TextInput
+          label="Marquee intro text"
+          value={clients.eyebrow}
+          onChange={(eyebrow) => patch({ eyebrow })}
+        />
+        <div className="mt-6">
+          <ArrayEditor<ClientLogo>
+            items={clients.clients}
+            onChange={(next) => patch({ clients: next })}
+            create={() => ({
+              id: newId("client"),
+              name: "New client",
+              category: "Client",
+            })}
+            itemLabel={(client) => client.name}
+            addLabel="Add client or feature"
+          >
+            {(client, update) => (
+              <div className="grid gap-4 sm:grid-cols-2">
+                <TextInput
+                  label="Name"
+                  value={client.name}
+                  onChange={(name) => update({ name })}
+                />
+                <Select
+                  label="Category"
+                  value={client.category}
+                  onChange={(category) =>
+                    update({ category: category as ClientLogo["category"] })
+                  }
+                  options={clientCategoryOptions}
+                />
+              </div>
+            )}
+          </ArrayEditor>
+        </div>
+      </SectionCard>
+    </div>
   );
 }
 
@@ -289,13 +346,17 @@ export function ExperienceView({ content, onChange, onNavigate }: AdminViewProps
 
   return (
     <div className="space-y-5">
+      <SectionVisibility
+        checked={experience.visible}
+        onChange={(visible) => patch({ visible })}
+      />
       <GlobalFields
         onNavigate={onNavigate}
         items={[
           {
-            label: "Résumé URL",
+            label: "Resume",
             value: content.profile.resumeUrl,
-            view: "contact-details",
+            view: "profile",
           },
         ]}
       />
@@ -454,6 +515,10 @@ export function ReelsView({ content, onChange, onNavigate }: AdminViewProps) {
 
   return (
     <div className="space-y-5">
+      <SectionVisibility
+        checked={reels.visible}
+        onChange={(visible) => patch({ visible })}
+      />
       <SectionCard
         title="Reels section"
         description="Section copy and how many campaign videos to show."
@@ -547,6 +612,10 @@ export function TestimonialsView({ content, onChange }: AdminViewProps) {
 
   return (
     <div className="space-y-5">
+      <SectionVisibility
+        checked={testimonials.visible}
+        onChange={(visible) => patch({ visible })}
+      />
       <SectionCard title="Testimonials section">
         <div className="grid gap-4 sm:grid-cols-2">
           <TextInput
@@ -617,76 +686,94 @@ export function TestimonialsView({ content, onChange }: AdminViewProps) {
 
 export function ContactView({ content, onChange, onNavigate }: AdminViewProps) {
   const contact = content.sections.contact;
-  const patch = (value: Partial<typeof contact>) =>
+  const patchContact = (value: Partial<typeof contact>) =>
     onChange({
       ...content,
       sections: { ...content.sections, contact: { ...contact, ...value } },
     });
   const patchForm = (value: Partial<typeof contact.form>) =>
-    patch({ form: { ...contact.form, ...value } });
+    onChange({
+      ...content,
+      sections: {
+        ...content.sections,
+        contact: { ...contact, form: { ...contact.form, ...value } },
+      },
+    });
 
   return (
     <div className="space-y-5">
+      <SectionVisibility
+        checked={contact.visible}
+        onChange={(visible) => patchContact({ visible })}
+      />
       <GlobalFields
         onNavigate={onNavigate}
         items={[
           {
             label: "Email",
             value: content.profile.email,
-            view: "contact-details",
+            view: "profile",
           },
           {
             label: "Booking URL",
             value: content.profile.calendlyUrl,
-            view: "contact-details",
+            view: "profile",
           },
           {
             label: "Location",
             value: `${content.profile.location} · ${content.profile.timezone}`,
-            view: "contact-details",
+            view: "profile",
           },
           {
             label: "Social links",
             value: content.socials.map((social) => social.handle).join(", "),
             view: "socials",
           },
+          {
+            label: "Resume",
+            value: content.profile.resumeUrl,
+            view: "profile",
+          },
         ]}
       />
 
-      <SectionCard title="Contact section">
+      <SectionCard
+        title="Contact section"
+        description="The heading and intro shown in the contact section. Email, booking URL, and location come from Profile & Identity."
+      >
         <div className="grid gap-4 sm:grid-cols-2">
           <TextInput
             label="Eyebrow"
             value={contact.eyebrow}
-            onChange={(eyebrow) => patch({ eyebrow })}
+            onChange={(eyebrow) => patchContact({ eyebrow })}
           />
           <TextInput
             label="Booking button label"
             value={contact.bookingLabel}
-            onChange={(bookingLabel) => patch({ bookingLabel })}
+            onChange={(bookingLabel) => patchContact({ bookingLabel })}
           />
           <TextInput
             label="Heading — lead"
             value={contact.headingLead}
-            onChange={(headingLead) => patch({ headingLead })}
+            onChange={(headingLead) => patchContact({ headingLead })}
           />
           <TextInput
             label="Heading — gradient accent"
             value={contact.headingAccent}
-            onChange={(headingAccent) => patch({ headingAccent })}
+            onChange={(headingAccent) => patchContact({ headingAccent })}
           />
           <TextInput
             label="Location prefix"
             hint="Rendered as “{prefix} {location} · {timezone}”."
             value={contact.basedInLabel}
-            onChange={(basedInLabel) => patch({ basedInLabel })}
+            onChange={(basedInLabel) => patchContact({ basedInLabel })}
           />
         </div>
         <div className="mt-4">
           <TextArea
             label="Description"
             value={contact.description}
-            onChange={(description) => patch({ description })}
+            onChange={(description) => patchContact({ description })}
             rows={2}
           />
         </div>
@@ -778,7 +865,7 @@ export function FooterView({ content, onChange, onNavigate }: AdminViewProps) {
         onNavigate={onNavigate}
         items={[
           { label: "Name", value: content.profile.name, view: "profile" },
-          { label: "Role", value: content.profile.role, view: "profile" },
+          { label: "Role", value: content.profile.role, view: "hero" },
           {
             label: "Social links",
             value: content.socials.map((social) => social.label).join(", "),

@@ -1,10 +1,13 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import {
   ChevronDown,
   ChevronUp,
+  ExternalLink,
+  FileText,
   ImagePlus,
+  Loader2,
   Plus,
   Trash2,
   UploadCloud,
@@ -160,6 +163,23 @@ export function Toggle({
   );
 }
 
+export function SectionVisibility({
+  checked,
+  onChange,
+}: {
+  checked: boolean;
+  onChange: (value: boolean) => void;
+}) {
+  return (
+    <Toggle
+      label="Show this section on the website"
+      hint="Uncheck to hide the entire section. Changes apply when you publish."
+      checked={checked}
+      onChange={onChange}
+    />
+  );
+}
+
 export function Select({
   label,
   hint,
@@ -186,6 +206,47 @@ export function Select({
           </option>
         ))}
       </select>
+    </Field>
+  );
+}
+
+export function ColorChoice({
+  label,
+  hint,
+  value,
+  onChange,
+  options,
+}: {
+  label?: string;
+  hint?: string;
+  value: string;
+  onChange: (value: string) => void;
+  options: Array<{ value: string; label: string; swatch: string }>;
+}) {
+  return (
+    <Field label={label} hint={hint}>
+      <div className="flex flex-wrap gap-2">
+        {options.map((option) => (
+          <button
+            key={option.value}
+            type="button"
+            aria-pressed={value === option.value}
+            onClick={() => onChange(option.value)}
+            className={cn(
+              "flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-medium transition-colors",
+              value === option.value
+                ? "border-primary bg-primary/5 text-foreground"
+                : "border-border bg-background/60 text-muted-foreground hover:border-primary/40 hover:text-foreground",
+            )}
+          >
+            <span
+              className={cn("h-3 w-3 rounded-full", option.swatch)}
+              aria-hidden
+            />
+            {option.label}
+          </button>
+        ))}
+      </div>
     </Field>
   );
 }
@@ -294,6 +355,301 @@ export function ImageField({
   );
 }
 
+interface PdfAsset {
+  name: string;
+  path: string;
+  size?: number;
+}
+
+function formatBytes(size?: number): string {
+  if (!size) return "";
+  if (size < 1024 * 1024) return `${Math.round(size / 1024)} KB`;
+  return `${(size / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+export function PdfField({
+  label,
+  hint,
+  value,
+  onChange,
+}: {
+  label: string;
+  hint?: string;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  const [files, setFiles] = useState<PdfAsset[]>([]);
+  const [loadingFiles, setLoadingFiles] = useState(true);
+  const [uploading, setUploading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/admin/resume", { cache: "no-store" })
+      .then(async (response) => {
+        if (!response.ok) return { files: [] as PdfAsset[] };
+        return (await response.json()) as { files: PdfAsset[] };
+      })
+      .then((data) => {
+        if (!cancelled) setFiles(data.files ?? []);
+      })
+      .catch(() => {
+        if (!cancelled) setFiles([]);
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingFiles(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  async function upload(file: File) {
+    const isPdf =
+      file.type === "application/pdf" ||
+      file.name.toLowerCase().endsWith(".pdf");
+    if (!isPdf) {
+      setError("Choose a PDF file.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setError("PDFs must be 5 MB or smaller.");
+      return;
+    }
+
+    setUploading(true);
+    setError(null);
+    try {
+      const body = new FormData();
+      body.append("file", file);
+      const response = await fetch("/api/admin/resume", {
+        method: "POST",
+        body,
+      });
+      const data = (await response.json().catch(() => ({}))) as {
+        asset?: PdfAsset;
+        error?: string;
+      };
+      if (!response.ok || !data.asset) {
+        setError(data.error ?? "Could not upload the PDF.");
+        return;
+      }
+      onChange(data.asset.path);
+      setFiles((current) => [
+        data.asset as PdfAsset,
+        ...current.filter((item) => item.path !== data.asset?.path),
+      ]);
+    } catch {
+      setError("Could not upload the PDF.");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  async function remove() {
+    if (!value) return;
+    if (
+      !window.confirm(
+        "Delete this resume? The PDF will be removed from the codebase.",
+      )
+    ) {
+      return;
+    }
+
+    const previous = value;
+    setDeleting(true);
+    setError(null);
+    onChange("");
+
+    try {
+      if (previous.startsWith("/resumes/")) {
+        const response = await fetch("/api/admin/resume", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ path: previous }),
+        });
+        const data = (await response.json().catch(() => ({}))) as {
+          error?: string;
+        };
+        if (!response.ok) {
+          setError(
+            data.error ??
+              "The resume was removed from the content, but the PDF could not be deleted.",
+          );
+          return;
+        }
+        setFiles((current) =>
+          current.filter((item) => item.path !== previous),
+        );
+      }
+    } catch {
+      setError(
+        "The resume was removed from the content, but the PDF could not be deleted.",
+      );
+    } finally {
+      setDeleting(false);
+    }
+  }
+
+  function handleFiles(fileList: FileList | null) {
+    const file = fileList?.[0];
+    if (file) void upload(file);
+  }
+
+  const fileName = value.split("/").pop() ?? value;
+  const otherFiles = files.filter((file) => file.path !== value);
+
+  return (
+    <Field label={label} hint={hint}>
+      <div className="space-y-3">
+        {value ? (
+          <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border bg-background/60 p-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-secondary text-muted-foreground">
+              <FileText className="h-4 w-4" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-xs font-medium">{fileName}</p>
+              <p className="truncate font-mono text-[11px] text-muted-foreground">
+                {value}
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-1.5">
+              <Button asChild variant="outline" size="sm">
+                <a href={value} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="h-3.5 w-3.5" />
+                  View
+                </a>
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={uploading || deleting}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                {uploading ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <UploadCloud className="h-3.5 w-3.5" />
+                )}
+                Replace
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                disabled={uploading || deleting}
+                onClick={remove}
+                className="text-muted-foreground hover:text-destructive"
+              >
+                {deleting ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Trash2 className="h-3.5 w-3.5" />
+                )}
+                Delete
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => fileInputRef.current?.click()}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                fileInputRef.current?.click();
+              }
+            }}
+            onDragOver={(event) => {
+              event.preventDefault();
+              setDragging(true);
+            }}
+            onDragLeave={() => setDragging(false)}
+            onDrop={(event) => {
+              event.preventDefault();
+              setDragging(false);
+              handleFiles(event.dataTransfer.files);
+            }}
+            className={cn(
+              "flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed bg-secondary/40 px-4 py-8 text-center transition-colors",
+              dragging
+                ? "border-primary bg-primary/5"
+                : "border-border hover:border-primary/40",
+            )}
+          >
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-card text-muted-foreground shadow-sm">
+              {uploading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <UploadCloud className="h-4 w-4" />
+              )}
+            </span>
+            <p className="text-xs font-medium">
+              {uploading ? "Uploading…" : "Drop a PDF here, or click to upload"}
+            </p>
+            <p className="text-[11px] leading-relaxed text-muted-foreground">
+              PDFs are stored in the codebase under public/resumes.
+            </p>
+          </div>
+        )}
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="application/pdf,.pdf"
+          className="hidden"
+          onChange={(event) => {
+            handleFiles(event.target.files);
+            event.target.value = "";
+          }}
+        />
+
+        {error ? (
+          <p className="text-[11px] leading-relaxed text-destructive">{error}</p>
+        ) : null}
+
+        <div className="space-y-1.5">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+            Existing PDFs
+          </p>
+          {loadingFiles ? (
+            <p className="text-[11px] text-muted-foreground">Loading PDFs…</p>
+          ) : otherFiles.length ? (
+            <div className="flex flex-wrap gap-1.5">
+              {otherFiles.map((file) => (
+                <button
+                  key={file.path}
+                  type="button"
+                  onClick={() => onChange(file.path)}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background/60 px-2.5 py-1.5 text-[11px] text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+                >
+                  <FileText className="h-3 w-3" />
+                  {file.name}
+                  {file.size ? (
+                    <span className="text-[10px] opacity-70">
+                      {formatBytes(file.size)}
+                    </span>
+                  ) : null}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <p className="text-[11px] text-muted-foreground">
+              No other PDFs found in the codebase.
+            </p>
+          )}
+        </div>
+      </div>
+    </Field>
+  );
+}
+
 export function SectionCard({
   title,
   description,
@@ -334,7 +690,7 @@ export function GlobalFields({
           Used globally
         </p>
         <p className="text-[11px] text-muted-foreground">
-          Edit these in the Singletons section.
+          Edit these in the Global section.
         </p>
       </div>
       <dl className="grid gap-3 sm:grid-cols-2">
