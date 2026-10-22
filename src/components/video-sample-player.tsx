@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Play } from "lucide-react";
 
@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import type { VideoSample } from "@/content/schema";
+import { getVideoEmbedUrl, getVideoThumbnailUrl } from "@/lib/video-embed";
 import { cn } from "@/lib/utils";
 
 const aspectClass: Record<VideoSample["aspectRatio"], string> = {
@@ -18,40 +19,76 @@ const aspectClass: Record<VideoSample["aspectRatio"], string> = {
   "1:1": "aspect-square",
 };
 
-function getInstagramEmbedUrl(postUrl: string): string | null {
-  try {
-    const url = new URL(postUrl);
-    const hostname = url.hostname.replace(/^www\./, "");
-    if (hostname !== "instagram.com") return null;
+function VideoStill({
+  video,
+  sizes,
+}: {
+  video: VideoSample;
+  sizes: string;
+}) {
+  const [imageFailed, setImageFailed] = useState(false);
+  const [videoFailed, setVideoFailed] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const thumbnailUrl = getVideoThumbnailUrl(video);
+  const hostedVideoUrl = video.source === "url" ? video.videoUrl : undefined;
 
-    const match = url.pathname.match(
-      /^\/(p|reel|reels|tv)\/([A-Za-z0-9_-]+)/,
+  useEffect(() => {
+    const element = videoRef.current;
+    if (!element) return;
+
+    const seekToFrame = () => {
+      if (!Number.isFinite(element.duration)) return;
+      element.currentTime = Math.min(
+        3,
+        Math.max(0.5, element.duration * 0.1),
+      );
+    };
+
+    if (element.readyState >= 1 && element.currentTime === 0) {
+      seekToFrame();
+      return;
+    }
+
+    element.addEventListener("loadedmetadata", seekToFrame);
+    return () => element.removeEventListener("loadedmetadata", seekToFrame);
+  }, [hostedVideoUrl]);
+
+  if (thumbnailUrl && !imageFailed) {
+    return (
+      <Image
+        src={thumbnailUrl}
+        alt=""
+        fill
+        sizes={sizes}
+        unoptimized
+        className="object-cover transition-transform duration-500 group-hover:scale-105"
+        onError={() => setImageFailed(true)}
+      />
     );
-    if (!match) return null;
-
-    const kind = match[1] === "reels" ? "reel" : match[1];
-    return `https://www.instagram.com/${kind}/${match[2]}/embed/`;
-  } catch {
-    return null;
-  }
-}
-
-function getLinkedInEmbedUrl(postUrl: string): string | null {
-  const activity = postUrl.match(/activity[-:](\d+)/);
-  if (activity) {
-    return `https://www.linkedin.com/embed/feed/update/urn:li:activity:${activity[1]}`;
   }
 
-  const urn = postUrl.match(/urn:li:(activity|ugcPost|share):(\d+)/);
-  if (!urn) return null;
-  return `https://www.linkedin.com/embed/feed/update/urn:li:${urn[1]}:${urn[2]}`;
-}
+  if (hostedVideoUrl && !videoFailed) {
+    return (
+      <video
+        ref={videoRef}
+        src={hostedVideoUrl}
+        muted
+        playsInline
+        preload="metadata"
+        aria-hidden
+        tabIndex={-1}
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        onError={() => setVideoFailed(true)}
+      />
+    );
+  }
 
-export function getVideoEmbedUrl(video: VideoSample): string | null {
-  if (!video.postUrl) return null;
-  if (video.source === "instagram") return getInstagramEmbedUrl(video.postUrl);
-  if (video.source === "linkedin") return getLinkedInEmbedUrl(video.postUrl);
-  return null;
+  return (
+    <div
+      aria-hidden
+      className="absolute inset-0 bg-gradient-to-br from-primary/40 via-secondary to-brand-amber/30"
+    />
+  );
 }
 
 export function VideoSamplePlayer({
@@ -84,13 +121,7 @@ export function VideoSamplePlayer({
           className,
         )}
       >
-        <Image
-          src={video.thumbnail}
-          alt={video.title}
-          fill
-          sizes={sizes}
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-        />
+        <VideoStill video={video} sizes={sizes} />
         <div className="absolute inset-0 bg-gradient-to-t from-foreground/50 via-transparent to-transparent opacity-80" />
 
         {canPlay ? (

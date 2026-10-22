@@ -422,7 +422,6 @@ export function CampaignsView({ content, onChange }: AdminViewProps) {
                     id: newId("video"),
                     title: "New video",
                     aspectRatio: "9:16",
-                    thumbnail: "",
                     source: "instagram",
                   })}
                   itemLabel={(video) => video.title}
@@ -447,17 +446,10 @@ export function CampaignsView({ content, onChange }: AdminViewProps) {
                         }
                         options={aspectRatioOptions}
                       />
-                      <ImageField
-                        label="Thumbnail"
-                        hint="Poster image shown in the video grid before playback starts."
-                        value={video.thumbnail}
-                        onChange={(thumbnail) => updateVideo({ thumbnail })}
-                        aspect="portrait"
-                      />
                       {/* TODO: Add playback for hosted video URLs. */}
                       <Select
                         label="Video source"
-                        hint="Instagram and LinkedIn posts play in an embedded dialog. Hosted video playback is coming later."
+                        hint="Instagram and LinkedIn posts supply their own thumbnail and open in an embedded player. Hosted videos use their first frame; playback is coming later."
                         value={video.source ?? "url"}
                         onChange={(source) =>
                           updateVideo({ source: source as VideoSource })

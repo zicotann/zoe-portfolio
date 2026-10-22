@@ -193,7 +193,6 @@ export const videoSampleSchema = z.object({
   id: z.string().min(1),
   title: z.string(),
   aspectRatio: videoAspectRatioSchema,
-  thumbnail: z.string().min(1),
   source: videoSourceSchema.default("url"),
   postUrl: z.string().optional(),
   videoUrl: z.string().optional(),
