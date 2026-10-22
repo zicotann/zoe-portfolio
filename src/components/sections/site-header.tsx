@@ -39,7 +39,23 @@ export function SiteHeader({ content }: { content: SiteContent }) {
     restDelta: 0.001,
   });
 
-  const navLinks = content.navigation.links;
+  const navLinks = useMemo(() => {
+    const sectionVisibility: Record<string, boolean> = {
+      "#top": content.sections.hero.visible,
+      "#hero": content.sections.hero.visible,
+      "#metrics": content.sections.metrics.visible,
+      "#clients": content.sections.clients.visible,
+      "#work": content.sections.campaigns.visible,
+      "#experience": content.sections.experience.visible,
+      "#reels": content.sections.reels.visible,
+      "#testimonials": content.sections.testimonials.visible,
+      "#contact": content.sections.contact.visible,
+    };
+
+    return content.navigation.links.filter(
+      (link) => sectionVisibility[link.href] ?? true,
+    );
+  }, [content.navigation.links, content.sections]);
   const anchorIds = useMemo(
     () =>
       Array.from(
@@ -104,27 +120,37 @@ export function SiteHeader({ content }: { content: SiteContent }) {
             <span className="text-brand-coral">.</span>
           </a>
 
-          <span aria-hidden className="hidden h-6 w-px bg-border lg:block" />
+          {navLinks.length > 0 ? (
+            <>
+              <span
+                aria-hidden
+                className="hidden h-6 w-px bg-border lg:block"
+              />
 
-          <div className="hidden items-center gap-0.5 lg:flex">
-            {navLinks.map((link) => (
-              <a
-                key={link.id}
-                href={link.href}
-                aria-current={active === link.href ? "location" : undefined}
-                className={cn(
-                  "rounded-full px-3 py-2 text-sm font-medium transition-colors",
-                  active === link.href
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-secondary hover:text-foreground",
-                )}
-              >
-                {link.label}
-              </a>
-            ))}
-          </div>
+              <div className="hidden items-center gap-0.5 lg:flex">
+                {navLinks.map((link) => (
+                  <a
+                    key={link.id}
+                    href={link.href}
+                    aria-current={active === link.href ? "location" : undefined}
+                    className={cn(
+                      "rounded-full px-3 py-2 text-sm font-medium transition-colors",
+                      active === link.href
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+                    )}
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </div>
 
-          <span aria-hidden className="hidden h-6 w-px bg-border lg:block" />
+              <span
+                aria-hidden
+                className="hidden h-6 w-px bg-border lg:block"
+              />
+            </>
+          ) : null}
 
           <ShimmerButton
             href={content.navigation.ctaHref}
@@ -144,7 +170,9 @@ export function SiteHeader({ content }: { content: SiteContent }) {
         </nav>
       </header>
 
-      <Dock items={dockItems} activeHref={active} className="lg:hidden" />
+      {dockItems.length > 0 ? (
+        <Dock items={dockItems} activeHref={active} className="lg:hidden" />
+      ) : null}
     </>
   );
 }
