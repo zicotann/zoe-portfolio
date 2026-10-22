@@ -144,7 +144,7 @@ export function SiteHeader({ content }: { content: SiteContent }) {
         </nav>
       </header>
 
-      <Dock items={dockItems} className="lg:hidden" />
+      <Dock items={dockItems} activeHref={active} className="lg:hidden" />
     </>
   );
 }
