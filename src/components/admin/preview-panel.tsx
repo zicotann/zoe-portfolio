@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
+  Maximize2,
+  Minimize2,
   Monitor,
   RefreshCw,
   Smartphone,
@@ -10,41 +12,48 @@ import {
 import { Button } from "@/components/ui/button";
 import type { SiteContent } from "@/content/schema";
 import { cn } from "@/lib/utils";
-import { VIEW_ANCHORS, type AdminView } from "./types";
+import { VIEW_LABELS, type AdminView } from "./types";
 
 export function PreviewPanel({
   content,
   view,
+  fullscreen,
+  onToggleFullscreen,
 }: {
   content: SiteContent;
   view: AdminView;
+  fullscreen: boolean;
+  onToggleFullscreen: () => void;
 }) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const contentRef = useRef(content);
+  const viewRef = useRef(view);
   const [ready, setReady] = useState(false);
   const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
   const [reloadKey, setReloadKey] = useState(0);
 
   contentRef.current = content;
+  viewRef.current = view;
 
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
       if (event.origin !== window.location.origin) return;
       if (event.data?.type !== "preview:ready") return;
       setReady(true);
-      iframeRef.current?.contentWindow?.postMessage(
+      const frameWindow = iframeRef.current?.contentWindow;
+      frameWindow?.postMessage(
         { type: "preview:content", content: contentRef.current },
         window.location.origin,
       );
-      iframeRef.current?.contentWindow?.postMessage(
-        { type: "preview:scroll", anchor: VIEW_ANCHORS[view] },
+      frameWindow?.postMessage(
+        { type: "preview:view", view: viewRef.current },
         window.location.origin,
       );
     };
 
     window.addEventListener("message", onMessage);
     return () => window.removeEventListener("message", onMessage);
-  }, [view]);
+  }, []);
 
   useEffect(() => {
     if (!ready) return;
@@ -60,21 +69,21 @@ export function PreviewPanel({
   useEffect(() => {
     if (!ready) return;
     iframeRef.current?.contentWindow?.postMessage(
-      { type: "preview:scroll", anchor: VIEW_ANCHORS[view] },
+      { type: "preview:view", view },
       window.location.origin,
     );
   }, [view, ready]);
 
   return (
-    <div className="border-b border-border bg-secondary/30">
-      <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 sm:px-6">
+    <div className="flex h-full min-h-0 flex-col bg-secondary/30">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-4 py-2.5 sm:px-5">
         <div className="flex items-center gap-2">
           <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
             Live preview
           </span>
           <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-            Entire site
+            {VIEW_LABELS[view]}
           </span>
         </div>
 
@@ -122,13 +131,30 @@ export function PreviewPanel({
           >
             <RefreshCw className="h-3.5 w-3.5" />
           </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            onClick={onToggleFullscreen}
+            aria-pressed={fullscreen}
+            aria-label={
+              fullscreen ? "Exit fullscreen preview" : "Fullscreen preview"
+            }
+          >
+            {fullscreen ? (
+              <Minimize2 className="h-3.5 w-3.5" />
+            ) : (
+              <Maximize2 className="h-3.5 w-3.5" />
+            )}
+          </Button>
         </div>
       </div>
 
-      <div className="flex h-[42vh] min-h-[320px] max-h-[560px] justify-center overflow-hidden px-3 pb-3 sm:px-6 sm:pb-5">
+      <div className="flex min-h-0 flex-1 justify-center p-3 sm:p-4">
         <div
           className={cn(
-            "h-full overflow-hidden rounded-t-xl border border-border bg-background shadow-lg transition-all duration-300",
+            "h-full overflow-hidden rounded-xl border border-border bg-background shadow-lg transition-all duration-300",
             device === "mobile" ? "w-[390px] max-w-full" : "w-full",
           )}
         >
@@ -136,16 +162,17 @@ export function PreviewPanel({
             key={reloadKey}
             ref={iframeRef}
             src="/admin/preview"
-            title="Live site preview"
+            title="Live section preview"
             className="h-full w-full"
             onLoad={() => {
               setReady(true);
-              iframeRef.current?.contentWindow?.postMessage(
+              const frameWindow = iframeRef.current?.contentWindow;
+              frameWindow?.postMessage(
                 { type: "preview:content", content },
                 window.location.origin,
               );
-              iframeRef.current?.contentWindow?.postMessage(
-                { type: "preview:scroll", anchor: VIEW_ANCHORS[view] },
+              frameWindow?.postMessage(
+                { type: "preview:view", view },
                 window.location.origin,
               );
             }}

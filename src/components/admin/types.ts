@@ -41,20 +41,4 @@ export const VIEW_LABELS: Record<AdminView, string> = {
   footer: "Footer",
 };
 
-export const VIEW_ANCHORS: Record<AdminView, string> = {
-  profile: "#top",
-  navigation: "#top",
-  socials: "#top",
-  "contact-details": "#contact",
-  seo: "#top",
-  hero: "#top",
-  metrics: "#metrics",
-  clients: "#clients",
-  campaigns: "#work",
-  categories: "#work",
-  experience: "#experience",
-  reels: "#reels",
-  testimonials: "#testimonials",
-  contact: "#contact",
-  footer: "#footer",
-};
+

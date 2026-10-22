@@ -43,6 +43,7 @@ import {
   loadDraft,
   persistDraft,
 } from "@/lib/draft-storage";
+import { cn } from "@/lib/utils";
 
 type StatusMessage = {
   kind: "success" | "error" | "info";
@@ -68,6 +69,7 @@ export function AdminDashboard({
   const [publishing, setPublishing] = useState(false);
   const [publishError, setPublishError] = useState<string | null>(null);
   const [commitUrl, setCommitUrl] = useState<string | null>(null);
+  const [previewFullscreen, setPreviewFullscreen] = useState(false);
   const editedRef = useRef(false);
 
   const dirty = !contentEquals(baseline, draft);
@@ -141,6 +143,15 @@ export function AdminDashboard({
     window.addEventListener("beforeunload", handler);
     return () => window.removeEventListener("beforeunload", handler);
   }, [dirty]);
+
+  useEffect(() => {
+    if (!previewFullscreen) return;
+    const handler = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setPreviewFullscreen(false);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [previewFullscreen]);
 
   function handleContentChange(next: SiteContent) {
     editedRef.current = true;
@@ -312,83 +323,104 @@ export function AdminDashboard({
           onOpenSidebar={() => setSidebarOpen(true)}
         />
 
-        <div className="flex-1 overflow-y-auto">
-          <PreviewPanel content={draft} view={view} />
+        <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
+          {!previewFullscreen ? (
+            <div className="order-2 min-h-0 flex-1 overflow-y-auto lg:order-1">
+              <div className="mx-auto w-full max-w-4xl space-y-4 px-4 py-6 sm:px-6">
+                {loading ? (
+                  <p className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    Loading the latest published content…
+                  </p>
+                ) : null}
 
-          <div className="mx-auto w-full max-w-4xl space-y-4 px-4 py-6 sm:px-6">
-            {loading ? (
-              <p className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                Loading the latest published content…
-              </p>
-            ) : null}
+                {warning ? (
+                  <div className="flex items-start justify-between gap-3 rounded-xl border border-brand-amber/40 bg-brand-amber/10 px-4 py-3 text-xs leading-relaxed">
+                    <p className="flex items-start gap-2">
+                      <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-amber" />
+                      {warning}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setWarning(null)}
+                      className="shrink-0 rounded-full p-1 text-muted-foreground hover:bg-background"
+                      aria-label="Dismiss warning"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                ) : null}
 
-            {warning ? (
-              <div className="flex items-start justify-between gap-3 rounded-xl border border-brand-amber/40 bg-brand-amber/10 px-4 py-3 text-xs leading-relaxed">
-                <p className="flex items-start gap-2">
-                  <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-amber" />
-                  {warning}
-                </p>
-                <button
-                  type="button"
-                  onClick={() => setWarning(null)}
-                  className="shrink-0 rounded-full p-1 text-muted-foreground hover:bg-background"
-                  aria-label="Dismiss warning"
-                >
-                  <X className="h-3.5 w-3.5" />
-                </button>
-              </div>
-            ) : null}
+                <ViewRenderer
+                  view={view}
+                  content={draft}
+                  onChange={handleContentChange}
+                  onNavigate={handleNavigate}
+                />
 
-            <ViewRenderer
-              view={view}
-              content={draft}
-              onChange={handleContentChange}
-              onNavigate={handleNavigate}
-            />
-
-            <div className="flex flex-col items-stretch justify-between gap-3 rounded-2xl border border-border bg-card p-4 sm:flex-row sm:items-center">
-              <p className="text-xs leading-relaxed text-muted-foreground">
-                Save keeps this draft in the current tab. Publish commits all
-                changes at once.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={discardDraft}
-                  disabled={!dirty || saving || publishing}
-                  className="text-muted-foreground hover:text-destructive"
-                >
-                  <Trash2 className="h-4 w-4" />
-                  Discard
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => saveDraft()}
-                  disabled={saving || publishing}
-                >
-                  {saving ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Save className="h-4 w-4" />
-                  )}
-                  Save changes
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  onClick={openPublish}
-                  disabled={publishing || saving || !dirty}
-                >
-                  <CloudUpload className="h-4 w-4" />
-                  Publish
-                </Button>
+                <div className="flex flex-col items-stretch justify-between gap-3 rounded-2xl border border-border bg-card p-4 sm:flex-row sm:items-center">
+                  <p className="text-xs leading-relaxed text-muted-foreground">
+                    Save keeps this draft in the current tab. Publish commits all
+                    changes at once.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={discardDraft}
+                      disabled={!dirty || saving || publishing}
+                      className="text-muted-foreground hover:text-destructive"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      Discard
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => saveDraft()}
+                      disabled={saving || publishing}
+                    >
+                      {saving ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Save className="h-4 w-4" />
+                      )}
+                      Save changes
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={openPublish}
+                      disabled={publishing || saving || !dirty}
+                    >
+                      <CloudUpload className="h-4 w-4" />
+                      Publish
+                    </Button>
+                  </div>
+                </div>
               </div>
             </div>
+          ) : null}
+
+          <div
+            className={cn(
+              "order-1 flex min-h-0 flex-col overflow-hidden bg-secondary/20",
+              "border-b border-border lg:order-2 lg:border-b-0 lg:border-l",
+              previewFullscreen
+                ? "flex-1"
+                : "h-[38vh] min-h-[280px] shrink-0 lg:h-auto lg:w-[46%] xl:w-[50%]",
+            )}
+          >
+            <PreviewPanel
+              content={draft}
+              view={view}
+              fullscreen={previewFullscreen}
+              onToggleFullscreen={() =>
+                setPreviewFullscreen((current) => !current)
+              }
+            />
           </div>
         </div>
       </div>
