@@ -199,11 +199,39 @@ export const videoSampleSchema = z.object({
   embedUrl: z.string().optional(),
 });
 
-export const imageSampleSchema = z.object({
-  id: z.string().min(1),
-  caption: z.string(),
-  imageUrl: z.string().min(1),
-});
+export const imageSourceSchema = z.enum(["url", "instagram", "linkedin"]);
+
+export const imageAspectRatioSchema = z.enum(["1:1", "4:5", "16:9", "9:16"]);
+
+export const imageSampleSchema = z
+  .object({
+    id: z.string().min(1),
+    caption: z.string(),
+    source: imageSourceSchema.default("url"),
+    aspectRatio: imageAspectRatioSchema.default("1:1"),
+    postUrl: z.string().optional(),
+    imageUrl: z.string().optional(),
+  })
+  .superRefine((value, ctx) => {
+    if (value.source === "url") {
+      if (!value.imageUrl?.trim()) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Add a hosted image URL or choose an image from R2.",
+          path: ["imageUrl"],
+        });
+      }
+      return;
+    }
+
+    if (!value.postUrl?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Add a public post URL.",
+        path: ["postUrl"],
+      });
+    }
+  });
 
 export const strategyBreakdownSchema = z.object({
   theChallenge: z.string(),
@@ -450,6 +478,8 @@ export type Metric = z.infer<typeof metricSchema>;
 export type VideoAspectRatio = z.infer<typeof videoAspectRatioSchema>;
 export type VideoSource = z.infer<typeof videoSourceSchema>;
 export type VideoSample = z.infer<typeof videoSampleSchema>;
+export type ImageSource = z.infer<typeof imageSourceSchema>;
+export type ImageAspectRatio = z.infer<typeof imageAspectRatioSchema>;
 export type ImageSample = z.infer<typeof imageSampleSchema>;
 export type StrategyBreakdown = z.infer<typeof strategyBreakdownSchema>;
 export type Campaign = z.infer<typeof campaignSchema>;

@@ -8,6 +8,7 @@ import {
   FileText,
   GripVertical,
   ImagePlus,
+  Images,
   Loader2,
   Plus,
   Trash2,
@@ -15,6 +16,13 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -252,6 +260,26 @@ export function ColorChoice({
   );
 }
 
+const imageAspectClasses = {
+  video: "aspect-video",
+  square: "aspect-square",
+  portrait: "aspect-[3/4]",
+  "1:1": "aspect-square",
+  "4:5": "aspect-[4/5]",
+  "16:9": "aspect-video",
+  "9:16": "aspect-[9/16]",
+} as const;
+
+export type ImageFieldAspect = keyof typeof imageAspectClasses;
+
+interface R2ImageAsset {
+  name: string;
+  key: string;
+  url: string;
+  size?: number;
+  lastModified?: string;
+}
+
 export function ImageField({
   label,
   hint,
@@ -263,22 +291,131 @@ export function ImageField({
   hint?: string;
   value: string;
   onChange: (value: string) => void;
-  aspect?: "video" | "square" | "portrait";
+  aspect?: ImageFieldAspect;
 }) {
   const [broken, setBroken] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [assets, setAssets] = useState<R2ImageAsset[]>([]);
+  const [loadingAssets, setLoadingAssets] = useState(false);
+  const [assetsError, setAssetsError] = useState<string | null>(null);
+  const [r2Configured, setR2Configured] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const previewClass =
-    aspect === "square"
-      ? "aspect-square"
-      : aspect === "portrait"
-        ? "aspect-[3/4]"
-        : "aspect-video";
 
-  function showUploadNotice() {
-    window.alert(
-      "R2 uploads are not configured yet. Paste a public Cloudflare R2 URL in the field above for now.",
-    );
+  async function uploadFile(file: File) {
+    if (!file.type.startsWith("image/")) {
+      setError("Choose an image file.");
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setError("Images must be 10 MB or smaller.");
+      return;
+    }
+
+    setUploading(true);
+    setError(null);
+    try {
+      const body = new FormData();
+      body.append("file", file);
+      const response = await fetch("/api/admin/images", {
+        method: "POST",
+        body,
+      });
+      const data = (await response.json().catch(() => ({}))) as {
+        asset?: R2ImageAsset;
+        error?: string;
+      };
+      if (!response.ok || !data.asset) {
+        setError(data.error ?? "Could not upload the image.");
+        return;
+      }
+      onChange(data.asset.url);
+      setBroken(false);
+      setAssets((current) => [
+        data.asset as R2ImageAsset,
+        ...current.filter((asset) => asset.url !== data.asset?.url),
+      ]);
+    } catch {
+      setError("Could not upload the image.");
+    } finally {
+      setUploading(false);
+    }
   }
+
+  async function openPicker() {
+    setPickerOpen(true);
+    setLoadingAssets(true);
+    setAssetsError(null);
+    try {
+      const response = await fetch("/api/admin/images", { cache: "no-store" });
+      const data = (await response.json().catch(() => ({}))) as {
+        files?: R2ImageAsset[];
+        configured?: boolean;
+        error?: string;
+      };
+      if (!response.ok) {
+        setAssetsError(
+          data.error ?? "Could not load images from Cloudflare R2.",
+        );
+        return;
+      }
+      setR2Configured(data.configured !== false);
+      setAssets(data.files ?? []);
+    } catch {
+      setAssetsError("Could not load images from Cloudflare R2.");
+    } finally {
+      setLoadingAssets(false);
+    }
+  }
+
+  async function remove() {
+    if (!value) return;
+    if (
+      !window.confirm(
+        "Remove this image? If it is stored in Cloudflare R2, the file will also be deleted.",
+      )
+    ) {
+      return;
+    }
+
+    const previous = value;
+    setDeleting(true);
+    setError(null);
+    onChange("");
+
+    try {
+      const response = await fetch("/api/admin/images", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: previous }),
+      });
+      if (!response.ok) {
+        const data = (await response.json().catch(() => ({}))) as {
+          error?: string;
+        };
+        setError(
+          data.error ??
+            "The image was removed from the content, but the file could not be deleted from R2.",
+        );
+      }
+    } catch {
+      setError(
+        "The image was removed from the content, but the file could not be deleted from R2.",
+      );
+    } finally {
+      setDeleting(false);
+    }
+  }
+
+  function handleFiles(fileList: FileList | null) {
+    const file = fileList?.[0];
+    if (file) void uploadFile(file);
+  }
+
+  const busy = uploading || deleting;
 
   return (
     <Field label={label} hint={hint}>
@@ -287,70 +424,222 @@ export function ImageField({
           value={value}
           onChange={(event) => {
             setBroken(false);
+            setError(null);
             onChange(event.target.value);
           }}
           placeholder="https://pub-….r2.dev/image.jpg"
           className="font-mono text-xs"
         />
+
         {value ? (
-          <div
-            className={cn(
-              "relative w-full max-w-xs overflow-hidden rounded-xl border border-border bg-secondary",
-              previewClass,
-            )}
-          >
-            {broken ? (
-              <div className="flex h-full items-center justify-center p-3 text-center text-[11px] text-muted-foreground">
-                Could not load this image. Check the URL.
+          <>
+            <div
+              className={cn(
+                "relative w-full max-w-xs overflow-hidden rounded-xl border border-border bg-secondary",
+                imageAspectClasses[aspect],
+              )}
+            >
+              {broken ? (
+                <div className="flex h-full items-center justify-center p-3 text-center text-[11px] text-muted-foreground">
+                  Could not load this image. Check the URL.
+                </div>
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={value}
+                  alt=""
+                  onError={() => setBroken(true)}
+                  className="h-full w-full object-cover"
+                />
+              )}
+            </div>
+            <div className="flex flex-wrap items-center gap-1.5">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={busy}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                {uploading ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <UploadCloud className="h-3.5 w-3.5" />
+                )}
+                Replace
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={busy}
+                onClick={openPicker}
+              >
+                <Images className="h-3.5 w-3.5" />
+                Choose from R2
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                disabled={busy}
+                onClick={remove}
+                className="text-muted-foreground hover:text-destructive"
+              >
+                {deleting ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Trash2 className="h-3.5 w-3.5" />
+                )}
+                Delete
+              </Button>
+            </div>
+          </>
+        ) : (
+          <>
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => fileInputRef.current?.click()}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  fileInputRef.current?.click();
+                }
+              }}
+              onDragOver={(event) => {
+                event.preventDefault();
+                setDragging(true);
+              }}
+              onDragLeave={(event) => {
+                if (
+                  !event.currentTarget.contains(
+                    event.relatedTarget as Node | null,
+                  )
+                ) {
+                  setDragging(false);
+                }
+              }}
+              onDrop={(event) => {
+                event.preventDefault();
+                setDragging(false);
+                handleFiles(event.dataTransfer.files);
+              }}
+              className={cn(
+                "flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed bg-secondary/40 px-4 py-6 text-center transition-colors",
+                dragging
+                  ? "border-primary bg-primary/5"
+                  : "border-border hover:border-primary/40",
+              )}
+            >
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-card text-muted-foreground shadow-sm">
+                {uploading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <UploadCloud className="h-4 w-4" />
+                )}
+              </span>
+              <p className="text-xs font-medium">
+                {uploading
+                  ? "Uploading…"
+                  : "Drop an image here, or click to upload"}
+              </p>
+              <p className="text-[11px] leading-relaxed text-muted-foreground">
+                Uploads are stored in Cloudflare R2. You can also choose an
+                existing R2 image.
+              </p>
+            </div>
+            <div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={busy}
+                onClick={openPicker}
+              >
+                <Images className="h-3.5 w-3.5" />
+                Choose from R2
+              </Button>
+            </div>
+          </>
+        )}
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/avif,image/gif,image/jpeg,image/png,image/webp"
+          className="hidden"
+          onChange={(event) => {
+            handleFiles(event.target.files);
+            event.target.value = "";
+          }}
+        />
+
+        {error ? (
+          <p className="text-[11px] leading-relaxed text-destructive">{error}</p>
+        ) : null}
+
+        <Dialog open={pickerOpen} onOpenChange={setPickerOpen}>
+          <DialogContent className="max-h-[85vh] max-w-2xl overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Choose an image from Cloudflare R2</DialogTitle>
+              <DialogDescription>
+                Pick an image to use here, or upload a new one from the field.
+              </DialogDescription>
+            </DialogHeader>
+
+            {loadingAssets ? (
+              <p className="flex items-center gap-2 py-6 text-xs text-muted-foreground">
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                Loading images…
+              </p>
+            ) : !r2Configured ? (
+              <p className="rounded-xl border border-border bg-secondary/40 p-4 text-xs leading-relaxed text-muted-foreground">
+                Cloudflare R2 is not configured yet. Add{" "}
+                <code>R2_ACCOUNT_ID</code>, <code>R2_ACCESS_KEY_ID</code>,{" "}
+                <code>R2_SECRET_ACCESS_KEY</code>, <code>R2_BUCKET</code>, and{" "}
+                <code>R2_PUBLIC_URL</code> to enable uploads and the R2 picker.
+              </p>
+            ) : assetsError ? (
+              <p className="rounded-xl border border-border bg-secondary/40 p-4 text-xs leading-relaxed text-destructive">
+                {assetsError}
+              </p>
+            ) : assets.length ? (
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {assets.map((asset) => (
+                  <button
+                    key={asset.key}
+                    type="button"
+                    onClick={() => {
+                      onChange(asset.url);
+                      setBroken(false);
+                      setPickerOpen(false);
+                    }}
+                    className="group overflow-hidden rounded-xl border border-border bg-secondary/40 text-left transition-colors hover:border-primary/50"
+                  >
+                    <span className="relative block aspect-square overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={asset.url}
+                        alt={asset.name}
+                        loading="lazy"
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    </span>
+                    <span className="block truncate px-2 py-1.5 text-[11px] text-muted-foreground">
+                      {asset.name}
+                    </span>
+                  </button>
+                ))}
               </div>
             ) : (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={value}
-                alt=""
-                onError={() => setBroken(true)}
-                className="h-full w-full object-cover"
-              />
+              <p className="rounded-xl border border-border bg-secondary/40 p-4 text-xs leading-relaxed text-muted-foreground">
+                No images found in R2 yet. Upload one from the image field and it
+                will appear here.
+              </p>
             )}
-          </div>
-        ) : (
-          <div
-            role="button"
-            tabIndex={0}
-            onClick={() => fileInputRef.current?.click()}
-            onKeyDown={(event) => {
-              if (event.key === "Enter" || event.key === " ") {
-                event.preventDefault();
-                fileInputRef.current?.click();
-              }
-            }}
-            onDragOver={(event) => event.preventDefault()}
-            onDrop={(event) => {
-              event.preventDefault();
-              showUploadNotice();
-            }}
-            className="flex max-w-xs cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border bg-secondary/40 px-4 py-6 text-center transition-colors hover:border-primary/40"
-          >
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*,video/*"
-              className="hidden"
-              onChange={(event) => {
-                if (event.target.files?.length) showUploadNotice();
-                event.target.value = "";
-              }}
-            />
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-card text-muted-foreground shadow-sm">
-              <UploadCloud className="h-4 w-4" />
-            </span>
-            <p className="text-xs font-medium">Drop an image or video here</p>
-            <p className="text-[11px] leading-relaxed text-muted-foreground">
-              R2 uploads are coming soon. For now, paste a public Cloudflare R2
-              URL above.
-            </p>
-          </div>
-        )}
+          </DialogContent>
+        </Dialog>
       </div>
     </Field>
   );
@@ -1049,7 +1338,7 @@ export function ImageHint() {
   return (
     <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
       <ImagePlus className="h-3 w-3" />
-      Paste a public URL. R2 uploads will be added later.
+      Paste a public URL, upload an image, or choose one from Cloudflare R2.
     </p>
   );
 }

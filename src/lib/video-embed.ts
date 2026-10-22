@@ -61,16 +61,20 @@ export function getVideoEmbedUrl(video: {
   return null;
 }
 
+export function getSocialThumbnailUrl(
+  source: "instagram" | "linkedin",
+  postUrl?: string,
+): string | null {
+  if (!postUrl) return null;
+
+  const params = new URLSearchParams({ source, url: postUrl });
+  return `/api/video-thumbnail?${params.toString()}`;
+}
+
 export function getVideoThumbnailUrl(video: {
   source: VideoSource;
   postUrl?: string;
 }): string | null {
-  if (!video.postUrl) return null;
   if (video.source !== "instagram" && video.source !== "linkedin") return null;
-
-  const params = new URLSearchParams({
-    source: video.source,
-    url: video.postUrl,
-  });
-  return `/api/video-thumbnail?${params.toString()}`;
+  return getSocialThumbnailUrl(video.source, video.postUrl);
 }

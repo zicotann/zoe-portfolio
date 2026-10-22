@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
+import { ImageSampleCard } from "@/components/image-sample-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { NumberTicker } from "@/components/magicui/number-ticker";
@@ -158,20 +159,12 @@ export default function CaseStudyPage({
             </h2>
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
               {campaign.imageSamples.map((image) => (
-                <figure key={image.id} className="space-y-2">
-                  <div className="relative aspect-square overflow-hidden rounded-2xl border border-border">
-                    <Image
-                      src={image.imageUrl}
-                      alt={image.caption}
-                      fill
-                      sizes="(max-width: 768px) 45vw, 30vw"
-                      className="object-cover"
-                    />
-                  </div>
-                  <figcaption className="text-xs text-muted-foreground">
-                    {image.caption}
-                  </figcaption>
-                </figure>
+                <ImageSampleCard
+                  key={image.id}
+                  image={image}
+                  sizes="(max-width: 768px) 45vw, 30vw"
+                  className="rounded-2xl"
+                />
               ))}
             </div>
           </section>
