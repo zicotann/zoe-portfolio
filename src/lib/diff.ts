@@ -3,9 +3,9 @@ import type { SiteContent } from "@/content/schema";
 const labels: Record<string, string> = {
   profile: "Profile & identity",
   socials: "Social links",
-  navigation: "Navigation",
+  navigation: "Header",
   seo: "SEO",
-  categories: "Campaign categories",
+  categories: "Campaign Categories",
   "sections.hero": "Hero",
   "sections.metrics": "Metrics",
   "sections.clients": "Clients",

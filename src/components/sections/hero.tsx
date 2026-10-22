@@ -5,11 +5,32 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { BrandIcon } from "@/components/brand-icons";
 import { ShimmerButton } from "@/components/magicui/shimmer-button";
-import type { SiteContent } from "@/content/schema";
+import type { AvailabilityColor, SiteContent } from "@/content/schema";
+import { cn } from "@/lib/utils";
+
+const availabilityStyles: Record<
+  AvailabilityColor,
+  { badge: string; dot: string }
+> = {
+  green: {
+    badge: "bg-emerald-500/15 text-emerald-600",
+    dot: "bg-emerald-500",
+  },
+  yellow: {
+    badge: "bg-amber-400/20 text-amber-600",
+    dot: "bg-amber-400",
+  },
+  red: {
+    badge: "bg-red-500/15 text-red-600",
+    dot: "bg-red-500",
+  },
+};
 
 export function Hero({ content }: { content: SiteContent }) {
   const { profile, socials, sections } = content;
   const hero = sections.hero;
+  const availability = profile.availability.trim();
+  const availabilityStyle = availabilityStyles[profile.availabilityColor];
 
   return (
     <section
@@ -30,13 +51,28 @@ export function Hero({ content }: { content: SiteContent }) {
         <div className="grid items-center lg:grid-cols-[1.35fr_0.65fr]">
           <div className="animate-fade-up space-y-8">
             <div className="flex flex-wrap items-center gap-3">
-              {profile.available ? (
-                <Badge className="gap-2 border-transparent bg-brand-coral/20 py-1.5 text-brand-coral">
+              {availability ? (
+                <Badge
+                  className={cn(
+                    "gap-2 border-transparent py-1.5",
+                    availabilityStyle.badge,
+                  )}
+                >
                   <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-coral opacity-75" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-brand-coral" />
+                    <span
+                      className={cn(
+                        "absolute inline-flex h-full w-full animate-ping rounded-full opacity-75",
+                        availabilityStyle.dot,
+                      )}
+                    />
+                    <span
+                      className={cn(
+                        "relative inline-flex h-2 w-2 rounded-full",
+                        availabilityStyle.dot,
+                      )}
+                    />
                   </span>
-                  {profile.availabilityLabel}
+                  {availability}
                 </Badge>
               ) : null}
               <span className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground">

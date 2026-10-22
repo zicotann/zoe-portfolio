@@ -1,10 +1,8 @@
 "use client";
 
 import {
-  BookOpen,
   Briefcase,
-  ChevronRight,
-  Contact,
+  ExternalLink,
   Film,
   FolderKanban,
   Globe2,
@@ -12,23 +10,20 @@ import {
   LayoutGrid,
   LogOut,
   MessageSquareQuote,
-  Navigation as NavigationIcon,
-  Search,
-  Share2,
-  Tags,
-  UserRound,
+  Phone,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { VIEW_LABELS, type AdminView } from "./types";
 
-const singletonViews: AdminView[] = [
+const globalViews: AdminView[] = [
   "profile",
-  "navigation",
   "socials",
-  "contact-details",
+  "navigation",
+  "footer",
   "seo",
+  "categories",
 ];
 
 const contentViews: AdminView[] = [
@@ -36,30 +31,21 @@ const contentViews: AdminView[] = [
   "metrics",
   "clients",
   "campaigns",
-  "categories",
   "experience",
   "reels",
   "testimonials",
   "contact",
-  "footer",
 ];
 
-const icons: Record<AdminView, React.ReactNode> = {
-  profile: <UserRound className="h-4 w-4" />,
-  navigation: <NavigationIcon className="h-4 w-4" />,
-  socials: <Share2 className="h-4 w-4" />,
-  "contact-details": <Contact className="h-4 w-4" />,
-  seo: <Search className="h-4 w-4" />,
+const icons: Partial<Record<AdminView, React.ReactNode>> = {
   hero: <Home className="h-4 w-4" />,
   metrics: <LayoutGrid className="h-4 w-4" />,
   clients: <Globe2 className="h-4 w-4" />,
   campaigns: <FolderKanban className="h-4 w-4" />,
-  categories: <Tags className="h-4 w-4" />,
   experience: <Briefcase className="h-4 w-4" />,
   reels: <Film className="h-4 w-4" />,
   testimonials: <MessageSquareQuote className="h-4 w-4" />,
-  contact: <BookOpen className="h-4 w-4" />,
-  footer: <ChevronRight className="h-4 w-4" />,
+  contact: <Phone className="h-4 w-4" />,
 };
 
 export function AdminSidebar({
@@ -86,10 +72,11 @@ export function AdminSidebar({
 
       <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-5">
         <SidebarGroup
-          label="Singletons"
-          views={singletonViews}
+          label="Global"
+          views={globalViews}
           active={view}
           onSelect={onSelect}
+          showIcons={false}
         />
         <SidebarGroup
           label="Content"
@@ -104,6 +91,7 @@ export function AdminSidebar({
           <a href="/" target="_blank" rel="noopener noreferrer">
             <Globe2 className="h-4 w-4" />
             View live site
+            <ExternalLink className="ml-auto h-3.5 w-3.5 opacity-60" />
           </a>
         </Button>
         <Button
@@ -126,11 +114,13 @@ function SidebarGroup({
   views,
   active,
   onSelect,
+  showIcons = true,
 }: {
   label: string;
   views: AdminView[];
   active: AdminView;
   onSelect: (view: AdminView) => void;
+  showIcons?: boolean;
 }) {
   return (
     <div className="space-y-1">
@@ -149,7 +139,7 @@ function SidebarGroup({
               : "text-muted-foreground hover:bg-secondary hover:text-foreground",
           )}
         >
-          {icons[view]}
+          {showIcons ? icons[view] : null}
           <span className="truncate">{VIEW_LABELS[view]}</span>
         </button>
       ))}

@@ -1,9 +1,20 @@
 "use client";
 
-import { ArrayEditor, Field, ImageField, SectionCard, Select, TextArea, TextInput, Toggle } from "@/components/admin/fields";
+import { BrandIcon } from "@/components/brand-icons";
+import {
+  ArrayEditor,
+  Field,
+  ImageField,
+  PdfField,
+  SectionCard,
+  Select,
+  TextArea,
+  TextInput,
+} from "@/components/admin/fields";
 import type { AdminViewProps } from "@/components/admin/types";
-import type { NavLink, SocialLink } from "@/content/schema";
+import type { NavLink, SocialLink, SocialPlatform } from "@/content/schema";
 import { newId } from "@/lib/id";
+import { cn } from "@/lib/utils";
 
 const navIconOptions = [
   { value: "work", label: "Work" },
@@ -16,13 +27,75 @@ const navIconOptions = [
   { value: "link", label: "Link" },
 ];
 
-const socialPlatformOptions = [
+const socialIconOptions: Array<{ value: SocialPlatform; label: string }> = [
   { value: "instagram", label: "Instagram" },
   { value: "tiktok", label: "TikTok" },
   { value: "linkedin", label: "LinkedIn" },
   { value: "youtube", label: "YouTube" },
+  { value: "x", label: "X" },
+  { value: "facebook", label: "Facebook" },
+  { value: "threads", label: "Threads" },
+  { value: "pinterest", label: "Pinterest" },
+  { value: "snapchat", label: "Snapchat" },
+  { value: "twitch", label: "Twitch" },
+  { value: "whatsapp", label: "WhatsApp" },
+  { value: "telegram", label: "Telegram" },
+  { value: "discord", label: "Discord" },
+  { value: "spotify", label: "Spotify" },
+  { value: "soundcloud", label: "SoundCloud" },
+  { value: "reddit", label: "Reddit" },
+  { value: "tumblr", label: "Tumblr" },
+  { value: "vimeo", label: "Vimeo" },
+  { value: "behance", label: "Behance" },
+  { value: "dribbble", label: "Dribbble" },
+  { value: "github", label: "GitHub" },
+  { value: "medium", label: "Medium" },
+  { value: "substack", label: "Substack" },
+  { value: "bluesky", label: "Bluesky" },
+  { value: "mastodon", label: "Mastodon" },
+  { value: "linktree", label: "Linktree" },
+  { value: "signal", label: "Signal" },
+  { value: "viber", label: "Viber" },
   { value: "email", label: "Email" },
+  { value: "phone", label: "Phone" },
+  { value: "link", label: "Link" },
 ];
+
+function SocialIconPicker({
+  value,
+  onChange,
+}: {
+  value: SocialPlatform;
+  onChange: (value: SocialPlatform) => void;
+}) {
+  return (
+    <Field
+      label="Icon"
+      hint="Pick the icon shown with this link in the hero, contact section, and footer."
+    >
+      <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
+        {socialIconOptions.map((option) => (
+          <button
+            key={option.value}
+            type="button"
+            onClick={() => onChange(option.value)}
+            aria-pressed={value === option.value}
+            title={option.label}
+            className={cn(
+              "flex flex-col items-center gap-1.5 rounded-xl border px-2 py-2.5 text-[10px] font-medium transition-colors",
+              value === option.value
+                ? "border-primary bg-primary/5 text-foreground"
+                : "border-border bg-background/60 text-muted-foreground hover:border-primary/40 hover:text-foreground",
+            )}
+          >
+            <BrandIcon platform={option.value} className="h-5 w-5" />
+            <span className="w-full truncate text-center">{option.label}</span>
+          </button>
+        ))}
+      </div>
+    </Field>
+  );
+}
 
 export function ProfileView({ content, onChange }: AdminViewProps) {
   const profile = content.profile;
@@ -33,7 +106,7 @@ export function ProfileView({ content, onChange }: AdminViewProps) {
     <div className="space-y-5">
       <SectionCard
         title="Profile & identity"
-        description="These fields are used across the hero, header, footer, metadata, and contact section."
+        description="Global details used across the header, footer, metadata, contact section, and résumé download. Hero copy and the portrait are edited in the Hero section."
       >
         <div className="grid gap-4 sm:grid-cols-2">
           <TextInput
@@ -47,41 +120,14 @@ export function ProfileView({ content, onChange }: AdminViewProps) {
             onChange={(firstName) => patch({ firstName })}
           />
           <TextInput
-            label="Role"
-            value={profile.role}
-            onChange={(role) => patch({ role })}
+            label="Email"
+            value={profile.email}
+            onChange={(email) => patch({ email })}
           />
           <TextInput
-            label="Availability label"
-            value={profile.availabilityLabel}
-            onChange={(availabilityLabel) => patch({ availabilityLabel })}
-          />
-          <TextInput
-            label="Headline — lead"
-            hint="The plain part of the hero headline."
-            value={profile.headlineLead}
-            onChange={(headlineLead) => patch({ headlineLead })}
-          />
-          <TextInput
-            label="Headline — gradient accent"
-            hint="Rendered after an “&” with the gradient treatment."
-            value={profile.headlineAccent}
-            onChange={(headlineAccent) => patch({ headlineAccent })}
-          />
-        </div>
-        <div className="mt-4">
-          <TextArea
-            label="Subheadline"
-            value={profile.subheadline}
-            onChange={(subheadline) => patch({ subheadline })}
-            rows={3}
-          />
-        </div>
-        <div className="mt-4 grid gap-4 sm:grid-cols-2">
-          <Toggle
-            label="Available for projects"
-            checked={profile.available}
-            onChange={(available) => patch({ available })}
+            label="Booking URL"
+            value={profile.calendlyUrl}
+            onChange={(calendlyUrl) => patch({ calendlyUrl })}
           />
           <TextInput
             label="Location"
@@ -93,29 +139,13 @@ export function ProfileView({ content, onChange }: AdminViewProps) {
             value={profile.timezone}
             onChange={(timezone) => patch({ timezone })}
           />
-          <TextInput
-            label="Email"
-            value={profile.email}
-            onChange={(email) => patch({ email })}
-          />
-          <TextInput
-            label="Booking URL"
-            value={profile.calendlyUrl}
-            onChange={(calendlyUrl) => patch({ calendlyUrl })}
-          />
-          <TextInput
-            label="Résumé URL"
+        </div>
+        <div className="mt-6">
+          <PdfField
+            label="Resume"
+            hint="Upload a PDF or pick one that already exists in the codebase. Leave empty to hide the résumé download."
             value={profile.resumeUrl}
             onChange={(resumeUrl) => patch({ resumeUrl })}
-            mono
-          />
-        </div>
-        <div className="mt-4">
-          <ImageField
-            label="Portrait image"
-            value={profile.portraitImage}
-            onChange={(portraitImage) => patch({ portraitImage })}
-            aspect="portrait"
           />
         </div>
       </SectionCard>
@@ -128,7 +158,7 @@ export function NavigationView({ content, onChange }: AdminViewProps) {
 
   return (
     <SectionCard
-      title="Navigation"
+      title="Header"
       description="Controls the desktop nav, mobile dock, and booking call-to-action."
     >
       <div className="grid gap-4 sm:grid-cols-2">
@@ -215,14 +245,12 @@ export function SocialsView({ content, onChange }: AdminViewProps) {
       >
         {(social, update) => (
           <div className="grid gap-4 sm:grid-cols-2">
-            <Select
-              label="Platform"
-              value={social.platform}
-              onChange={(platform) =>
-                update({ platform: platform as typeof social.platform })
-              }
-              options={socialPlatformOptions}
-            />
+            <div className="sm:col-span-2">
+              <SocialIconPicker
+                value={social.platform}
+                onChange={(platform) => update({ platform })}
+              />
+            </div>
             <TextInput
               label="Label"
               value={social.label}
@@ -233,57 +261,17 @@ export function SocialsView({ content, onChange }: AdminViewProps) {
               value={social.handle}
               onChange={(handle) => update({ handle })}
             />
-            <TextInput
-              label="URL"
-              value={social.href}
-              onChange={(href) => update({ href })}
-              mono
-            />
+            <div className="sm:col-span-2">
+              <TextInput
+                label="URL"
+                value={social.href}
+                onChange={(href) => update({ href })}
+                mono
+              />
+            </div>
           </div>
         )}
       </ArrayEditor>
-    </SectionCard>
-  );
-}
-
-export function ContactDetailsView({ content, onChange }: AdminViewProps) {
-  const profile = content.profile;
-  const patch = (value: Partial<typeof profile>) =>
-    onChange({ ...content, profile: { ...profile, ...value } });
-
-  return (
-    <SectionCard
-      title="Contact & booking"
-      description="Global contact details used by the contact section, booking buttons, and résumé download."
-    >
-      <div className="grid gap-4 sm:grid-cols-2">
-        <TextInput
-          label="Email address"
-          value={profile.email}
-          onChange={(email) => patch({ email })}
-        />
-        <TextInput
-          label="Booking URL"
-          value={profile.calendlyUrl}
-          onChange={(calendlyUrl) => patch({ calendlyUrl })}
-        />
-        <TextInput
-          label="Location"
-          value={profile.location}
-          onChange={(location) => patch({ location })}
-        />
-        <TextInput
-          label="Timezone"
-          value={profile.timezone}
-          onChange={(timezone) => patch({ timezone })}
-        />
-        <TextInput
-          label="Résumé URL"
-          value={profile.resumeUrl}
-          onChange={(resumeUrl) => patch({ resumeUrl })}
-          mono
-        />
-      </div>
     </SectionCard>
   );
 }

@@ -30,7 +30,6 @@ import {
 } from "@/components/admin/views/content-sections";
 import { CampaignsView, CategoriesView } from "@/components/admin/views/campaigns";
 import {
-  ContactDetailsView,
   NavigationView,
   ProfileView,
   SeoView,
@@ -77,6 +76,7 @@ export function AdminDashboard({
     () => getChangedAreas(baseline, draft),
     [baseline, draft],
   );
+  const showPreview = view !== "profile" && view !== "seo";
 
   useEffect(() => {
     const stored = loadDraft();
@@ -152,6 +152,10 @@ export function AdminDashboard({
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [previewFullscreen]);
+
+  useEffect(() => {
+    if (!showPreview) setPreviewFullscreen(false);
+  }, [showPreview]);
 
   function handleContentChange(next: SiteContent) {
     editedRef.current = true;
@@ -323,9 +327,19 @@ export function AdminDashboard({
           onOpenSidebar={() => setSidebarOpen(true)}
         />
 
-        <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
-          {!previewFullscreen ? (
-            <div className="order-2 min-h-0 flex-1 overflow-y-auto lg:order-1">
+        <div
+          className={cn(
+            "flex min-h-0 flex-1 flex-col",
+            showPreview && "lg:flex-row",
+          )}
+        >
+          {!previewFullscreen || !showPreview ? (
+            <div
+              className={cn(
+                "order-2 min-h-0 flex-1 overflow-y-auto",
+                showPreview && "lg:order-1",
+              )}
+            >
               <div className="mx-auto w-full max-w-4xl space-y-4 px-4 py-6 sm:px-6">
                 {loading ? (
                   <p className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -404,24 +418,26 @@ export function AdminDashboard({
             </div>
           ) : null}
 
-          <div
-            className={cn(
-              "order-1 flex min-h-0 flex-col overflow-hidden bg-secondary/20",
-              "border-b border-border lg:order-2 lg:border-b-0 lg:border-l",
-              previewFullscreen
-                ? "flex-1"
-                : "h-[38vh] min-h-[280px] shrink-0 lg:h-auto lg:w-[46%] xl:w-[50%]",
-            )}
-          >
-            <PreviewPanel
-              content={draft}
-              view={view}
-              fullscreen={previewFullscreen}
-              onToggleFullscreen={() =>
-                setPreviewFullscreen((current) => !current)
-              }
-            />
-          </div>
+          {showPreview ? (
+            <div
+              className={cn(
+                "order-1 flex min-h-0 flex-col overflow-hidden bg-secondary/20",
+                "border-b border-border lg:order-2 lg:border-b-0 lg:border-l",
+                previewFullscreen
+                  ? "flex-1"
+                  : "h-[38vh] min-h-[280px] shrink-0 lg:h-auto lg:w-[46%] xl:w-[50%]",
+              )}
+            >
+              <PreviewPanel
+                content={draft}
+                view={view}
+                fullscreen={previewFullscreen}
+                onToggleFullscreen={() =>
+                  setPreviewFullscreen((current) => !current)
+                }
+              />
+            </div>
+          ) : null}
         </div>
       </div>
 
@@ -503,8 +519,6 @@ function ViewRenderer({
       return <NavigationView {...props} />;
     case "socials":
       return <SocialsView {...props} />;
-    case "contact-details":
-      return <ContactDetailsView {...props} />;
     case "seo":
       return <SeoView {...props} />;
     case "hero":

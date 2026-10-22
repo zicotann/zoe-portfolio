@@ -40,17 +40,19 @@ export function Experience({ content }: { content: SiteContent }) {
               ))}
             </div>
 
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              className="w-full sm:w-auto"
-            >
-              <a href={profile.resumeUrl} download>
-                <Download className="h-4 w-4" />
-                {experience.resumeLabel}
-              </a>
-            </Button>
+            {profile.resumeUrl ? (
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="w-full sm:w-auto"
+              >
+                <a href={profile.resumeUrl} download>
+                  <Download className="h-4 w-4" />
+                  {experience.resumeLabel}
+                </a>
+              </Button>
+            ) : null}
           </Reveal>
 
           <ol className="relative space-y-8 border-l-2 border-dashed border-border pl-6">

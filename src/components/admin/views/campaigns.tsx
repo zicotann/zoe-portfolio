@@ -5,6 +5,7 @@ import {
   ImageField,
   NumberInput,
   SectionCard,
+  SectionVisibility,
   Select,
   StringListEditor,
   TextArea,
@@ -19,6 +20,7 @@ import type {
   ImageSample,
   Metric,
   VideoSample,
+  VideoSource,
 } from "@/content/schema";
 import { newId, slugify } from "@/lib/id";
 
@@ -26,6 +28,12 @@ const aspectRatioOptions = [
   { value: "9:16", label: "9:16 — vertical" },
   { value: "16:9", label: "16:9 — landscape" },
   { value: "1:1", label: "1:1 — square" },
+];
+
+const videoSourceOptions = [
+  { value: "instagram", label: "Instagram post" },
+  { value: "linkedin", label: "LinkedIn post" },
+  { value: "url", label: "Hosted video URL" },
 ];
 
 export function CampaignsView({ content, onChange }: AdminViewProps) {
@@ -77,6 +85,10 @@ export function CampaignsView({ content, onChange }: AdminViewProps) {
 
   return (
     <div className="space-y-5">
+      <SectionVisibility
+        checked={campaignsContent.visible}
+        onChange={(visible) => patch({ visible })}
+      />
       <SectionCard
         title="Campaign grid copy"
         description="Section headings, filter labels, and card labels."
@@ -410,7 +422,7 @@ export function CampaignsView({ content, onChange }: AdminViewProps) {
                     id: newId("video"),
                     title: "New video",
                     aspectRatio: "9:16",
-                    thumbnail: "",
+                    source: "instagram",
                   })}
                   itemLabel={(video) => video.title}
                   addLabel="Add video sample"
@@ -434,26 +446,38 @@ export function CampaignsView({ content, onChange }: AdminViewProps) {
                         }
                         options={aspectRatioOptions}
                       />
-                      <ImageField
-                        label="Thumbnail"
-                        value={video.thumbnail}
-                        onChange={(thumbnail) => updateVideo({ thumbnail })}
-                        aspect="portrait"
+                      {/* TODO: Add playback for hosted video URLs. */}
+                      <Select
+                        label="Video source"
+                        hint="Instagram and LinkedIn posts supply their own thumbnail and open in an embedded player. Hosted videos use their first frame; playback is coming later."
+                        value={video.source ?? "url"}
+                        onChange={(source) =>
+                          updateVideo({ source: source as VideoSource })
+                        }
+                        options={videoSourceOptions}
                       />
-                      <div className="grid gap-4 sm:grid-cols-2">
+                      {video.source === "instagram" ||
+                      video.source === "linkedin" ? (
                         <TextInput
-                          label="Video URL (optional)"
+                          label={
+                            video.source === "instagram"
+                              ? "Instagram post URL"
+                              : "LinkedIn post URL"
+                          }
+                          hint="Paste the public post or reel URL. It opens in an embedded player on the site."
+                          value={video.postUrl ?? ""}
+                          onChange={(postUrl) => updateVideo({ postUrl })}
+                          mono
+                        />
+                      ) : (
+                        <TextInput
+                          label="Video URL"
+                          hint="Direct link to a hosted video file. Playback will be integrated later."
                           value={video.videoUrl ?? ""}
                           onChange={(videoUrl) => updateVideo({ videoUrl })}
                           mono
                         />
-                        <TextInput
-                          label="Embed URL (optional)"
-                          value={video.embedUrl ?? ""}
-                          onChange={(embedUrl) => updateVideo({ embedUrl })}
-                          mono
-                        />
-                      </div>
+                      )}
                     </div>
                   )}
                 </ArrayEditor>
@@ -510,7 +534,7 @@ export function CategoriesView({ content, onChange }: AdminViewProps) {
   return (
     <div className="space-y-5">
       <SectionCard
-        title="Campaign categories"
+        title="Campaign Categories"
         description="Campaigns choose a category from a dropdown. Category names also appear on filter chips and case-study badges."
       >
         <ArrayEditor<CampaignCategory>

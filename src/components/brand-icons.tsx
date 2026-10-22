@@ -1,5 +1,33 @@
-import { siInstagram, siTiktok, siYoutube } from "simple-icons";
-import { Mail } from "lucide-react";
+import {
+  siBehance,
+  siBluesky,
+  siDiscord,
+  siDribbble,
+  siFacebook,
+  siGithub,
+  siInstagram,
+  siLinktree,
+  siMastodon,
+  siMedium,
+  siPinterest,
+  siReddit,
+  siSignal,
+  siSnapchat,
+  siSoundcloud,
+  siSpotify,
+  siSubstack,
+  siTelegram,
+  siThreads,
+  siTiktok,
+  siTumblr,
+  siTwitch,
+  siViber,
+  siVimeo,
+  siWhatsapp,
+  siX,
+  siYoutube,
+} from "simple-icons";
+import { Link2, Mail, Phone } from "lucide-react";
 
 import type { SocialPlatform } from "@/content/schema";
 import { cn } from "@/lib/utils";
@@ -8,6 +36,30 @@ const simpleIcons = {
   instagram: siInstagram,
   tiktok: siTiktok,
   youtube: siYoutube,
+  x: siX,
+  facebook: siFacebook,
+  threads: siThreads,
+  pinterest: siPinterest,
+  snapchat: siSnapchat,
+  twitch: siTwitch,
+  whatsapp: siWhatsapp,
+  telegram: siTelegram,
+  discord: siDiscord,
+  spotify: siSpotify,
+  soundcloud: siSoundcloud,
+  reddit: siReddit,
+  tumblr: siTumblr,
+  vimeo: siVimeo,
+  behance: siBehance,
+  dribbble: siDribbble,
+  github: siGithub,
+  medium: siMedium,
+  substack: siSubstack,
+  bluesky: siBluesky,
+  mastodon: siMastodon,
+  linktree: siLinktree,
+  signal: siSignal,
+  viber: siViber,
 } as const;
 
 // LinkedIn was removed from simple-icons for trademark reasons.
@@ -40,7 +92,19 @@ export function BrandIcon({ platform, className }: BrandIconProps) {
     return <Mail className={classes} aria-hidden />;
   }
 
-  const icon = simpleIcons[platform];
+  if (platform === "phone") {
+    return <Phone className={classes} aria-hidden />;
+  }
+
+  if (platform === "link") {
+    return <Link2 className={classes} aria-hidden />;
+  }
+
+  const icon = simpleIcons[platform as keyof typeof simpleIcons];
+
+  if (!icon) {
+    return <Link2 className={classes} aria-hidden />;
+  }
 
   return (
     <svg
