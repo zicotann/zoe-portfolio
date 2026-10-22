@@ -56,16 +56,16 @@
   "navigation": {
     "links": [
       {
-        "id": "nav_work",
-        "label": "Work",
-        "href": "#work",
-        "icon": "work"
-      },
-      {
         "id": "nav_metrics",
         "label": "Metrics",
         "href": "#metrics",
         "icon": "metrics"
+      },
+      {
+        "id": "nav_work",
+        "label": "Work",
+        "href": "#work",
+        "icon": "work"
       },
       {
         "id": "nav_experience",
@@ -835,7 +835,7 @@
       "limit": 8
     },
     "testimonials": {
-      "visible": true,
+      "visible": false,
       "eyebrow": "Social proof",
       "heading": "What founders and marketing leads say.",
       "testimonials": [
