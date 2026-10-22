@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Bricolage_Grotesque } from "next/font/google";
 
-import { profile } from "@/data/profile";
+import { siteContent } from "@/content/site";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -25,20 +25,27 @@ const bricolageGrotesque = Bricolage_Grotesque({
   display: "swap",
 });
 
+const seoTitle = siteContent.seo.titleTemplate
+  .replace("{name}", siteContent.profile.name)
+  .replace("{role}", siteContent.profile.role);
+
 export const metadata: Metadata = {
-  title: `${profile.name} — ${profile.role}`,
-  description: profile.subheadline,
-  metadataBase: new URL("https://zoealvarez.co"),
+  title: seoTitle,
+  description: siteContent.seo.description,
+  metadataBase: new URL(siteContent.seo.siteUrl),
   openGraph: {
-    title: `${profile.name} — ${profile.role}`,
-    description: profile.subheadline,
+    title: seoTitle,
+    description: siteContent.seo.description,
     type: "website",
     locale: "en_US",
+    ...(siteContent.seo.ogImage
+      ? { images: [siteContent.seo.ogImage] }
+      : {}),
   },
   twitter: {
     card: "summary_large_image",
-    title: `${profile.name} — ${profile.role}`,
-    description: profile.subheadline,
+    title: seoTitle,
+    description: siteContent.seo.description,
   },
 };
 

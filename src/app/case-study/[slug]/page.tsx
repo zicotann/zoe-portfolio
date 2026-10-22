@@ -7,13 +7,18 @@ import { ArrowLeft, ArrowRight, Play } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { NumberTicker } from "@/components/magicui/number-ticker";
-import { campaigns, getCampaignBySlug, type VideoSample } from "@/data/campaigns";
+import { getCampaignBySlug, getCategoryName } from "@/content/helpers";
+import type { VideoSample } from "@/content/schema";
+import { siteContent } from "@/content/site";
 
 const aspectClass: Record<VideoSample["aspectRatio"], string> = {
   "9:16": "aspect-[9/16]",
   "16:9": "aspect-video",
   "1:1": "aspect-square",
 };
+
+const campaigns = siteContent.sections.campaigns.campaigns;
+const copy = siteContent.sections.campaigns.caseStudy;
 
 export function generateStaticParams() {
   return campaigns.map((campaign) => ({ slug: campaign.slug }));
@@ -24,14 +29,14 @@ export function generateMetadata({
 }: {
   params: { slug: string };
 }): Metadata {
-  const campaign = getCampaignBySlug(params.slug);
+  const campaign = getCampaignBySlug(campaigns, params.slug);
 
   if (!campaign) {
     return { title: "Case study not found" };
   }
 
   return {
-    title: `${campaign.clientName} — Case Study`,
+    title: `${campaign.clientName} — ${copy.pageTitleSuffix}`,
     description: campaign.summary,
   };
 }
@@ -41,16 +46,16 @@ export default function CaseStudyPage({
 }: {
   params: { slug: string };
 }) {
-  const campaign = getCampaignBySlug(params.slug);
+  const campaign = getCampaignBySlug(campaigns, params.slug);
 
   if (!campaign) {
     notFound();
   }
 
   const blocks = [
-    { heading: "The Challenge", body: campaign.fullStrategyBreakdown.theChallenge },
-    { heading: "The Strategy", body: campaign.fullStrategyBreakdown.theStrategy },
-    { heading: "The Results", body: campaign.fullStrategyBreakdown.theResults },
+    { heading: copy.challengeHeading, body: campaign.fullStrategyBreakdown.theChallenge },
+    { heading: copy.strategyHeading, body: campaign.fullStrategyBreakdown.theStrategy },
+    { heading: copy.resultsHeading, body: campaign.fullStrategyBreakdown.theResults },
   ];
 
   return (
@@ -71,7 +76,7 @@ export default function CaseStudyPage({
         <Button asChild variant="ghost" size="sm" className="mb-6">
           <Link href="/#work">
             <ArrowLeft className="h-4 w-4" />
-            Back to work
+            {copy.backLabel}
           </Link>
         </Button>
 
@@ -79,7 +84,9 @@ export default function CaseStudyPage({
           <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 font-display text-sm font-bold text-primary">
             {campaign.clientLogo}
           </span>
-          <Badge variant="secondary">{campaign.industry}</Badge>
+          <Badge variant="secondary">
+            {getCategoryName(siteContent.categories, campaign.categoryId)}
+          </Badge>
           <Badge variant="outline">{campaign.role}</Badge>
           <span className="text-sm text-muted-foreground">
             {campaign.period}
@@ -96,7 +103,7 @@ export default function CaseStudyPage({
         <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
           {campaign.keyMetrics.map((metric) => (
             <div
-              key={metric.label}
+              key={metric.id}
               className="rounded-2xl border border-border bg-card p-5 shadow-sm"
             >
               <div className="text-2xl font-semibold tracking-tight sm:text-3xl">
@@ -131,11 +138,11 @@ export default function CaseStudyPage({
         {campaign.videoSamples?.length ? (
           <section className="mt-12">
             <h2 className="mb-4 text-xl font-semibold tracking-tight">
-              Video showcase
+              {copy.videoShowcaseHeading}
             </h2>
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
               {campaign.videoSamples.map((video) => (
-                <div key={video.title} className="space-y-2">
+                <div key={video.id} className="space-y-2">
                   <div
                     className={`group relative overflow-hidden rounded-2xl border border-border bg-secondary ${aspectClass[video.aspectRatio]}`}
                   >
@@ -164,11 +171,11 @@ export default function CaseStudyPage({
         {campaign.imageSamples?.length ? (
           <section className="mt-12">
             <h2 className="mb-4 text-xl font-semibold tracking-tight">
-              Content samples
+              {copy.contentSamplesHeading}
             </h2>
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
               {campaign.imageSamples.map((image) => (
-                <figure key={image.caption} className="space-y-2">
+                <figure key={image.id} className="space-y-2">
                   <div className="relative aspect-square overflow-hidden rounded-2xl border border-border">
                     <Image
                       src={image.imageUrl}
@@ -188,20 +195,22 @@ export default function CaseStudyPage({
         ) : null}
 
         <div className="mt-12 flex flex-wrap gap-3">
-          {campaign.deliverables.map((item) => (
-            <Badge key={item} variant="muted" className="py-1">
+          {campaign.deliverables.map((item, index) => (
+            <Badge
+              key={`${campaign.id}-deliverable-${index}`}
+              variant="muted"
+              className="py-1"
+            >
               {item}
             </Badge>
           ))}
         </div>
 
         <div className="mt-12 rounded-2xl border border-border bg-card p-8 text-center shadow-sm">
-          <p className="text-lg font-semibold">
-            Want results like this for your brand?
-          </p>
+          <p className="text-lg font-semibold">{copy.ctaHeading}</p>
           <Button asChild className="mt-4">
             <Link href="/#contact">
-              Start a project
+              {copy.ctaLabel}
               <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
