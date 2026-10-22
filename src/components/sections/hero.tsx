@@ -5,10 +5,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { BrandIcon } from "@/components/brand-icons";
 import { ShimmerButton } from "@/components/magicui/shimmer-button";
-import { profile } from "@/data/profile";
+import type { SiteContent } from "@/content/schema";
 
-export function Hero() {
-  const [primary, secondary] = profile.headline.split("&");
+export function Hero({ content }: { content: SiteContent }) {
+  const { profile, socials, sections } = content;
+  const hero = sections.hero;
 
   return (
     <section
@@ -50,9 +51,9 @@ export function Hero() {
                 {profile.role}
               </p>
               <h1 className="max-w-3xl text-balance text-5xl leading-[0.95] tracking-tight sm:text-6xl lg:text-7xl xl:text-8xl">
-                {primary.trim()}{" "}
+                {profile.headlineLead}{" "}
                 <span className="text-gradient animate-gradient-x">
-                  &amp; {secondary.trim()}
+                  &amp; {profile.headlineAccent}
                 </span>
               </h1>
               <p className="max-w-xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
@@ -62,26 +63,26 @@ export function Hero() {
 
             <div className="flex flex-wrap items-center gap-3">
               <ShimmerButton
-                href={profile.calendlyUrl}
+                href={hero.primaryCtaHref}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Book a call
+                {hero.primaryCtaLabel}
                 <ArrowDownRight className="h-4 w-4" />
               </ShimmerButton>
               <Button asChild variant="outline" size="lg">
-                <a href="#work">View selected work</a>
+                <a href={hero.secondaryCtaHref}>{hero.secondaryCtaLabel}</a>
               </Button>
             </div>
 
             <div className="flex items-center gap-4 pt-2">
               <span className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-                Follow
+                {hero.followLabel}
               </span>
               <div className="flex items-center gap-2">
-                {profile.socials.map((social) => (
+                {socials.map((social) => (
                   <a
-                    key={social.platform}
+                    key={social.id}
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -101,7 +102,7 @@ export function Hero() {
                 <div className="relative aspect-[3/4] w-full">
                   <Image
                     src={profile.portraitImage}
-                    alt={`Portrait of ${profile.name}`}
+                    alt={hero.portraitAlt}
                     fill
                     priority
                     sizes="(max-width: 640px) 13rem, (max-width: 1024px) 15rem, 16rem"
@@ -113,15 +114,15 @@ export function Hero() {
 
             <div className="absolute -bottom-6 -left-8 w-40 animate-float rounded-2xl border border-border bg-card p-3 shadow-lg">
               <p className="font-display text-2xl font-semibold tracking-tight text-primary">
-                50M+
+                {hero.floatingStatValue}
               </p>
               <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground">
-                Organic impressions generated
+                {hero.floatingStatLabel}
               </p>
             </div>
 
             <div className="absolute -right-4 -top-3 rotate-6 rounded-full bg-brand-amber/20 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-brand-amber shadow-sm">
-              3.5x lift
+              {hero.floatingBadge}
             </div>
 
             <div

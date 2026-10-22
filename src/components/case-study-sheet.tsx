@@ -12,11 +12,19 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { NumberTicker } from "@/components/magicui/number-ticker";
-import type { Campaign, VideoSample } from "@/data/campaigns";
+import { getCategoryName } from "@/content/helpers";
+import type {
+  Campaign,
+  CampaignCategory,
+  CaseStudyCopy,
+  VideoSample,
+} from "@/content/schema";
 import { cn } from "@/lib/utils";
 
 interface CaseStudySheetProps {
   campaign: Campaign | null;
+  categories: CampaignCategory[];
+  copy: CaseStudyCopy;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -37,6 +45,8 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 
 export function CaseStudySheet({
   campaign,
+  categories,
+  copy,
   open,
   onOpenChange,
 }: CaseStudySheetProps) {
@@ -64,7 +74,9 @@ export function CaseStudySheet({
                 <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 font-display text-sm font-bold text-primary">
                   {campaign.clientLogo}
                 </span>
-                <Badge variant="secondary">{campaign.industry}</Badge>
+                <Badge variant="secondary">
+                  {getCategoryName(categories, campaign.categoryId)}
+                </Badge>
                 <Badge variant="outline">{campaign.role}</Badge>
               </div>
 
@@ -84,11 +96,11 @@ export function CaseStudySheet({
 
             <div className="space-y-10 px-6 pb-10 pt-6 sm:px-8">
               <section>
-                <Eyebrow>Key achievements</Eyebrow>
+                <Eyebrow>{copy.keyAchievementsLabel}</Eyebrow>
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                   {campaign.keyMetrics.map((metric) => (
                     <div
-                      key={metric.label}
+                      key={metric.id}
                       className="rounded-xl border border-border bg-card p-4 shadow-sm"
                     >
                       <div className="font-display text-2xl font-semibold tracking-tight">
@@ -108,18 +120,18 @@ export function CaseStudySheet({
               </section>
 
               <section className="space-y-4">
-                <Eyebrow>Strategy &amp; execution</Eyebrow>
+                <Eyebrow>{copy.strategyLabel}</Eyebrow>
                 {[
                   {
-                    heading: "The Challenge",
+                    heading: copy.challengeHeading,
                     body: campaign.fullStrategyBreakdown.theChallenge,
                   },
                   {
-                    heading: "The Strategy",
+                    heading: copy.strategyHeading,
                     body: campaign.fullStrategyBreakdown.theStrategy,
                   },
                   {
-                    heading: "The Results",
+                    heading: copy.resultsHeading,
                     body: campaign.fullStrategyBreakdown.theResults,
                   },
                 ].map((block) => (
@@ -137,10 +149,10 @@ export function CaseStudySheet({
 
               {campaign.videoSamples?.length ? (
                 <section>
-                  <Eyebrow>Video showcase</Eyebrow>
+                  <Eyebrow>{copy.videoShowcaseHeading}</Eyebrow>
                   <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                     {campaign.videoSamples.map((video) => (
-                      <div key={video.title} className="space-y-2">
+                      <div key={video.id} className="space-y-2">
                         <div
                           className={cn(
                             "group relative overflow-hidden rounded-xl border border-border bg-secondary",
@@ -171,10 +183,10 @@ export function CaseStudySheet({
 
               {campaign.imageSamples?.length ? (
                 <section>
-                  <Eyebrow>Content samples</Eyebrow>
+                  <Eyebrow>{copy.contentSamplesHeading}</Eyebrow>
                   <div className="grid grid-cols-2 gap-3">
                     {campaign.imageSamples.map((image) => (
-                      <figure key={image.caption} className="space-y-2">
+                      <figure key={image.id} className="space-y-2">
                         <div className="relative aspect-square overflow-hidden rounded-xl border border-border">
                           <Image
                             src={image.imageUrl}
@@ -194,10 +206,10 @@ export function CaseStudySheet({
               ) : null}
 
               <section>
-                <Eyebrow>Deliverables</Eyebrow>
+                <Eyebrow>{copy.deliverablesLabel}</Eyebrow>
                 <ul className="flex flex-wrap gap-2">
-                  {campaign.deliverables.map((item) => (
-                    <li key={item}>
+                  {campaign.deliverables.map((item, index) => (
+                    <li key={`${campaign.id}-deliverable-${index}`}>
                       <Badge variant="secondary" className="py-1">
                         <Sparkles className="mr-1 h-3 w-3" />
                         {item}
@@ -213,7 +225,7 @@ export function CaseStudySheet({
                   className="w-full"
                   size="lg"
                 >
-                  Close &amp; View More Results
+                  {copy.closeLabel}
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </div>

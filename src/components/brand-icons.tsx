@@ -1,7 +1,7 @@
 import { siInstagram, siTiktok, siYoutube } from "simple-icons";
 import { Mail } from "lucide-react";
 
-import type { SocialPlatform } from "@/data/profile";
+import type { SocialPlatform } from "@/content/schema";
 import { cn } from "@/lib/utils";
 
 const simpleIcons = {

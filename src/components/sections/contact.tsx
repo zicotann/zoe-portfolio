@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -19,19 +19,31 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Reveal } from "@/components/magicui/reveal";
-import { profile } from "@/data/profile";
+import type { SiteContent } from "@/content/schema";
 
-const formSchema = z.object({
-  name: z.string().min(2, "Please enter your name."),
-  email: z.string().email("Enter a valid email address."),
-  company: z.string().optional(),
-  message: z.string().min(10, "Tell me a little more (10+ characters)."),
-});
+type FormValues = {
+  name: string;
+  email: string;
+  company?: string;
+  message: string;
+};
 
-type FormValues = z.infer<typeof formSchema>;
-
-export function Contact() {
+export function Contact({ content }: { content: SiteContent }) {
   const [sent, setSent] = useState(false);
+  const contact = content.sections.contact;
+  const copy = contact.form;
+  const { profile, socials } = content;
+
+  const formSchema = useMemo(
+    () =>
+      z.object({
+        name: z.string().min(2, copy.errorName),
+        email: z.string().email(copy.errorEmail),
+        company: z.string().optional(),
+        message: z.string().min(10, copy.errorMessage),
+      }),
+    [copy.errorName, copy.errorEmail, copy.errorMessage],
+  );
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -48,7 +60,7 @@ export function Contact() {
     form.reset();
   }
 
-  const directLinks = profile.socials.filter(
+  const directLinks = socials.filter(
     (social) => social.platform !== "youtube",
   );
 
@@ -70,17 +82,16 @@ export function Contact() {
               <div className="space-y-6">
                 <div className="space-y-3">
                   <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-                    Contact
+                    {contact.eyebrow}
                   </p>
                   <h2 className="text-balance text-4xl leading-[1.02] tracking-tight sm:text-5xl">
-                    Let&rsquo;s build your{" "}
+                    {contact.headingLead}{" "}
                     <span className="text-gradient animate-gradient-x">
-                      next campaign.
+                      {contact.headingAccent}
                     </span>
                   </h2>
                   <p className="text-pretty text-sm leading-relaxed text-muted-foreground">
-                    Tell me about your brand and goals — or skip the form and
-                    book a call directly.
+                    {contact.description}
                   </p>
                 </div>
 
@@ -91,14 +102,14 @@ export function Contact() {
                     rel="noopener noreferrer"
                   >
                     <CalendarClock className="h-4 w-4" />
-                    Schedule a call
+                    {contact.bookingLabel}
                   </a>
                 </Button>
 
                 <div className="flex flex-wrap gap-2 pt-2">
                   {directLinks.map((social) => (
                     <a
-                      key={social.platform}
+                      key={social.id}
                       href={social.href}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -114,7 +125,7 @@ export function Contact() {
                 </div>
 
                 <p className="text-xs text-muted-foreground">
-                  Based in {profile.location} · {profile.timezone}
+                  {contact.basedInLabel} {profile.location} · {profile.timezone}
                 </p>
               </div>
 
@@ -130,10 +141,10 @@ export function Contact() {
                       name="name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Name</FormLabel>
+                          <FormLabel>{copy.nameLabel}</FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Jane Cooper"
+                              placeholder={copy.namePlaceholder}
                               className="bg-background"
                               {...field}
                             />
@@ -147,11 +158,11 @@ export function Contact() {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Email</FormLabel>
+                          <FormLabel>{copy.emailLabel}</FormLabel>
                           <FormControl>
                             <Input
                               type="email"
-                              placeholder="jane@brand.com"
+                              placeholder={copy.emailPlaceholder}
                               className="bg-background"
                               {...field}
                             />
@@ -167,10 +178,10 @@ export function Contact() {
                     name="company"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Company (optional)</FormLabel>
+                        <FormLabel>{copy.companyLabel}</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Brand or agency"
+                            placeholder={copy.companyPlaceholder}
                             className="bg-background"
                             {...field}
                           />
@@ -185,10 +196,10 @@ export function Contact() {
                     name="message"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Project details</FormLabel>
+                        <FormLabel>{copy.messageLabel}</FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder="Goals, timeline, platforms..."
+                            placeholder={copy.messagePlaceholder}
                             className="bg-background"
                             {...field}
                           />
@@ -202,12 +213,12 @@ export function Contact() {
                     {sent ? (
                       <>
                         <Check className="h-4 w-4" />
-                        Message ready — check your mail app
+                        {copy.sentLabel}
                       </>
                     ) : (
                       <>
                         <Send className="h-4 w-4" />
-                        Send message
+                        {copy.submitLabel}
                       </>
                     )}
                   </Button>

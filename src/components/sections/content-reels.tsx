@@ -3,41 +3,37 @@ import { Play } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Reveal } from "@/components/magicui/reveal";
-import { campaigns } from "@/data/campaigns";
+import { getReels } from "@/content/helpers";
+import type { SiteContent } from "@/content/schema";
 
-const reels = campaigns
-  .flatMap((campaign) =>
-    (campaign.videoSamples ?? []).map((video) => ({
-      ...video,
-      client: campaign.clientName,
-    })),
-  )
-  .filter((video) => video.aspectRatio === "9:16")
-  .slice(0, 8);
+export function ContentReels({ content }: { content: SiteContent }) {
+  const reelsContent = content.sections.reels;
+  const reels = getReels(
+    content.sections.campaigns.campaigns,
+    reelsContent.limit,
+  );
 
-export function ContentReels() {
   return (
     <section id="reels" className="py-16 sm:py-24">
       <div className="container">
         <Reveal className="mb-10 max-w-2xl space-y-3">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-            Content reels
+            {reelsContent.eyebrow}
           </p>
           <h2 className="text-balance text-4xl leading-[1.02] tracking-tight sm:text-5xl">
-            Top-performing short-form,{" "}
+            {reelsContent.headingLead}{" "}
             <span className="text-gradient animate-gradient-x">
-              straight from the feed.
+              {reelsContent.headingAccent}
             </span>
           </h2>
           <p className="text-pretty text-sm leading-relaxed text-muted-foreground">
-            Hover any frame to preview. Every reel was scripted, shot, edited,
-            and published in-house.
+            {reelsContent.description}
           </p>
         </Reveal>
 
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {reels.map((reel, index) => (
-            <Reveal key={`${reel.client}-${reel.title}`} delay={index * 0.05}>
+            <Reveal key={reel.id} delay={index * 0.05}>
               <figure className="group space-y-2">
                 <div className="relative aspect-[9/16] overflow-hidden rounded-2xl border border-border bg-secondary shadow-sm transition-all duration-300 group-hover:-translate-y-1.5 group-hover:shadow-xl">
                   <Image
