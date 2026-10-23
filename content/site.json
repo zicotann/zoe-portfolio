@@ -1,7 +1,7 @@
 {
   "version": 1,
   "profile": {
-    "name": "Zoe Alvarez",
+    "name": "Zoe Tan",
     "firstName": "Zoe",
     "role": "Social Media Manager & Short-Form Video Expert",
     "headlineLead": "Scaling brands through short-form video",
@@ -96,7 +96,7 @@
     "ctaHref": "https://calendly.com/zoealvarez/intro"
   },
   "seo": {
-    "siteUrl": "https://zoealvarez.co",
+    "siteUrl": "https://zoetan.netlify.app",
     "titleTemplate": "{name} — {role}",
     "description": "I turn scroll-stopping creative into measurable growth — 50M+ organic impressions and counting for DTC, lifestyle, and hospitality brands."
   },
@@ -130,7 +130,7 @@
       "secondaryCtaLabel": "View selected work",
       "secondaryCtaHref": "#work",
       "followLabel": "Follow",
-      "portraitAlt": "Portrait of Zoe Alvarez",
+      "portraitAlt": "Portrait of Zoe Tan",
       "floatingStatValue": "50M+",
       "floatingStatLabel": "Organic impressions generated",
       "floatingBadge": "3.5x lift"
