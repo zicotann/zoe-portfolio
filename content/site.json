@@ -1,0 +1,946 @@
+{
+  "version": 1,
+  "profile": {
+    "name": "Zoe Tan",
+    "firstName": "Zoe",
+    "role": "Social Media Manager & Short-Form Video Expert",
+    "headlineLead": "Scaling brands through short-form video",
+    "headlineAccent": "visual storytelling.",
+    "subheadline": "I turn scroll-stopping creative into measurable growth — 50M+ organic impressions and counting for DTC, lifestyle, and hospitality brands.",
+    "portraitImage": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=900&h=1100&q=80",
+    "location": "Kuala Lumpur, Malaysia",
+    "timezone": "MYT (UTC+8)",
+    "availability": "Available for projects",
+    "availabilityColor": "green",
+    "email": "hello@zoealvarez.co",
+    "calendlyUrl": "https://calendly.com/zoealvarez/intro",
+    "resumeUrl": "/resumes/zoe-alvarez-resume.pdf"
+  },
+  "socials": [
+    {
+      "id": "social_instagram",
+      "platform": "instagram",
+      "label": "Instagram",
+      "handle": "@zoecreates",
+      "href": "https://instagram.com"
+    },
+    {
+      "id": "social_tiktok",
+      "platform": "tiktok",
+      "label": "TikTok",
+      "handle": "@zoecreates",
+      "href": "https://tiktok.com"
+    },
+    {
+      "id": "social_linkedin",
+      "platform": "linkedin",
+      "label": "LinkedIn",
+      "handle": "in/zoealvarez",
+      "href": "https://linkedin.com"
+    },
+    {
+      "id": "social_youtube",
+      "platform": "youtube",
+      "label": "YouTube",
+      "handle": "@zoecreates",
+      "href": "https://youtube.com"
+    },
+    {
+      "id": "social_email",
+      "platform": "email",
+      "label": "Email",
+      "handle": "hello@zoealvarez.co",
+      "href": "mailto:hello@zoealvarez.co"
+    }
+  ],
+  "navigation": {
+    "links": [
+      {
+        "id": "nav_metrics",
+        "label": "Metrics",
+        "href": "#metrics",
+        "icon": "metrics"
+      },
+      {
+        "id": "nav_work",
+        "label": "Work",
+        "href": "#work",
+        "icon": "work"
+      },
+      {
+        "id": "nav_experience",
+        "label": "Experience",
+        "href": "#experience",
+        "icon": "experience"
+      },
+      {
+        "id": "nav_reels",
+        "label": "Reels",
+        "href": "#reels",
+        "icon": "reels"
+      },
+      {
+        "id": "nav_testimonials",
+        "label": "Testimonials",
+        "href": "#testimonials",
+        "icon": "testimonials"
+      },
+      {
+        "id": "nav_contact",
+        "label": "Contact",
+        "href": "#contact",
+        "icon": "contact"
+      }
+    ],
+    "ctaLabel": "Book a call",
+    "ctaHref": "https://calendly.com/zoealvarez/intro"
+  },
+  "seo": {
+    "siteUrl": "https://zoetan.netlify.app",
+    "titleTemplate": "{name} — {role}",
+    "description": "I turn scroll-stopping creative into measurable growth — 50M+ organic impressions and counting for DTC, lifestyle, and hospitality brands."
+  },
+  "categories": [
+    {
+      "id": "cat_beauty",
+      "name": "Beauty & Skincare"
+    },
+    {
+      "id": "cat_hospitality",
+      "name": "Hospitality"
+    },
+    {
+      "id": "cat_health",
+      "name": "Health & Wellness"
+    },
+    {
+      "id": "cat_fashion",
+      "name": "Fashion & Apparel"
+    },
+    {
+      "id": "cat_fitness",
+      "name": "Fitness"
+    }
+  ],
+  "sections": {
+    "hero": {
+      "visible": true,
+      "primaryCtaLabel": "Book a call",
+      "primaryCtaHref": "https://calendly.com/zoealvarez/intro",
+      "secondaryCtaLabel": "View selected work",
+      "secondaryCtaHref": "#work",
+      "followLabel": "Follow",
+      "portraitAlt": "Portrait of Zoe Tan",
+      "floatingStatValue": "50M+",
+      "floatingStatLabel": "Organic impressions generated",
+      "floatingBadge": "3.5x lift"
+    },
+    "metrics": {
+      "visible": true,
+      "stats": [
+        {
+          "id": "stat_1",
+          "label": "Total Impressions",
+          "value": 50,
+          "suffix": "M+",
+          "description": "Organic reach generated across managed accounts"
+        },
+        {
+          "id": "stat_2",
+          "label": "Avg. Engagement Lift",
+          "value": 3.5,
+          "suffix": "x",
+          "decimals": 1,
+          "description": "Median increase within the first 90 days"
+        },
+        {
+          "id": "stat_3",
+          "label": "Short-Form Videos",
+          "value": 120,
+          "suffix": "+",
+          "description": "Concept, shoot, edit, and publish end to end"
+        },
+        {
+          "id": "stat_4",
+          "label": "Brand Campaigns",
+          "value": 10,
+          "suffix": "+",
+          "description": "Full-funnel launches across paid and organic"
+        }
+      ]
+    },
+    "clients": {
+      "visible": true,
+      "eyebrow": "Trusted by brands & featured in",
+      "clients": [
+        {
+          "id": "client_1",
+          "name": "Lumen Skincare",
+          "category": "Client"
+        },
+        {
+          "id": "client_2",
+          "name": "Northwind Coffee",
+          "category": "Client"
+        },
+        {
+          "id": "client_3",
+          "name": "Atlas Apparel",
+          "category": "Client"
+        },
+        {
+          "id": "client_4",
+          "name": "Verde Wellness",
+          "category": "Client"
+        },
+        {
+          "id": "client_5",
+          "name": "Harbor Hotels",
+          "category": "Client"
+        },
+        {
+          "id": "client_6",
+          "name": "Tide & Timber",
+          "category": "Client"
+        },
+        {
+          "id": "client_7",
+          "name": "Studio Marlow",
+          "category": "Client"
+        },
+        {
+          "id": "client_8",
+          "name": "Pulse Fitness",
+          "category": "Client"
+        },
+        {
+          "id": "client_9",
+          "name": "AdWeek",
+          "category": "Media"
+        },
+        {
+          "id": "client_10",
+          "name": "Vogue Business",
+          "category": "Media"
+        },
+        {
+          "id": "client_11",
+          "name": "Social Media Today",
+          "category": "Media"
+        },
+        {
+          "id": "client_12",
+          "name": "Shorty Awards",
+          "category": "Award"
+        }
+      ]
+    },
+    "campaigns": {
+      "visible": true,
+      "eyebrow": "Selected work",
+      "headingLead": "Campaigns built to stop the scroll",
+      "headingAccent": "and move the numbers.",
+      "description": "Filter by category, then open any campaign for the full breakdown — challenge, strategy, results, and the actual creative.",
+      "allLabel": "All",
+      "featuredLabel": "Featured",
+      "viewLabel": "View case study",
+      "caseStudy": {
+        "pageTitleSuffix": "Case Study",
+        "keyAchievementsLabel": "Key achievements",
+        "strategyLabel": "Strategy & execution",
+        "challengeHeading": "The Challenge",
+        "strategyHeading": "The Strategy",
+        "resultsHeading": "The Results",
+        "videoShowcaseHeading": "Video showcase",
+        "contentSamplesHeading": "Content Showcase",
+        "deliverablesLabel": "Deliverables",
+        "closeLabel": "Close & View More Results",
+        "backLabel": "Back to work",
+        "ctaHeading": "Want results like this for your brand?",
+        "ctaLabel": "Start a project"
+      },
+      "campaigns": [
+        {
+          "id": "camp_lumen",
+          "slug": "lumen-skincare-launch",
+          "clientName": "Lumen Skincare",
+          "clientLogo": "LS",
+          "categoryId": "cat_beauty",
+          "role": "Social Media Manager",
+          "period": "Q2 2023 — Q4 2023",
+          "summary": "A creator-led short-form launch that took a niche skincare line from 0 to 420K TikTok followers in 14 months.",
+          "heroImage": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=900&h=1600&q=80",
+          "coverImage": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1200&h=900&q=80",
+          "featured": true,
+          "keyMetrics": [
+            {
+              "id": "metric_1_1",
+              "label": "Organic Video Views",
+              "value": 2.4,
+              "suffix": "M",
+              "decimals": 1
+            },
+            {
+              "id": "metric_1_2",
+              "label": "Follower Growth",
+              "value": 180,
+              "suffix": "%",
+              "prefix": "+"
+            },
+            {
+              "id": "metric_1_3",
+              "label": "Engagement Rate",
+              "value": 8.2,
+              "suffix": "%",
+              "decimals": 1
+            },
+            {
+              "id": "metric_1_4",
+              "label": "Videos Produced",
+              "value": 46,
+              "suffix": ""
+            }
+          ],
+          "deliverables": [
+            "Short-form video system",
+            "Creator/UGC pipeline",
+            "Launch content calendar",
+            "Community management playbook"
+          ],
+          "videoSamples": [
+            {
+              "id": "video_1_1",
+              "title": "3-second hook: 'Your serum is lying to you'",
+              "aspectRatio": "9:16",
+              "source": "instagram",
+              "postUrl": "https://www.instagram.com/reel/DL2LjHGsrpb/"
+            },
+            {
+              "id": "video_1_2",
+              "title": "Founder POV: behind the formulation",
+              "aspectRatio": "9:16",
+              "source": "instagram",
+              "postUrl": "https://www.instagram.com/reel/DNJRR_RplwZ/"
+            },
+            {
+              "id": "video_1_3",
+              "title": "Before/after 30-day skin diary",
+              "aspectRatio": "9:16",
+              "source": "linkedin",
+              "postUrl": "https://www.linkedin.com/posts/rovan-media_brandedcontent-promotionalcontent-promotionalvideography-activity-7111056956370407424-E_Aj"
+            },
+            {
+              "id": "video_1_4",
+              "title": "Trend-jack: 'Get ready with me'",
+              "aspectRatio": "9:16",
+              "source": "url",
+              "videoUrl": "https://media.w3.org/2010/05/sintel/trailer.mp4"
+            }
+          ],
+          "imageSamples": [
+            {
+              "id": "image_linkedin_sample",
+              "caption": "LinkedIn post sample",
+              "source": "linkedin",
+              "aspectRatio": "1:1",
+              "postUrl": "https://www.linkedin.com/posts/rovan-media_brandedcontent-promotionalcontent-promotionalvideography-activity-7111056956370407424-E_Aj"
+            },
+            {
+              "id": "image_1_1",
+              "caption": "Product launch carousel",
+              "source": "url",
+              "aspectRatio": "1:1",
+              "imageUrl": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1200&h=900&q=80"
+            },
+            {
+              "id": "image_1_2",
+              "caption": "Ingredient education series",
+              "source": "url",
+              "aspectRatio": "1:1",
+              "imageUrl": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&h=900&q=80"
+            },
+            {
+              "id": "image_1_3",
+              "caption": "Paid social creative set",
+              "source": "url",
+              "aspectRatio": "1:1",
+              "imageUrl": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&h=900&q=80"
+            }
+          ],
+          "fullStrategyBreakdown": {
+            "theChallenge": "Lumen had a strong product but an invisible social presence — under 2K followers, an engagement rate of 1.4%, and no repeatable content system before a major retail launch.",
+            "theStrategy": "I built a hook-first vertical video engine: three content pillars (education, transformation, behind-the-scenes), a creator/UGC pipeline, and a weekly test cadence where every top-performing hook was re-cut into five variants.",
+            "theResults": "TikTok grew from 0 to 420K followers in 14 months, a single launch video hit 2.4M organic views, and engagement rate climbed to 8.2% — without a dollar of paid amplification on the organic side."
+          }
+        },
+        {
+          "id": "camp_harbor",
+          "slug": "harbor-hotels-summer",
+          "clientName": "Harbor Hotels",
+          "clientLogo": "HH",
+          "categoryId": "cat_hospitality",
+          "role": "Content Strategist",
+          "period": "Q1 2024 — Q3 2024",
+          "summary": "A destination storytelling program that filled low-season weekends and turned the property into a social-first brand.",
+          "heroImage": "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?auto=format&fit=crop&w=900&h=1600&q=80",
+          "coverImage": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&h=900&q=80",
+          "featured": true,
+          "keyMetrics": [
+            {
+              "id": "metric_2_1",
+              "label": "Impressions",
+              "value": 12.6,
+              "suffix": "M",
+              "decimals": 1
+            },
+            {
+              "id": "metric_2_2",
+              "label": "Direct Bookings Lift",
+              "value": 64,
+              "suffix": "%",
+              "prefix": "+"
+            },
+            {
+              "id": "metric_2_3",
+              "label": "Saves + Shares",
+              "value": 310,
+              "suffix": "K"
+            },
+            {
+              "id": "metric_2_4",
+              "label": "Posts Published",
+              "value": 210,
+              "suffix": ""
+            }
+          ],
+          "deliverables": [
+            "Destination content strategy",
+            "Reels & TikTok production",
+            "Influencer stay program",
+            "Paid social creative"
+          ],
+          "videoSamples": [
+            {
+              "id": "video_2_1",
+              "title": "Room tour: the cliffside suite",
+              "aspectRatio": "9:16",
+              "source": "instagram",
+              "postUrl": "https://www.instagram.com/reel/C4CLt5fxLvj/"
+            },
+            {
+              "id": "video_2_2",
+              "title": "48 hours at the property",
+              "aspectRatio": "9:16",
+              "source": "linkedin",
+              "postUrl": "https://www.linkedin.com/posts/ally-berry-71a53299_brand-brandphotoshoot-brandvideo-activity-7158802550526234624-Lc28"
+            },
+            {
+              "id": "video_2_3",
+              "title": "Sunrise timelapse from the deck",
+              "aspectRatio": "16:9",
+              "source": "url",
+              "videoUrl": "https://test-videos.co.uk/vids/sintel/mp4/h264/720/Sintel_720_10s_1MB.mp4"
+            },
+            {
+              "id": "video_2_4",
+              "title": "Chef's table teaser",
+              "aspectRatio": "9:16",
+              "source": "instagram",
+              "postUrl": "https://www.instagram.com/reel/DImHuZMzAw_/"
+            }
+          ],
+          "imageSamples": [
+            {
+              "id": "image_2_1",
+              "caption": "Weekend getaway carousel",
+              "source": "url",
+              "aspectRatio": "1:1",
+              "imageUrl": "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=1200&h=900&q=80"
+            },
+            {
+              "id": "image_2_2",
+              "caption": "Seasonal dining feature",
+              "source": "url",
+              "aspectRatio": "1:1",
+              "imageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=1200&h=900&q=80"
+            },
+            {
+              "id": "image_2_3",
+              "caption": "Amenity highlight set",
+              "source": "url",
+              "aspectRatio": "1:1",
+              "imageUrl": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&h=900&q=80"
+            }
+          ],
+          "fullStrategyBreakdown": {
+            "theChallenge": "Harbor had premium photography but no social-native storytelling. Bookings dipped every off-season and awareness was limited to return guests.",
+            "theStrategy": "I reframed the property as a destination, not a hotel: a slow-travel video series, an influencer stay program timed to shoulder season, and paid creative cut directly from top organic Reels.",
+            "theResults": "12.6M impressions across the season, a 64% lift in direct bookings, and 310K saves and shares — turning off-season weekends into sell-out dates."
+          }
+        },
+        {
+          "id": "camp_verde",
+          "slug": "verde-wellness-community",
+          "clientName": "Verde Wellness",
+          "clientLogo": "VW",
+          "categoryId": "cat_health",
+          "role": "Community & Growth Lead",
+          "period": "Q4 2023 — Q2 2024",
+          "summary": "Community-first social that turned a quiet comment section into the brand's highest-converting acquisition channel.",
+          "heroImage": "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=900&h=1600&q=80",
+          "coverImage": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=1200&h=900&q=80",
+          "featured": false,
+          "keyMetrics": [
+            {
+              "id": "metric_3_1",
+              "label": "Engagement Rate",
+              "value": 9.4,
+              "suffix": "%",
+              "decimals": 1
+            },
+            {
+              "id": "metric_3_2",
+              "label": "Community Replies",
+              "value": 84,
+              "suffix": "K"
+            },
+            {
+              "id": "metric_3_3",
+              "label": "Saves",
+              "value": 120,
+              "suffix": "K"
+            },
+            {
+              "id": "metric_3_4",
+              "label": "Avg. Watch Time",
+              "value": 22,
+              "suffix": "s"
+            }
+          ],
+          "deliverables": [
+            "Community management playbook",
+            "Comment-to-content pipeline",
+            "Instagram & TikTok growth"
+          ],
+          "videoSamples": [
+            {
+              "id": "video_3_1",
+              "title": "Answering the top comment (series)",
+              "aspectRatio": "9:16",
+              "source": "instagram",
+              "postUrl": "https://www.instagram.com/reel/DP9trlqgc1r/"
+            },
+            {
+              "id": "video_3_2",
+              "title": "5-minute morning routine",
+              "aspectRatio": "9:16",
+              "source": "linkedin",
+              "postUrl": "https://www.linkedin.com/posts/amymuffley_digitalagency-videoproduction-tellyourstory-activity-7132849486355173376-Vqzu"
+            },
+            {
+              "id": "video_3_3",
+              "title": "Myth-busting with our nutritionist",
+              "aspectRatio": "9:16",
+              "source": "url",
+              "videoUrl": "https://test-videos.co.uk/vids/jellyfish/mp4/h264/1080/Jellyfish_1080_10s_1MB.mp4"
+            }
+          ],
+          "imageSamples": [
+            {
+              "id": "image_3_1",
+              "caption": "Habit-building carousel",
+              "source": "url",
+              "aspectRatio": "1:1",
+              "imageUrl": "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=1200&h=900&q=80"
+            },
+            {
+              "id": "image_3_2",
+              "caption": "Founder Q&A recap",
+              "source": "url",
+              "aspectRatio": "1:1",
+              "imageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=1200&h=900&q=80"
+            }
+          ],
+          "fullStrategyBreakdown": {
+            "theChallenge": "Verde published consistently but never responded to its audience. Comments were piling up unanswered and reach was flatlining at a 2.1% engagement rate.",
+            "theStrategy": "I treated comments as a content brief. Every week I mined the top questions and turned them into a recurring 'answering the top comment' video series, paired with a same-day community response SLA.",
+            "theResults": "Engagement rate nearly quadrupled to 9.4%, community replies hit 84K, and the recurring series became the brand's most-watched content format."
+          }
+        },
+        {
+          "id": "camp_atlas",
+          "slug": "atlas-apparel-viral",
+          "clientName": "Atlas Apparel",
+          "clientLogo": "AA",
+          "categoryId": "cat_fashion",
+          "role": "Social Media Manager",
+          "period": "Q3 2024 — Q1 2025",
+          "summary": "A single founder-led video that went viral and became a repeatable format, driving a sold-out drop.",
+          "heroImage": "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=900&h=1600&q=80",
+          "coverImage": "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=1200&h=900&q=80",
+          "featured": true,
+          "keyMetrics": [
+            {
+              "id": "metric_4_1",
+              "label": "Views on Hero Video",
+              "value": 1.2,
+              "suffix": "M",
+              "decimals": 1
+            },
+            {
+              "id": "metric_4_2",
+              "label": "Drop Sell-Through",
+              "value": 100,
+              "suffix": "%"
+            },
+            {
+              "id": "metric_4_3",
+              "label": "New Followers",
+              "value": 96,
+              "suffix": "K"
+            },
+            {
+              "id": "metric_4_4",
+              "label": "UGC Assets",
+              "value": 340,
+              "suffix": ""
+            }
+          ],
+          "deliverables": [
+            "Founder-led content format",
+            "Drop campaign calendar",
+            "UGC harvesting program"
+          ],
+          "videoSamples": [
+            {
+              "id": "video_4_1",
+              "title": "Founder: 'We almost didn't make this'",
+              "aspectRatio": "9:16",
+              "source": "instagram",
+              "postUrl": "https://www.instagram.com/reel/DLzCPskq_a1/"
+            },
+            {
+              "id": "video_4_2",
+              "title": "How the jacket is actually made",
+              "aspectRatio": "9:16",
+              "source": "instagram",
+              "postUrl": "https://www.instagram.com/reel/DR8NeWfkvSo/"
+            },
+            {
+              "id": "video_4_3",
+              "title": "Customer review reaction",
+              "aspectRatio": "9:16",
+              "source": "linkedin",
+              "postUrl": "https://www.linkedin.com/posts/jasonlandro_creativeagency-videography-productvideo-activity-7063113802728263680-ABAz"
+            },
+            {
+              "id": "video_4_4",
+              "title": "Lookbook in motion",
+              "aspectRatio": "1:1",
+              "source": "url",
+              "videoUrl": "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_2MB.mp4"
+            }
+          ],
+          "imageSamples": [
+            {
+              "id": "image_4_1",
+              "caption": "Drop teaser carousel",
+              "source": "url",
+              "aspectRatio": "1:1",
+              "imageUrl": "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&h=900&q=80"
+            },
+            {
+              "id": "image_4_2",
+              "caption": "Fit guide graphics",
+              "source": "url",
+              "aspectRatio": "1:1",
+              "imageUrl": "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=1200&h=900&q=80"
+            },
+            {
+              "id": "image_4_3",
+              "caption": "UGC repost grid",
+              "source": "url",
+              "aspectRatio": "1:1",
+              "imageUrl": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&h=900&q=80"
+            }
+          ],
+          "fullStrategyBreakdown": {
+            "theChallenge": "Atlas relied entirely on paid ads. Product drops consistently under-performed and the brand had no organic audience to launch into.",
+            "theStrategy": "I built a founder-led format: unpolished, honest, story-driven videos shot on a phone. We doubled down on the one that broke out and re-cut it into a repeatable pre-drop series leading into launch day.",
+            "theResults": "The hero video passed 1.2M views, the following drop sold through 100%, and Atlas gained 96K followers plus 340 pieces of customer UGC in a single quarter."
+          }
+        },
+        {
+          "id": "camp_pulse",
+          "slug": "pulse-fitness-challenge",
+          "clientName": "Pulse Fitness",
+          "clientLogo": "PF",
+          "categoryId": "cat_fitness",
+          "role": "Campaign Lead",
+          "period": "Q2 2024",
+          "summary": "A 30-day community challenge that turned members into creators and tripled brand-owned reach.",
+          "heroImage": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=900&h=1600&q=80",
+          "coverImage": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1200&h=900&q=80",
+          "featured": false,
+          "keyMetrics": [
+            {
+              "id": "metric_5_1",
+              "label": "Challenge Participants",
+              "value": 18,
+              "suffix": "K"
+            },
+            {
+              "id": "metric_5_2",
+              "label": "UGC Submissions",
+              "value": 4.1,
+              "suffix": "K",
+              "decimals": 1
+            },
+            {
+              "id": "metric_5_3",
+              "label": "Reach Lift",
+              "value": 210,
+              "suffix": "%",
+              "prefix": "+"
+            },
+            {
+              "id": "metric_5_4",
+              "label": "App Signups",
+              "value": 6.4,
+              "suffix": "K",
+              "decimals": 1
+            }
+          ],
+          "deliverables": [
+            "Challenge campaign concept",
+            "Creator incentive design",
+            "Daily social calendar"
+          ],
+          "videoSamples": [
+            {
+              "id": "video_5_1",
+              "title": "Day 1 challenge kickoff",
+              "aspectRatio": "9:16",
+              "source": "instagram",
+              "postUrl": "https://www.instagram.com/reel/DP2PvGgD75i/"
+            },
+            {
+              "id": "video_5_2",
+              "title": "Coach tip: form fix",
+              "aspectRatio": "9:16",
+              "source": "linkedin",
+              "postUrl": "https://www.linkedin.com/posts/finnthormeier_contentmarketing-videomarketing-branding-activity-6869231361249554434-uiNq"
+            },
+            {
+              "id": "video_5_3",
+              "title": "Winner announcement",
+              "aspectRatio": "9:16",
+              "source": "url",
+              "videoUrl": "https://media.w3.org/2010/05/bunny/trailer.mp4"
+            }
+          ],
+          "imageSamples": [
+            {
+              "id": "image_5_1",
+              "caption": "Challenge rules carousel",
+              "source": "url",
+              "aspectRatio": "1:1",
+              "imageUrl": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1200&h=900&q=80"
+            },
+            {
+              "id": "image_5_2",
+              "caption": "Progress tracker template",
+              "source": "url",
+              "aspectRatio": "1:1",
+              "imageUrl": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1200&h=900&q=80"
+            }
+          ],
+          "fullStrategyBreakdown": {
+            "theChallenge": "Pulse had an engaged member base but almost no public social presence. Content was gym-generic and never featured real people.",
+            "theStrategy": "I designed a 30-day challenge with a low-friction participation mechanic: members posted a daily clip with a branded hashtag for a prize draw. Brand content shifted to amplifying member submissions instead of polished ads.",
+            "theResults": "18K participants, 4.1K UGC submissions, a 210% lift in brand reach, and 6.4K app signups driven entirely by community-created content."
+          }
+        }
+      ]
+    },
+    "experience": {
+      "visible": true,
+      "eyebrow": "Résumé & experience",
+      "heading": "Eight years turning content into growth.",
+      "description": "From in-house skincare launches to full agency rosters — strategy, production, and community under one roof.",
+      "resumeLabel": "Download PDF résumé",
+      "services": [
+        {
+          "id": "service_1",
+          "title": "Short-Form Video",
+          "description": "Hook-first scripts, vertical edits, and platform-native pacing built to hold attention past the 3-second mark.",
+          "icon": "video"
+        },
+        {
+          "id": "service_2",
+          "title": "Content Strategy",
+          "description": "Channel audits, content pillars, and 90-day calendars mapped to real business goals — not vanity metrics.",
+          "icon": "strategy"
+        },
+        {
+          "id": "service_3",
+          "title": "Growth & Community",
+          "description": "Daily community management, trend-jacking, and comment strategy that compounds organic reach.",
+          "icon": "growth"
+        },
+        {
+          "id": "service_4",
+          "title": "Creative Direction",
+          "description": "Feed aesthetics, carousel systems, and paid creative that keeps the brand visually consistent everywhere.",
+          "icon": "creative"
+        }
+      ],
+      "experience": [
+        {
+          "id": "experience_1",
+          "role": "Lead Social Media Manager",
+          "company": "Studio Marlow",
+          "period": "2023 — Present",
+          "location": "Los Angeles, CA",
+          "type": "Agency",
+          "description": "Own social strategy and short-form production for a roster of DTC and hospitality brands.",
+          "highlights": [
+            "Grew managed accounts from 1.2M to 6.8M combined followers",
+            "Built a repeatable vertical video system adopted by the whole team",
+            "Lifted average engagement rate from 1.8% to 6.2% across the roster"
+          ]
+        },
+        {
+          "id": "experience_2",
+          "role": "Social Media Manager",
+          "company": "Lumen Skincare",
+          "period": "2021 — 2023",
+          "location": "Remote",
+          "type": "In-house",
+          "description": "Ran organic and creator-led social for a fast-scaling skincare brand through two product launches.",
+          "highlights": [
+            "Took TikTok from 0 to 420K followers in 14 months",
+            "Drove 2.4M organic video views on a single launch campaign",
+            "Cut cost-per-engagement by 38% with UGC-first creative"
+          ]
+        },
+        {
+          "id": "experience_3",
+          "role": "Content Producer",
+          "company": "Northwind Coffee",
+          "period": "2019 — 2021",
+          "location": "Portland, OR",
+          "type": "Freelance",
+          "description": "Produced photo and video content for retail openings and seasonal menu launches.",
+          "highlights": [
+            "Produced 200+ assets across 12 store openings",
+            "Built the brand's first evergreen content library"
+          ]
+        },
+        {
+          "id": "experience_4",
+          "role": "Marketing Coordinator",
+          "company": "Atlas Apparel",
+          "period": "2017 — 2019",
+          "location": "Austin, TX",
+          "type": "Full-time",
+          "description": "Supported campaign planning, influencer outreach, and community management.",
+          "highlights": [
+            "Managed a 40-creator ambassador program",
+            "Doubled email-to-social cross-promotion revenue"
+          ]
+        }
+      ]
+    },
+    "reels": {
+      "visible": true,
+      "eyebrow": "Content reels",
+      "headingLead": "Top-performing short-form,",
+      "headingAccent": "straight from the feed.",
+      "description": "Hover any frame to preview. Every reel was scripted, shot, edited, and published in-house.",
+      "limit": 8
+    },
+    "testimonials": {
+      "visible": false,
+      "eyebrow": "Social proof",
+      "heading": "What founders and marketing leads say.",
+      "testimonials": [
+        {
+          "id": "testimonial_1",
+          "quote": "Zoe rebuilt our entire short-form playbook. Within a quarter our organic reach tripled and launch videos were outperforming paid.",
+          "name": "Priya Raman",
+          "title": "Founder & CEO",
+          "company": "Lumen Skincare",
+          "initials": "PR"
+        },
+        {
+          "id": "testimonial_2",
+          "quote": "The rare strategist who can also shoot, edit, and ship. She moves faster than our full agency did — and the work lands better.",
+          "name": "Daniel Okafor",
+          "title": "Marketing Director",
+          "company": "Harbor Hotels",
+          "initials": "DO"
+        },
+        {
+          "id": "testimonial_3",
+          "quote": "Our engagement rate went from forgettable to top-of-category in 90 days. Zoe's content system is the reason.",
+          "name": "Mika Tanaka",
+          "title": "Head of Brand",
+          "company": "Verde Wellness",
+          "initials": "MT"
+        },
+        {
+          "id": "testimonial_4",
+          "quote": "She treats community management like a growth channel, not a chore. Comments became our best-performing content brief.",
+          "name": "Sofia Lindqvist",
+          "title": "Co-founder",
+          "company": "Tide & Timber",
+          "initials": "SL"
+        },
+        {
+          "id": "testimonial_5",
+          "quote": "Zoe understood our brand voice on day one. Every deliverable felt native to the platform and unmistakably ours.",
+          "name": "Marcus Bell",
+          "title": "Agency Partner",
+          "company": "Studio Marlow",
+          "initials": "MB"
+        },
+        {
+          "id": "testimonial_6",
+          "quote": "Our launch video hit 1.2M views with zero paid spend. That single campaign changed how the whole company thinks about social.",
+          "name": "Ava Chen",
+          "title": "VP Growth",
+          "company": "Pulse Fitness",
+          "initials": "AC"
+        }
+      ]
+    },
+    "contact": {
+      "visible": true,
+      "eyebrow": "Contact",
+      "headingLead": "Let’s build your",
+      "headingAccent": "next campaign.",
+      "description": "Tell me about your brand and goals — or skip the form and book a call directly.",
+      "bookingLabel": "Schedule a call",
+      "basedInLabel": "Based in",
+      "form": {
+        "nameLabel": "Name",
+        "namePlaceholder": "Jane Cooper",
+        "emailLabel": "Email",
+        "emailPlaceholder": "jane@brand.com",
+        "companyLabel": "Company (optional)",
+        "companyPlaceholder": "Brand or agency",
+        "messageLabel": "Project details",
+        "messagePlaceholder": "Goals, timeline, platforms...",
+        "submitLabel": "Send message",
+        "sentLabel": "Message ready — check your mail app",
+        "errorName": "Please enter your name.",
+        "errorEmail": "Enter a valid email address.",
+        "errorMessage": "Tell me a little more (10+ characters)."
+      }
+    },
+    "footer": {
+      "rightsLabel": "All rights reserved."
+    }
+  }
+}

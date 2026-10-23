@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
@@ -8,15 +8,11 @@ import { ArrowUpRight } from "lucide-react";
 import { CaseStudySheet } from "@/components/case-study-sheet";
 import { BentoCard, BentoGrid } from "@/components/magicui/bento-grid";
 import { Badge } from "@/components/ui/badge";
-import { campaigns, type Campaign } from "@/data/campaigns";
+import { getCategoryName } from "@/content/helpers";
+import type { Campaign, SiteContent } from "@/content/schema";
 import { cn } from "@/lib/utils";
 
 const spans = ["md:col-span-2 md:row-span-2", "", "", "md:col-span-2", ""];
-
-const industries = [
-  "All",
-  ...Array.from(new Set(campaigns.map((campaign) => campaign.industry))),
-];
 
 function formatMetric(value: number, prefix?: string, suffix?: string) {
   return `${prefix ?? ""}${value}${suffix ?? ""}`;
@@ -24,11 +20,21 @@ function formatMetric(value: number, prefix?: string, suffix?: string) {
 
 interface CampaignCardProps {
   campaign: Campaign;
+  categoryName: string;
+  featuredLabel: string;
+  viewLabel: string;
   big: boolean;
   onOpen: (campaign: Campaign) => void;
 }
 
-function CampaignCard({ campaign, big, onOpen }: CampaignCardProps) {
+function CampaignCard({
+  campaign,
+  categoryName,
+  featuredLabel,
+  viewLabel,
+  big,
+  onOpen,
+}: CampaignCardProps) {
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
     event.currentTarget.style.setProperty(
@@ -67,15 +73,15 @@ function CampaignCard({ campaign, big, onOpen }: CampaignCardProps) {
         type="button"
         onClick={() => onOpen(campaign)}
         className="absolute inset-0 z-20 rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-        aria-label={`View ${campaign.clientName} case study`}
+        aria-label={`${viewLabel} — ${campaign.clientName}`}
       />
 
       <div className="relative z-10 mt-auto flex flex-col gap-3 p-5 sm:p-6">
         <div className="flex flex-wrap items-center gap-2">
           <Badge className="border-transparent bg-white/15 text-white backdrop-blur-sm">
-            {campaign.industry}
+            {categoryName}
           </Badge>
-          {campaign.featured ? <Badge>Featured</Badge> : null}
+          {campaign.featured ? <Badge>{featuredLabel}</Badge> : null}
         </div>
 
         <div className="space-y-2">
@@ -99,7 +105,7 @@ function CampaignCard({ campaign, big, onOpen }: CampaignCardProps) {
 
         <div className="flex flex-wrap gap-x-6 gap-y-2 pt-1">
           {campaign.keyMetrics.slice(0, big ? 3 : 2).map((metric) => (
-            <div key={metric.label}>
+            <div key={metric.id}>
               <p className="font-display text-xl font-semibold tracking-tight text-brand-amber">
                 {formatMetric(metric.value, metric.prefix, metric.suffix)}
               </p>
@@ -111,7 +117,7 @@ function CampaignCard({ campaign, big, onOpen }: CampaignCardProps) {
         </div>
 
         <span className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold text-white">
-          View case study
+          {viewLabel}
           <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         </span>
       </div>
@@ -119,17 +125,27 @@ function CampaignCard({ campaign, big, onOpen }: CampaignCardProps) {
   );
 }
 
-export function CampaignGrid() {
+export function CampaignGrid({ content }: { content: SiteContent }) {
+  const { categories } = content;
+  const campaignsContent = content.sections.campaigns;
+  const campaigns = campaignsContent.campaigns;
+
   const [active, setActive] = useState<Campaign | null>(null);
   const [open, setOpen] = useState(false);
-  const [filter, setFilter] = useState("All");
+  const [filter, setFilter] = useState("all");
+
+  useEffect(() => {
+    if (filter !== "all" && !categories.some((category) => category.id === filter)) {
+      setFilter("all");
+    }
+  }, [categories, filter]);
 
   const filtered = useMemo(
     () =>
-      filter === "All"
+      filter === "all"
         ? campaigns
-        : campaigns.filter((campaign) => campaign.industry === filter),
-    [filter],
+        : campaigns.filter((campaign) => campaign.categoryId === filter),
+    [campaigns, filter],
   );
 
   const handleOpen = (campaign: Campaign) => {
@@ -143,36 +159,48 @@ export function CampaignGrid() {
         <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-              Selected work
+              {campaignsContent.eyebrow}
             </p>
             <h2 className="text-balance text-4xl leading-[1.02] tracking-tight sm:text-5xl lg:text-6xl">
-              Campaigns built to stop the scroll{" "}
+              {campaignsContent.headingLead}{" "}
               <span className="text-gradient animate-gradient-x">
-                and move the numbers.
+                {campaignsContent.headingAccent}
               </span>
             </h2>
           </div>
           <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
-            Filter by industry, then open any campaign for the full breakdown —
-            challenge, strategy, results, and the actual creative.
+            {campaignsContent.description}
           </p>
         </div>
 
         <div className="mb-8 flex flex-wrap gap-2">
-          {industries.map((industry) => (
+          <button
+            type="button"
+            onClick={() => setFilter("all")}
+            aria-pressed={filter === "all"}
+            className={cn(
+              "rounded-full border px-4 py-2 text-xs font-semibold transition-all duration-200",
+              filter === "all"
+                ? "border-primary bg-primary text-primary-foreground shadow-md shadow-primary/25"
+                : "border-border bg-card text-muted-foreground hover:-translate-y-0.5 hover:border-primary/40 hover:text-foreground",
+            )}
+          >
+            {campaignsContent.allLabel}
+          </button>
+          {categories.map((category) => (
             <button
-              key={industry}
+              key={category.id}
               type="button"
-              onClick={() => setFilter(industry)}
-              aria-pressed={filter === industry}
+              onClick={() => setFilter(category.id)}
+              aria-pressed={filter === category.id}
               className={cn(
                 "rounded-full border px-4 py-2 text-xs font-semibold transition-all duration-200",
-                filter === industry
+                filter === category.id
                   ? "border-primary bg-primary text-primary-foreground shadow-md shadow-primary/25"
                   : "border-border bg-card text-muted-foreground hover:-translate-y-0.5 hover:border-primary/40 hover:text-foreground",
               )}
             >
-              {industry}
+              {category.name}
             </button>
           ))}
         </div>
@@ -192,6 +220,9 @@ export function CampaignGrid() {
             >
               <CampaignCard
                 campaign={campaign}
+                categoryName={getCategoryName(categories, campaign.categoryId)}
+                featuredLabel={campaignsContent.featuredLabel}
+                viewLabel={campaignsContent.viewLabel}
                 big={index === 0}
                 onOpen={handleOpen}
               />
@@ -200,7 +231,13 @@ export function CampaignGrid() {
         </BentoGrid>
       </div>
 
-      <CaseStudySheet campaign={active} open={open} onOpenChange={setOpen} />
+      <CaseStudySheet
+        campaign={active}
+        categories={categories}
+        copy={campaignsContent.caseStudy}
+        open={open}
+        onOpenChange={setOpen}
+      />
     </section>
   );
 }

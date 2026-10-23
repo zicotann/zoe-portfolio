@@ -19,10 +19,11 @@ export interface DockItem {
 
 interface DockProps {
   items: DockItem[];
+  activeHref?: string;
   className?: string;
 }
 
-export function Dock({ items, className }: DockProps) {
+export function Dock({ items, activeHref, className }: DockProps) {
   return (
     <TooltipProvider delayDuration={150}>
       <nav
@@ -33,25 +34,36 @@ export function Dock({ items, className }: DockProps) {
         )}
       >
         <ul className="flex items-end gap-1 rounded-2xl border border-border bg-card/90 px-2 py-2 shadow-lg backdrop-blur-xl">
-          {items.map((item) => (
-            <li key={item.href}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <motion.a
-                    href={item.href}
-                    aria-label={item.label}
-                    whileHover={{ scale: 1.18, y: -6 }}
-                    whileTap={{ scale: 0.94 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 22 }}
-                    className="flex h-11 w-11 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  >
-                    {item.icon}
-                  </motion.a>
-                </TooltipTrigger>
-                <TooltipContent>{item.label}</TooltipContent>
-              </Tooltip>
-            </li>
-          ))}
+          {items.map((item) => {
+            const isActive = item.href === activeHref;
+
+            return (
+              <li key={item.href}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <motion.a
+                      href={item.href}
+                      aria-label={item.label}
+                      aria-current={isActive ? "location" : undefined}
+                      animate={{ scale: isActive ? 1.18 : 1, y: isActive ? -6 : 0 }}
+                      whileHover={{ scale: 1.18, y: -6 }}
+                      whileTap={{ scale: 0.94 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 22 }}
+                      className={cn(
+                        "flex h-11 w-11 items-center justify-center rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                        isActive
+                          ? "bg-secondary text-foreground"
+                          : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+                      )}
+                    >
+                      {item.icon}
+                    </motion.a>
+                  </TooltipTrigger>
+                  <TooltipContent>{item.label}</TooltipContent>
+                </Tooltip>
+              </li>
+            );
+          })}
         </ul>
       </nav>
     </TooltipProvider>

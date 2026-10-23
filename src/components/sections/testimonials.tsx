@@ -2,12 +2,11 @@ import { Quote } from "lucide-react";
 
 import { Marquee } from "@/components/magicui/marquee";
 import { Reveal } from "@/components/magicui/reveal";
-import { profile, type Testimonial } from "@/data/profile";
+import type { SiteContent, Testimonial } from "@/content/schema";
 
 const accentBorders = [
   "border-t-brand-violet",
   "border-t-brand-coral",
-  "border-t-brand-teal",
   "border-t-brand-amber",
 ];
 
@@ -41,19 +40,21 @@ function TestimonialCard({
   );
 }
 
-export function Testimonials() {
-  const half = Math.ceil(profile.testimonials.length / 2);
-  const firstRow = profile.testimonials.slice(0, half);
-  const secondRow = profile.testimonials.slice(half);
+export function Testimonials({ content }: { content: SiteContent }) {
+  const testimonialsContent = content.sections.testimonials;
+  const testimonials = testimonialsContent.testimonials;
+  const half = Math.ceil(testimonials.length / 2);
+  const firstRow = testimonials.slice(0, half);
+  const secondRow = testimonials.slice(half);
 
   return (
     <section id="testimonials" className="overflow-hidden py-16 sm:py-24">
       <Reveal className="container mb-10 max-w-2xl space-y-3">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-          Social proof
+          {testimonialsContent.eyebrow}
         </p>
         <h2 className="text-balance text-4xl leading-[1.02] tracking-tight sm:text-5xl">
-          What founders and marketing leads say.
+          {testimonialsContent.heading}
         </h2>
       </Reveal>
 
@@ -61,7 +62,7 @@ export function Testimonials() {
         <Marquee pauseOnHover className="mask-fade-x [--duration:44s]">
           {firstRow.map((testimonial, index) => (
             <TestimonialCard
-              key={testimonial.name}
+              key={testimonial.id}
               testimonial={testimonial}
               index={index}
             />
@@ -70,7 +71,7 @@ export function Testimonials() {
         <Marquee reverse pauseOnHover className="mask-fade-x [--duration:52s]">
           {secondRow.map((testimonial, index) => (
             <TestimonialCard
-              key={testimonial.name}
+              key={testimonial.id}
               testimonial={testimonial}
               index={index + 2}
             />

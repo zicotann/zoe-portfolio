@@ -9,7 +9,7 @@
 - Prefers keeping users in context via side sheets/drawers over full page navigations, while structuring routes (App Router) so standalone pages can be added later without refactoring. Confidence: 0.6
 - Wants markdown documents (spec sheets, plans) written in clean, correct Markdown syntax: proper heading levels, bulleted lists instead of flat text, and correctly opened/closed code fences with one block per language. Confidence: 0.55
 - For visual design, prefers a modern, bright and fun tone: light/warm backgrounds with vivid brand accents over dark/black themes. Confidence: 0.75
-- Prefers a creative serif font (e.g. Fraunces) for display/headings while keeping body text in a clean sans-serif. Confidence: 0.75
+- Prefers a distinctive display/heading font (the `font-display` token) separate from body text — earlier a creative serif (Fraunces), now a characterful grotesque sans (Bricolage Grotesque) for headings. Confidence: 0.7
 - Likes large, captivating headings as a signature design element. Confidence: 0.65
 - Wants tasteful interactivity and motion: scroll reveals, filters, and hover effects. Confidence: 0.65
 - Prefers a left-aligned, headline-first hero: keep the heading and supporting elements (badges, eyebrows, subheadline, CTAs, socials) flush left in a two-column grid, with the portrait on the right — centered layouts are not wanted. Confidence: 0.7
@@ -17,3 +17,6 @@
 - Likes portrait/photo imagery presented in stylish, on-theme non-rectangular shapes (e.g. arch/cameo with rounded top and soft bottom, gradient frame, slight tilt) rather than plain vertical rectangles. Confidence: 0.6
 - Prefers the site header/nav as a centered floating pill (rounded capsule, segmented logo | links | CTA, hover/frosted) rather than a full-width bar. Confidence: 0.6
 - For structural/shape changes, wants the existing color palette and branding retained ("just the shape") — reshape, don't restyle. Confidence: 0.55
+- Prefers a tightly limited color palette — wants the site reduced to a small set of core hues (e.g. only 3 vivid brand colors) with stray/one-off hues folded into the kept set, rather than many competing colors. Confidence: 0.6
+- Comfortable giving the agent latitude to make design decisions on its own (e.g. chooses which colors to keep, decides the detail plan) and trusts it to pick sensible defaults without asking first. Confidence: 0.6
+- Prefers hosting/deployment via GitHub connected to Netlify (explicitly chose Netlify over Vercel), favoring a zero-config setup that keeps Next.js image optimization. Confidence: 0.5

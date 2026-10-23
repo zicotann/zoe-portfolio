@@ -1,11 +1,10 @@
 import { Marquee } from "@/components/magicui/marquee";
-import { profile, type ClientLogo } from "@/data/profile";
+import type { ClientLogo, SiteContent } from "@/content/schema";
 import { cn } from "@/lib/utils";
 
 const tileColors = [
   "bg-brand-violet/10 text-brand-violet",
   "bg-brand-coral/10 text-brand-coral",
-  "bg-brand-teal/20 text-brand-teal",
   "bg-brand-amber/20 text-brand-amber",
 ];
 
@@ -27,28 +26,29 @@ function LogoItem({ client, index }: { client: ClientLogo; index: number }) {
   );
 }
 
-export function LogoCloud() {
-  const clients = profile.clients.filter((c) => c.category === "Client");
-  const mentions = profile.clients.filter((c) => c.category !== "Client");
+export function LogoCloud({ content }: { content: SiteContent }) {
+  const { eyebrow, clients: allClients } = content.sections.clients;
+  const clients = allClients.filter((c) => c.category === "Client");
+  const mentions = allClients.filter((c) => c.category !== "Client");
 
   return (
-    <section className="border-y border-border bg-card/60 py-14">
+    <section id="clients" className="border-y border-border bg-card/60 py-14">
       <div className="container">
         <p className="mb-8 text-center text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">
-          Trusted by brands &amp; featured in
+          {eyebrow}
         </p>
       </div>
 
       <div className="space-y-6">
         <Marquee pauseOnHover className="mask-fade-x [--duration:38s]">
           {clients.map((client, index) => (
-            <LogoItem key={client.name} client={client} index={index} />
+            <LogoItem key={client.id} client={client} index={index} />
           ))}
         </Marquee>
 
         <Marquee reverse pauseOnHover className="mask-fade-x [--duration:44s]">
           {mentions.map((client, index) => (
-            <LogoItem key={client.name} client={client} index={index + 2} />
+            <LogoItem key={client.id} client={client} index={index + 2} />
           ))}
         </Marquee>
       </div>

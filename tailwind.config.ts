@@ -19,7 +19,7 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-geist-sans)", "ui-sans-serif", "system-ui"],
         mono: ["var(--font-geist-mono)", "ui-monospace", "monospace"],
-        display: ["var(--font-fraunces)", "ui-serif", "Georgia", "serif"],
+        display: ["var(--font-bricolage)", "ui-sans-serif", "system-ui"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -58,7 +58,6 @@ const config: Config = {
         brand: {
           coral: "hsl(var(--brand-coral))",
           amber: "hsl(var(--brand-amber))",
-          teal: "hsl(var(--brand-teal))",
           violet: "hsl(var(--brand-violet))",
         },
       },

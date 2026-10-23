@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
 import {
+  ArrowUpRight,
   Briefcase,
   Film,
   LayoutGrid,
+  Link as LinkIcon,
   Mail,
   MessageSquareQuote,
   TrendingUp,
@@ -13,46 +15,21 @@ import {
 
 import { Dock, type DockItem } from "@/components/magicui/dock";
 import { ShimmerButton } from "@/components/magicui/shimmer-button";
-import { profile } from "@/data/profile";
+import type { NavIcon, SiteContent } from "@/content/schema";
 import { cn } from "@/lib/utils";
 
-const navLinks = [
-  { label: "Work", href: "#work" },
-  { label: "Metrics", href: "#metrics" },
-  { label: "Experience", href: "#experience" },
-  { label: "Reels", href: "#reels" },
-  { label: "Testimonials", href: "#testimonials" },
-  { label: "Contact", href: "#contact" },
-];
+const dockIcons: Record<NavIcon, React.ReactNode> = {
+  work: <LayoutGrid className="h-5 w-5" />,
+  metrics: <TrendingUp className="h-5 w-5" />,
+  experience: <Briefcase className="h-5 w-5" />,
+  reels: <Film className="h-5 w-5" />,
+  testimonials: <MessageSquareQuote className="h-5 w-5" />,
+  contact: <Mail className="h-5 w-5" />,
+  mail: <Mail className="h-5 w-5" />,
+  link: <LinkIcon className="h-5 w-5" />,
+};
 
-const sectionIds = [
-  "top",
-  "work",
-  "metrics",
-  "experience",
-  "reels",
-  "testimonials",
-  "contact",
-];
-
-const dockItems: DockItem[] = [
-  { label: "Work", href: "#work", icon: <LayoutGrid className="h-5 w-5" /> },
-  { label: "Metrics", href: "#metrics", icon: <TrendingUp className="h-5 w-5" /> },
-  {
-    label: "Experience",
-    href: "#experience",
-    icon: <Briefcase className="h-5 w-5" />,
-  },
-  { label: "Reels", href: "#reels", icon: <Film className="h-5 w-5" /> },
-  {
-    label: "Testimonials",
-    href: "#testimonials",
-    icon: <MessageSquareQuote className="h-5 w-5" />,
-  },
-  { label: "Contact", href: "#contact", icon: <Mail className="h-5 w-5" /> },
-];
-
-export function SiteHeader() {
+export function SiteHeader({ content }: { content: SiteContent }) {
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState("#top");
   const { scrollYProgress } = useScroll();
@@ -62,6 +39,42 @@ export function SiteHeader() {
     restDelta: 0.001,
   });
 
+  const navLinks = useMemo(() => {
+    const sectionVisibility: Record<string, boolean> = {
+      "#top": content.sections.hero.visible,
+      "#hero": content.sections.hero.visible,
+      "#metrics": content.sections.metrics.visible,
+      "#clients": content.sections.clients.visible,
+      "#work": content.sections.campaigns.visible,
+      "#experience": content.sections.experience.visible,
+      "#reels": content.sections.reels.visible,
+      "#testimonials": content.sections.testimonials.visible,
+      "#contact": content.sections.contact.visible,
+    };
+
+    return content.navigation.links.filter(
+      (link) => sectionVisibility[link.href] ?? true,
+    );
+  }, [content.navigation.links, content.sections]);
+  const anchorIds = useMemo(
+    () =>
+      Array.from(
+        new Set([
+          "top",
+          ...navLinks
+            .filter((link) => link.href.startsWith("#"))
+            .map((link) => link.href.slice(1)),
+        ]),
+      ),
+    [navLinks],
+  );
+
+  const dockItems: DockItem[] = navLinks.map((link) => ({
+    label: link.label,
+    href: link.href,
+    icon: dockIcons[link.icon],
+  }));
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
@@ -70,7 +83,7 @@ export function SiteHeader() {
   }, []);
 
   useEffect(() => {
-    const sections = sectionIds
+    const sections = anchorIds
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => el !== null);
 
@@ -85,7 +98,7 @@ export function SiteHeader() {
 
     sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
-  }, []);
+  }, [anchorIds]);
 
   return (
     <>
@@ -103,39 +116,50 @@ export function SiteHeader() {
             href="#top"
             className="px-3 font-display text-base font-semibold tracking-tight transition-opacity hover:opacity-80 sm:px-4"
           >
-            {profile.name}
+            {content.profile.name}
             <span className="text-brand-coral">.</span>
           </a>
 
-          <span aria-hidden className="hidden h-6 w-px bg-border lg:block" />
+          {navLinks.length > 0 ? (
+            <>
+              <span
+                aria-hidden
+                className="hidden h-6 w-px bg-border lg:block"
+              />
 
-          <div className="hidden items-center gap-0.5 lg:flex">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                aria-current={active === link.href ? "location" : undefined}
-                className={cn(
-                  "rounded-full px-3 py-2 text-sm font-medium transition-colors",
-                  active === link.href
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-secondary hover:text-foreground",
-                )}
-              >
-                {link.label}
-              </a>
-            ))}
-          </div>
+              <div className="hidden items-center gap-0.5 lg:flex">
+                {navLinks.map((link) => (
+                  <a
+                    key={link.id}
+                    href={link.href}
+                    aria-current={active === link.href ? "location" : undefined}
+                    className={cn(
+                      "rounded-full px-3 py-2 text-sm font-medium transition-colors",
+                      active === link.href
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+                    )}
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </div>
 
-          <span aria-hidden className="hidden h-6 w-px bg-border lg:block" />
+              <span
+                aria-hidden
+                className="hidden h-6 w-px bg-border lg:block"
+              />
+            </>
+          ) : null}
 
           <ShimmerButton
-            href={profile.calendlyUrl}
+            href={content.navigation.ctaHref}
             target="_blank"
             rel="noopener noreferrer"
             className="ml-1 h-9 px-4 text-xs sm:px-5 sm:text-sm"
           >
-            Book a call
+            {content.navigation.ctaLabel}
+            <ArrowUpRight className="h-3.5 w-3.5" />
           </ShimmerButton>
 
           <motion.span
@@ -146,7 +170,9 @@ export function SiteHeader() {
         </nav>
       </header>
 
-      <Dock items={dockItems} className="lg:hidden" />
+      {dockItems.length > 0 ? (
+        <Dock items={dockItems} activeHref={active} className="lg:hidden" />
+      ) : null}
     </>
   );
 }
