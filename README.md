@@ -2,7 +2,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Content Studio
 
-The site content is stored in [`content/site.json`](content/site.json) and edited through the private content studio at `/admin`.
+The site content is stored and edited in admin dashboard.
 
 ### Local setup
 
@@ -18,7 +18,7 @@ npm run dev
 ### How editing works
 
 - **Save** keeps the draft in the current browser tab (`sessionStorage`). Closing the tab/browser discards it.
-- **Publish** opens a confirmation dialog, commits `content/site.json` to `GITHUB_BRANCH` (default `main`), and triggers the Netlify rebuild.
+- **Publish** opens a confirmation dialog, commits and triggers the Netlify rebuild.
 - Category records are managed in Global → Categories. Campaigns select a category from a dropdown.
 - The resume is a PDF stored in `public/resumes` and uploaded from Global → Profile & Identity. Uploads are committed to `GITHUB_BRANCH` through the GitHub Contents API and appear in the admin's existing-PDF picker.
 - Image fields accept a public URL, an upload to Cloudflare R2, or a selection from existing R2 images. Images can be replaced or deleted from the field. Campaign content-showcase images can also link to an Instagram or LinkedIn post.

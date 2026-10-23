@@ -33,8 +33,7 @@ export function PublishDialog({
         <DialogHeader>
           <DialogTitle>Publish these changes?</DialogTitle>
           <DialogDescription>
-            This commits <code className="text-xs">content/site.json</code> to
-            the configured GitHub branch and triggers a Netlify rebuild.
+            This commits changes and triggers a Netlify rebuild.
           </DialogDescription>
         </DialogHeader>
 
