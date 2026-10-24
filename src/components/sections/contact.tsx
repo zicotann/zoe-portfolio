@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Reveal } from "@/components/magicui/reveal";
 import type { SiteContent } from "@/content/schema";
+import { previewFields } from "@/lib/preview-fields";
 
 type FormValues = {
   name: string;
@@ -66,7 +67,7 @@ export function Contact({ content }: { content: SiteContent }) {
 
   return (
     <section id="contact" className="py-16 sm:py-24">
-      <div className="container">
+      <div {...previewFields("sections.contact.visible")} className="container">
         <Reveal>
           <div className="relative overflow-hidden rounded-[2rem] border border-border bg-card p-6 shadow-sm sm:p-10">
             <div
@@ -81,22 +82,36 @@ export function Contact({ content }: { content: SiteContent }) {
             <div className="relative grid gap-10 lg:grid-cols-2 lg:gap-16">
               <div className="space-y-6">
                 <div className="space-y-3">
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+                  <p
+                    {...previewFields("sections.contact.eyebrow")}
+                    className="text-xs font-semibold uppercase tracking-[0.22em] text-primary"
+                  >
                     {contact.eyebrow}
                   </p>
                   <h2 className="text-balance text-4xl leading-[1.02] tracking-tight sm:text-5xl">
-                    {contact.headingLead}{" "}
-                    <span className="text-gradient animate-gradient-x">
+                    <span
+                      {...previewFields("sections.contact.headingLead")}
+                    >
+                      {contact.headingLead}
+                    </span>{" "}
+                    <span
+                      {...previewFields("sections.contact.headingAccent")}
+                      className="text-gradient animate-gradient-x"
+                    >
                       {contact.headingAccent}
                     </span>
                   </h2>
-                  <p className="text-pretty text-sm leading-relaxed text-muted-foreground">
+                  <p
+                    {...previewFields("sections.contact.description")}
+                    className="text-pretty text-sm leading-relaxed text-muted-foreground"
+                  >
                     {contact.description}
                   </p>
                 </div>
 
                 <Button asChild size="lg" className="w-full sm:w-auto">
                   <a
+                    {...previewFields("sections.contact.bookingLabel")}
                     href={profile.calendlyUrl}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -124,7 +139,10 @@ export function Contact({ content }: { content: SiteContent }) {
                   ))}
                 </div>
 
-                <p className="text-xs text-muted-foreground">
+                <p
+                  {...previewFields("sections.contact.basedInLabel")}
+                  className="text-xs text-muted-foreground"
+                >
                   {contact.basedInLabel} {profile.location} · {profile.timezone}
                 </p>
               </div>
@@ -140,10 +158,23 @@ export function Contact({ content }: { content: SiteContent }) {
                       control={form.control}
                       name="name"
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{copy.nameLabel}</FormLabel>
+                        <FormItem
+                          {...previewFields(
+                            "sections.contact.form.errorName",
+                          )}
+                        >
+                          <FormLabel
+                            {...previewFields(
+                              "sections.contact.form.nameLabel",
+                            )}
+                          >
+                            {copy.nameLabel}
+                          </FormLabel>
                           <FormControl>
                             <Input
+                              {...previewFields(
+                                "sections.contact.form.namePlaceholder",
+                              )}
                               placeholder={copy.namePlaceholder}
                               className="bg-background"
                               {...field}
@@ -157,10 +188,23 @@ export function Contact({ content }: { content: SiteContent }) {
                       control={form.control}
                       name="email"
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{copy.emailLabel}</FormLabel>
+                        <FormItem
+                          {...previewFields(
+                            "sections.contact.form.errorEmail",
+                          )}
+                        >
+                          <FormLabel
+                            {...previewFields(
+                              "sections.contact.form.emailLabel",
+                            )}
+                          >
+                            {copy.emailLabel}
+                          </FormLabel>
                           <FormControl>
                             <Input
+                              {...previewFields(
+                                "sections.contact.form.emailPlaceholder",
+                              )}
                               type="email"
                               placeholder={copy.emailPlaceholder}
                               className="bg-background"
@@ -178,9 +222,18 @@ export function Contact({ content }: { content: SiteContent }) {
                     name="company"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>{copy.companyLabel}</FormLabel>
+                        <FormLabel
+                          {...previewFields(
+                            "sections.contact.form.companyLabel",
+                          )}
+                        >
+                          {copy.companyLabel}
+                        </FormLabel>
                         <FormControl>
                           <Input
+                            {...previewFields(
+                              "sections.contact.form.companyPlaceholder",
+                            )}
                             placeholder={copy.companyPlaceholder}
                             className="bg-background"
                             {...field}
@@ -195,10 +248,23 @@ export function Contact({ content }: { content: SiteContent }) {
                     control={form.control}
                     name="message"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{copy.messageLabel}</FormLabel>
+                      <FormItem
+                        {...previewFields(
+                          "sections.contact.form.errorMessage",
+                        )}
+                      >
+                        <FormLabel
+                          {...previewFields(
+                            "sections.contact.form.messageLabel",
+                          )}
+                        >
+                          {copy.messageLabel}
+                        </FormLabel>
                         <FormControl>
                           <Textarea
+                            {...previewFields(
+                              "sections.contact.form.messagePlaceholder",
+                            )}
                             placeholder={copy.messagePlaceholder}
                             className="bg-background"
                             {...field}
@@ -209,7 +275,15 @@ export function Contact({ content }: { content: SiteContent }) {
                     )}
                   />
 
-                  <Button type="submit" size="lg" className="w-full">
+                  <Button
+                    {...previewFields(
+                      "sections.contact.form.submitLabel",
+                      "sections.contact.form.sentLabel",
+                    )}
+                    type="submit"
+                    size="lg"
+                    className="w-full"
+                  >
                     {sent ? (
                       <>
                         <Check className="h-4 w-4" />

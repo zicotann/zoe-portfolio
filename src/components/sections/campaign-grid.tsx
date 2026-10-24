@@ -10,6 +10,7 @@ import { BentoCard, BentoGrid } from "@/components/magicui/bento-grid";
 import { Badge } from "@/components/ui/badge";
 import { getCategoryName } from "@/content/helpers";
 import type { Campaign, SiteContent } from "@/content/schema";
+import { previewAnchor, previewFields } from "@/lib/preview-fields";
 import { cn } from "@/lib/utils";
 
 const spans = ["md:col-span-2 md:row-span-2", "", "", "md:col-span-2", ""];
@@ -49,10 +50,14 @@ function CampaignCard({
 
   return (
     <BentoCard
+      {...previewAnchor(`campaign.${campaign.id}`)}
       className="h-full justify-end border-border hover:-translate-y-1 hover:shadow-xl"
       onMouseMove={handleMouseMove}
     >
       <Image
+        {...previewFields(
+          `sections.campaigns.campaigns.${campaign.id}.coverImage`,
+        )}
         src={campaign.coverImage}
         alt=""
         fill
@@ -77,15 +82,32 @@ function CampaignCard({
       />
 
       <div className="relative z-10 mt-auto flex flex-col gap-3 p-5 sm:p-6">
-        <div className="flex flex-wrap items-center gap-2">
-          <Badge className="border-transparent bg-white/15 text-white backdrop-blur-sm">
+        <div
+          {...previewFields(
+            `sections.campaigns.campaigns.${campaign.id}.featured`,
+          )}
+          className="flex flex-wrap items-center gap-2"
+        >
+          <Badge
+            {...previewFields(
+              `sections.campaigns.campaigns.${campaign.id}.categoryId`,
+            )}
+            className="border-transparent bg-white/15 text-white backdrop-blur-sm"
+          >
             {categoryName}
           </Badge>
-          {campaign.featured ? <Badge>{featuredLabel}</Badge> : null}
+          {campaign.featured ? (
+            <Badge {...previewFields("sections.campaigns.featuredLabel")}>
+              {featuredLabel}
+            </Badge>
+          ) : null}
         </div>
 
         <div className="space-y-2">
           <h3
+            {...previewFields(
+              `sections.campaigns.campaigns.${campaign.id}.clientName`,
+            )}
             className={cn(
               "font-semibold tracking-tight text-white",
               big ? "text-3xl sm:text-4xl" : "text-2xl",
@@ -94,6 +116,9 @@ function CampaignCard({
             {campaign.clientName}
           </h3>
           <p
+            {...previewFields(
+              `sections.campaigns.campaigns.${campaign.id}.summary`,
+            )}
             className={cn(
               "text-pretty text-sm leading-relaxed text-white/75",
               big ? "line-clamp-3" : "line-clamp-2",
@@ -106,17 +131,33 @@ function CampaignCard({
         <div className="flex flex-wrap gap-x-6 gap-y-2 pt-1">
           {campaign.keyMetrics.slice(0, big ? 3 : 2).map((metric) => (
             <div key={metric.id}>
-              <p className="font-display text-xl font-semibold tracking-tight text-brand-amber">
+              <p
+                {...previewFields(
+                  `sections.campaigns.campaigns.${campaign.id}.keyMetrics.${metric.id}.value`,
+                  `sections.campaigns.campaigns.${campaign.id}.keyMetrics.${metric.id}.prefix`,
+                  `sections.campaigns.campaigns.${campaign.id}.keyMetrics.${metric.id}.suffix`,
+                  `sections.campaigns.campaigns.${campaign.id}.keyMetrics.${metric.id}.decimals`,
+                )}
+                className="font-display text-xl font-semibold tracking-tight text-brand-amber"
+              >
                 {formatMetric(metric.value, metric.prefix, metric.suffix)}
               </p>
-              <p className="text-[11px] uppercase tracking-wide text-white/60">
+              <p
+                {...previewFields(
+                  `sections.campaigns.campaigns.${campaign.id}.keyMetrics.${metric.id}.label`,
+                )}
+                className="text-[11px] uppercase tracking-wide text-white/60"
+              >
                 {metric.label}
               </p>
             </div>
           ))}
         </div>
 
-        <span className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold text-white">
+        <span
+          {...previewFields("sections.campaigns.viewLabel")}
+          className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold text-white"
+        >
           {viewLabel}
           <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         </span>
@@ -155,26 +196,41 @@ export function CampaignGrid({ content }: { content: SiteContent }) {
 
   return (
     <section id="work" className="py-16 sm:py-24">
-      <div className="container">
+      <div
+        {...previewFields("sections.campaigns.visible")}
+        className="container"
+      >
         <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl space-y-3">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+            <p
+              {...previewFields("sections.campaigns.eyebrow")}
+              className="text-xs font-semibold uppercase tracking-[0.22em] text-primary"
+            >
               {campaignsContent.eyebrow}
             </p>
             <h2 className="text-balance text-4xl leading-[1.02] tracking-tight sm:text-5xl lg:text-6xl">
-              {campaignsContent.headingLead}{" "}
-              <span className="text-gradient animate-gradient-x">
+              <span {...previewFields("sections.campaigns.headingLead")}>
+                {campaignsContent.headingLead}
+              </span>{" "}
+              <span
+                {...previewFields("sections.campaigns.headingAccent")}
+                className="text-gradient animate-gradient-x"
+              >
                 {campaignsContent.headingAccent}
               </span>
             </h2>
           </div>
-          <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
+          <p
+            {...previewFields("sections.campaigns.description")}
+            className="max-w-sm text-sm leading-relaxed text-muted-foreground"
+          >
             {campaignsContent.description}
           </p>
         </div>
 
         <div className="mb-8 flex flex-wrap gap-2">
           <button
+            {...previewFields("sections.campaigns.allLabel")}
             type="button"
             onClick={() => setFilter("all")}
             aria-pressed={filter === "all"}
@@ -189,6 +245,7 @@ export function CampaignGrid({ content }: { content: SiteContent }) {
           </button>
           {categories.map((category) => (
             <button
+              {...previewFields(`categories.${category.id}.name`)}
               key={category.id}
               type="button"
               onClick={() => setFilter(category.id)}

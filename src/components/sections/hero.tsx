@@ -6,6 +6,10 @@ import { Button } from "@/components/ui/button";
 import { BrandIcon } from "@/components/brand-icons";
 import { ShimmerButton } from "@/components/magicui/shimmer-button";
 import type { AvailabilityColor, SiteContent } from "@/content/schema";
+import {
+  previewAnchor,
+  previewFields,
+} from "@/lib/preview-fields";
 import { cn } from "@/lib/utils";
 
 const availabilityStyles: Record<
@@ -47,12 +51,22 @@ export function Hero({ content }: { content: SiteContent }) {
         <div className="absolute inset-0 bg-grid opacity-50 [mask-image:radial-gradient(ellipse_at_top,black,transparent_72%)]" />
       </div>
 
-      <div className="container relative">
+      <div
+        {...previewFields("sections.hero.visible")}
+        className="container relative"
+      >
         <div className="grid items-center lg:grid-cols-[1.35fr_0.65fr]">
           <div className="animate-fade-up space-y-8">
-            <div className="flex flex-wrap items-center gap-3">
+            <div
+              {...previewAnchor("hero.identity")}
+              className="flex flex-wrap items-center gap-3"
+            >
               {availability ? (
                 <Badge
+                  {...previewFields(
+                    "profile.availability",
+                    "profile.availabilityColor",
+                  )}
                   className={cn(
                     "gap-2 border-transparent py-1.5",
                     availabilityStyle.badge,
@@ -82,23 +96,38 @@ export function Hero({ content }: { content: SiteContent }) {
             </div>
 
             <div className="space-y-6">
-              <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+              <p
+                {...previewFields("profile.role")}
+                className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-primary"
+              >
                 <Sparkles className="h-3.5 w-3.5" />
                 {profile.role}
               </p>
               <h1 className="max-w-3xl text-balance text-5xl leading-[0.95] tracking-tight sm:text-6xl lg:text-7xl xl:text-8xl">
-                {profile.headlineLead}{" "}
-                <span className="text-gradient animate-gradient-x">
+                <span {...previewFields("profile.headlineLead")}>
+                  {profile.headlineLead}
+                </span>{" "}
+                <span
+                  {...previewFields("profile.headlineAccent")}
+                  className="text-gradient animate-gradient-x"
+                >
                   &amp; {profile.headlineAccent}
                 </span>
               </h1>
-              <p className="max-w-xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
+              <p
+                {...previewFields("profile.subheadline")}
+                className="max-w-xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg"
+              >
                 {profile.subheadline}
               </p>
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
               <ShimmerButton
+                {...previewFields(
+                  "sections.hero.primaryCtaLabel",
+                  "sections.hero.primaryCtaHref",
+                )}
                 href={hero.primaryCtaHref}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -107,12 +136,23 @@ export function Hero({ content }: { content: SiteContent }) {
                 <ArrowDownRight className="h-4 w-4" />
               </ShimmerButton>
               <Button asChild variant="outline" size="lg">
-                <a href={hero.secondaryCtaHref}>{hero.secondaryCtaLabel}</a>
+                <a
+                  {...previewFields(
+                    "sections.hero.secondaryCtaLabel",
+                    "sections.hero.secondaryCtaHref",
+                  )}
+                  href={hero.secondaryCtaHref}
+                >
+                  {hero.secondaryCtaLabel}
+                </a>
               </Button>
             </div>
 
             <div className="flex items-center gap-4 pt-2">
-              <span className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+              <span
+                {...previewFields("sections.hero.followLabel")}
+                className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground"
+              >
                 {hero.followLabel}
               </span>
               <div className="flex items-center gap-2">
@@ -133,7 +173,13 @@ export function Hero({ content }: { content: SiteContent }) {
           </div>
 
           <div className="relative mx-auto mt-10 lg:mt-0 lg:mr-auto w-60 sm:w-64 lg:w-80">
-            <div className="rounded-t-full rounded-b-[2rem] bg-gradient-to-br from-brand-violet via-brand-coral to-brand-amber p-[3px] shadow-xl transition-transform duration-500 hover:-rotate-2">
+            <div
+              {...previewFields(
+                "profile.portraitImage",
+                "sections.hero.portraitAlt",
+              )}
+              className="rounded-t-full rounded-b-[2rem] bg-gradient-to-br from-brand-violet via-brand-coral to-brand-amber p-[3px] shadow-xl transition-transform duration-500 hover:-rotate-2"
+            >
               <div className="overflow-hidden rounded-t-full rounded-b-[2rem] border-2 border-background">
                 <div className="relative aspect-[3/4] w-full">
                   <Image
@@ -148,7 +194,13 @@ export function Hero({ content }: { content: SiteContent }) {
               </div>
             </div>
 
-            <div className="absolute -bottom-6 -left-8 w-40 animate-float rounded-2xl border border-border bg-card p-3 shadow-lg">
+            <div
+              {...previewFields(
+                "sections.hero.floatingStatValue",
+                "sections.hero.floatingStatLabel",
+              )}
+              className="absolute -bottom-6 -left-8 w-40 animate-float rounded-2xl border border-border bg-card p-3 shadow-lg"
+            >
               <p className="font-display text-2xl font-semibold tracking-tight text-primary">
                 {hero.floatingStatValue}
               </p>
@@ -157,7 +209,10 @@ export function Hero({ content }: { content: SiteContent }) {
               </p>
             </div>
 
-            <div className="absolute -right-4 -top-3 rotate-6 rounded-full bg-brand-amber/20 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-brand-amber shadow-sm">
+            <div
+              {...previewFields("sections.hero.floatingBadge")}
+              className="absolute -right-4 -top-3 rotate-6 rounded-full bg-brand-amber/20 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-brand-amber shadow-sm"
+            >
               {hero.floatingBadge}
             </div>
 

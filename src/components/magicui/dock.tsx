@@ -15,6 +15,7 @@ export interface DockItem {
   label: string;
   href: string;
   icon: React.ReactNode;
+  previewField?: string;
 }
 
 interface DockProps {
@@ -43,6 +44,7 @@ export function Dock({ items, activeHref, className }: DockProps) {
                   <TooltipTrigger asChild>
                     <motion.a
                       href={item.href}
+                      data-preview-field={item.previewField}
                       aria-label={item.label}
                       aria-current={isActive ? "location" : undefined}
                       animate={{ scale: isActive ? 1.18 : 1, y: isActive ? -6 : 0 }}

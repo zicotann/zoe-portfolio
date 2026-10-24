@@ -11,35 +11,47 @@ import {
 
 import { Button } from "@/components/ui/button";
 import type { SiteContent } from "@/content/schema";
+import type { PreviewHighlightTarget } from "@/lib/preview-fields";
 import { cn } from "@/lib/utils";
 import { VIEW_LABELS, type AdminView } from "./types";
 
 export function PreviewPanel({
   content,
   view,
+  highlight,
+  onHighlightCleared,
   fullscreen,
   onToggleFullscreen,
 }: {
   content: SiteContent;
   view: AdminView;
+  highlight: PreviewHighlightTarget | null;
+  onHighlightCleared: () => void;
   fullscreen: boolean;
   onToggleFullscreen: () => void;
 }) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const contentRef = useRef(content);
   const viewRef = useRef(view);
+  const onHighlightClearedRef = useRef(onHighlightCleared);
   const [ready, setReady] = useState(false);
   const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
   const [reloadKey, setReloadKey] = useState(0);
 
   contentRef.current = content;
   viewRef.current = view;
+  onHighlightClearedRef.current = onHighlightCleared;
 
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
       if (event.origin !== window.location.origin) return;
+      if (event.data?.type === "preview:highlight-dismissed") {
+        onHighlightClearedRef.current();
+        return;
+      }
       if (event.data?.type !== "preview:ready") return;
       setReady(true);
+      onHighlightClearedRef.current();
       const frameWindow = iframeRef.current?.contentWindow;
       frameWindow?.postMessage(
         { type: "preview:content", content: contentRef.current },
@@ -73,6 +85,18 @@ export function PreviewPanel({
       window.location.origin,
     );
   }, [view, ready]);
+
+  useEffect(() => {
+    if (!ready) return;
+    const frameWindow = iframeRef.current?.contentWindow;
+    if (!frameWindow) return;
+    frameWindow.postMessage(
+      highlight
+        ? { type: "preview:highlight", target: highlight }
+        : { type: "preview:highlight-clear" },
+      window.location.origin,
+    );
+  }, [highlight, ready]);
 
   return (
     <div className="flex h-full min-h-0 flex-col bg-secondary/30">
@@ -166,6 +190,7 @@ export function PreviewPanel({
             className="h-full w-full"
             onLoad={() => {
               setReady(true);
+              onHighlightClearedRef.current();
               const frameWindow = iframeRef.current?.contentWindow;
               frameWindow?.postMessage(
                 { type: "preview:content", content },

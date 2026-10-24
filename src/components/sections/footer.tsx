@@ -1,5 +1,6 @@
 import { BrandIcon } from "@/components/brand-icons";
 import type { SiteContent } from "@/content/schema";
+import { previewFields } from "@/lib/preview-fields";
 
 export function Footer({ content }: { content: SiteContent }) {
   const { profile, socials, sections } = content;
@@ -18,6 +19,12 @@ export function Footer({ content }: { content: SiteContent }) {
         <div className="flex items-center gap-2">
           {socials.map((social) => (
             <a
+              {...previewFields(
+                `socials.${social.id}.platform`,
+                `socials.${social.id}.label`,
+                `socials.${social.id}.handle`,
+                `socials.${social.id}.href`,
+              )}
               key={social.id}
               href={social.href}
               target="_blank"
@@ -30,7 +37,10 @@ export function Footer({ content }: { content: SiteContent }) {
           ))}
         </div>
 
-        <p className="text-xs text-muted-foreground">
+        <p
+          {...previewFields("sections.footer.rightsLabel")}
+          className="text-xs text-muted-foreground"
+        >
           © {new Date().getFullYear()} {profile.name}.{" "}
           {sections.footer.rightsLabel}
         </p>
