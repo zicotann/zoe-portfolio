@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -32,12 +31,13 @@ export function PublishDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Publish these changes?</DialogTitle>
-          <DialogDescription>
-            This commits changes and triggers a Netlify rebuild.
-          </DialogDescription>
         </DialogHeader>
 
-        <div className="rounded-xl border border-border bg-secondary/50 p-4">
+        <p className="rounded-xl border border-brand-amber/30 bg-brand-amber/10 px-4 py-3 text-xs leading-relaxed text-foreground/80">
+          Tip: Batch your edits into a single publish. You only have 20 free publishes a month.
+        </p>
+
+        <div className="rounded-xl border border-border p-4">
           <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
             Changes in this publish
           </p>
@@ -58,11 +58,6 @@ export function PublishDialog({
             </p>
           )}
         </div>
-
-        <p className="rounded-xl border border-brand-amber/30 bg-brand-amber/10 px-4 py-3 text-xs leading-relaxed text-foreground/80">
-          Tip: batch your edits into one publish. Every publish starts a fresh
-          build, so publishing several small changes means several rebuilds.
-        </p>
 
         {error ? (
           <p className="rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">

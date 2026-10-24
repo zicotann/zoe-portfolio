@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import {
   AlertTriangle,
   Check,
-  CloudUpload,
   Loader2,
   Save,
   Trash2,
@@ -16,8 +15,9 @@ import { AdminSidebar } from "@/components/admin/sidebar";
 import { AdminTopbar } from "@/components/admin/topbar";
 import { PreviewPanel } from "@/components/admin/preview-panel";
 import { PublishDialog } from "@/components/admin/publish-dialog";
+import { ViewChangesDialog } from "@/components/admin/view-changes-dialog";
 import { Button } from "@/components/ui/button";
-import type { AdminView } from "@/components/admin/types";
+import { VIEW_LABELS, type AdminView } from "@/components/admin/types";
 import {
   ClientsView,
   ContactView,
@@ -36,7 +36,12 @@ import {
   SocialsView,
 } from "@/components/admin/views/singletons";
 import { siteContentSchema, type SiteContent } from "@/content/schema";
-import { contentEquals, getChangedAreas } from "@/lib/diff";
+import {
+  contentEquals,
+  getChangedAreas,
+  getDetailedChanges,
+  type ContentChange,
+} from "@/lib/diff";
 import {
   clearDraft,
   loadDraft,
@@ -65,6 +70,7 @@ export function AdminDashboard({
   const [status, setStatus] = useState<StatusMessage | null>(null);
   const [saving, setSaving] = useState(false);
   const [publishOpen, setPublishOpen] = useState(false);
+  const [viewChangesOpen, setViewChangesOpen] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [publishError, setPublishError] = useState<string | null>(null);
   const [commitUrl, setCommitUrl] = useState<string | null>(null);
@@ -74,6 +80,10 @@ export function AdminDashboard({
   const dirty = !contentEquals(baseline, draft);
   const changedAreas = useMemo(
     () => getChangedAreas(baseline, draft),
+    [baseline, draft],
+  );
+  const detailedChanges = useMemo(
+    () => getDetailedChanges(baseline, draft),
     [baseline, draft],
   );
   const showPreview = view !== "profile" && view !== "seo";
@@ -238,18 +248,19 @@ export function AdminDashboard({
   }
 
   async function logout() {
+    clearDraft();
     await fetch("/api/admin/logout", { method: "POST" });
     router.replace("/login");
     router.refresh();
   }
 
-  async function discardDraft() {
+  async function discardDraft(): Promise<boolean> {
     if (
       !window.confirm(
         "Discard all unpublished changes and restore the last published content?",
       )
     ) {
-      return;
+      return false;
     }
     clearDraft();
     try {
@@ -270,6 +281,18 @@ export function AdminDashboard({
     }
     setWarning(null);
     setStatus({ kind: "info", text: "Draft discarded." });
+    return true;
+  }
+
+  function undoChange(change: ContentChange) {
+    editedRef.current = true;
+    setDraft((current) => change.revert(current));
+    setStatus({ kind: "info", text: "Change undone." });
+  }
+
+  async function discardAllChanges() {
+    const discarded = await discardDraft();
+    if (discarded) setViewChangesOpen(false);
   }
 
   function handleNavigate(next: AdminView) {
@@ -320,9 +343,11 @@ export function AdminDashboard({
         <AdminTopbar
           view={view}
           dirty={dirty}
+          changeCount={detailedChanges.length}
           saving={saving}
           publishing={publishing}
           onSave={() => saveDraft()}
+          onViewChanges={() => setViewChangesOpen(true)}
           onPublish={openPublish}
           onOpenSidebar={() => setSidebarOpen(true)}
         />
@@ -372,12 +397,13 @@ export function AdminDashboard({
                   onNavigate={handleNavigate}
                 />
 
-                <div className="flex flex-col items-stretch justify-between gap-3 rounded-2xl border border-border bg-card p-4 sm:flex-row sm:items-center">
+                <div className="rounded-2xl border border-border bg-card p-4">
                   <p className="text-xs leading-relaxed text-muted-foreground">
-                    Save keeps this draft in the current tab. Publish commits all
-                    changes at once.
+                    Save changes means saving changes for this section. The
+                    draft stays in this tab until you publish everything from
+                    the top bar.
                   </p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
                     <Button
                       type="button"
                       variant="ghost"
@@ -401,16 +427,7 @@ export function AdminDashboard({
                       ) : (
                         <Save className="h-4 w-4" />
                       )}
-                      Save changes
-                    </Button>
-                    <Button
-                      type="button"
-                      size="sm"
-                      onClick={openPublish}
-                      disabled={publishing || saving || !dirty}
-                    >
-                      <CloudUpload className="h-4 w-4" />
-                      Publish
+                      Save {VIEW_LABELS[view]} changes
                     </Button>
                   </div>
                 </div>
@@ -440,6 +457,14 @@ export function AdminDashboard({
           ) : null}
         </div>
       </div>
+
+      <ViewChangesDialog
+        open={viewChangesOpen}
+        onOpenChange={setViewChangesOpen}
+        changes={detailedChanges}
+        onUndo={undoChange}
+        onDiscardAll={discardAllChanges}
+      />
 
       <PublishDialog
         open={publishOpen}

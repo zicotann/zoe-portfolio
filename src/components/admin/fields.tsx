@@ -1201,6 +1201,7 @@ interface ArrayEditorProps<T> {
   ) => React.ReactNode;
   defaultOpenFirst?: boolean;
   deleteBlocked?: (item: T, index: number) => string | null;
+  glowWhenOpen?: boolean;
 }
 
 export function ArrayEditor<T>({
@@ -1212,6 +1213,7 @@ export function ArrayEditor<T>({
   children,
   defaultOpenFirst = true,
   deleteBlocked,
+  glowWhenOpen = false,
 }: ArrayEditorProps<T>) {
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
@@ -1253,7 +1255,8 @@ export function ArrayEditor<T>({
             resetDrag();
           }}
           className={cn(
-            "group rounded-2xl border border-border bg-background/50 transition-colors",
+            "group rounded-2xl border border-border bg-background transition-colors",
+            glowWhenOpen && "glow-when-open",
             dragOverIndex === index &&
               dragIndex !== index &&
               "border-primary/60 bg-primary/5 ring-2 ring-primary/15",
