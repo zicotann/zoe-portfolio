@@ -454,9 +454,8 @@ export function AdminDashboard({
 
                 <div className="rounded-2xl border border-border bg-card p-4">
                   <p className="text-xs leading-relaxed text-muted-foreground">
-                    Save changes means saving changes for this section. The
-                    draft stays in this tab until you publish everything from
-                    the top bar.
+                    Saving here means saving changes for this section. You may continue making changes in other sections. <br/> The
+                    draft remains in this browser tab until you publish.
                   </p>
                   <div className="mt-3 flex flex-wrap items-center gap-2">
                     <Button

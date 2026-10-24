@@ -59,9 +59,8 @@ export function AdminTopbar({
           <p className="mt-1 flex max-w-2xl items-start gap-1.5 text-[11px] leading-relaxed text-muted-foreground">
             <Info className="mt-0.5 h-3 w-3 shrink-0" aria-hidden="true" />
             <span>
-              Saved changes are kept only in this tab&apos;s session. They are
-              lost when you log out, close this tab, clear the browser cache or
-              site data, or the session expires.
+              Saved changes are kept only in this browser tab session. They are&nbsp;
+              <b>lost</b> when you <i>refresh, close tab, log out, clear the browser cache, or the session expires &#40;12hrs&#41;.</i>
             </span>
           </p>
         </div>
