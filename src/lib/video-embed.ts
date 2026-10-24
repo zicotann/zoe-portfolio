@@ -67,8 +67,16 @@ export function getSocialThumbnailUrl(
 ): string | null {
   if (!postUrl) return null;
 
-  const params = new URLSearchParams({ source, url: postUrl });
-  return `/api/video-thumbnail?${params.toString()}`;
+  if (source === "instagram") {
+    const parts = getInstagramPostParts(postUrl);
+    return parts ? `/api/video-thumbnail/instagram/${parts.shortcode}` : null;
+  }
+
+  const urn = getLinkedInActivityUrn(postUrl);
+  if (!urn) return null;
+
+  const [, , type, id] = urn.split(":");
+  return `/api/video-thumbnail/linkedin/${type}/${id}`;
 }
 
 export function getVideoThumbnailUrl(video: {
