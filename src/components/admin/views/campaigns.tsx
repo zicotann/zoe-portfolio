@@ -107,6 +107,7 @@ export function CampaignsView({ content, onChange }: AdminViewProps) {
       <SectionVisibility
         checked={campaignsContent.visible}
         onChange={(visible) => patch({ visible })}
+        previewField="sections.campaigns.visible"
       />
       <SectionCard
         title="Campaign grid copy"
@@ -117,31 +118,37 @@ export function CampaignsView({ content, onChange }: AdminViewProps) {
             label="Eyebrow"
             value={campaignsContent.eyebrow}
             onChange={(eyebrow) => patch({ eyebrow })}
+            previewField="sections.campaigns.eyebrow"
           />
           <TextInput
             label="All filter label"
             value={campaignsContent.allLabel}
             onChange={(allLabel) => patch({ allLabel })}
+            previewField="sections.campaigns.allLabel"
           />
           <TextInput
             label="Heading — lead"
             value={campaignsContent.headingLead}
             onChange={(headingLead) => patch({ headingLead })}
+            previewField="sections.campaigns.headingLead"
           />
           <TextInput
             label="Heading — gradient accent"
             value={campaignsContent.headingAccent}
             onChange={(headingAccent) => patch({ headingAccent })}
+            previewField="sections.campaigns.headingAccent"
           />
           <TextInput
             label="Featured badge label"
             value={campaignsContent.featuredLabel}
             onChange={(featuredLabel) => patch({ featuredLabel })}
+            previewField="sections.campaigns.featuredLabel"
           />
           <TextInput
             label="Card link label"
             value={campaignsContent.viewLabel}
             onChange={(viewLabel) => patch({ viewLabel })}
+            previewField="sections.campaigns.viewLabel"
           />
         </div>
         <div className="mt-4">
@@ -150,6 +157,7 @@ export function CampaignsView({ content, onChange }: AdminViewProps) {
             value={campaignsContent.description}
             onChange={(description) => patch({ description })}
             rows={2}
+            previewField="sections.campaigns.description"
           />
         </div>
       </SectionCard>
@@ -253,6 +261,7 @@ export function CampaignsView({ content, onChange }: AdminViewProps) {
           itemLabel={(campaign) => campaign.clientName}
           addLabel="Add campaign"
           defaultOpenFirst={false}
+          glowWhenOpen
         >
           {(campaign, update) => (
             <div className="space-y-6">
@@ -270,6 +279,7 @@ export function CampaignsView({ content, onChange }: AdminViewProps) {
                     }
                     update(patchValue);
                   }}
+                  previewField={`sections.campaigns.campaigns.${campaign.id}.clientName`}
                 />
                 <TextInput
                   label="Slug"
@@ -288,6 +298,7 @@ export function CampaignsView({ content, onChange }: AdminViewProps) {
                   value={campaign.categoryId}
                   onChange={(categoryId) => update({ categoryId })}
                   options={categoryOptions}
+                  previewField={`sections.campaigns.campaigns.${campaign.id}.categoryId`}
                 />
                 <TextInput
                   label="Role"
@@ -306,6 +317,7 @@ export function CampaignsView({ content, onChange }: AdminViewProps) {
                 hint="Featured campaigns show the Featured badge."
                 checked={campaign.featured}
                 onChange={(featured) => update({ featured })}
+                previewField={`sections.campaigns.campaigns.${campaign.id}.featured`}
               />
 
               <TextArea
@@ -313,6 +325,7 @@ export function CampaignsView({ content, onChange }: AdminViewProps) {
                 value={campaign.summary}
                 onChange={(summary) => update({ summary })}
                 rows={3}
+                previewField={`sections.campaigns.campaigns.${campaign.id}.summary`}
               />
 
               <div className="grid gap-4 sm:grid-cols-2">
@@ -320,6 +333,7 @@ export function CampaignsView({ content, onChange }: AdminViewProps) {
                   label="Cover image (grid card)"
                   value={campaign.coverImage}
                   onChange={(coverImage) => update({ coverImage })}
+                  previewField={`sections.campaigns.campaigns.${campaign.id}.coverImage`}
                 />
                 <ImageField
                   label="Hero image (case study)"
@@ -396,27 +410,32 @@ export function CampaignsView({ content, onChange }: AdminViewProps) {
                         label="Label"
                         value={metric.label}
                         onChange={(label) => updateMetric({ label })}
+                        previewField={`sections.campaigns.campaigns.${campaign.id}.keyMetrics.${metric.id}.label`}
                       />
                       <NumberInput
                         label="Value"
                         value={metric.value}
                         onChange={(value) => updateMetric({ value })}
+                        previewField={`sections.campaigns.campaigns.${campaign.id}.keyMetrics.${metric.id}.value`}
                       />
                       <TextInput
                         label="Prefix"
                         value={metric.prefix ?? ""}
                         onChange={(prefix) => updateMetric({ prefix })}
+                        previewField={`sections.campaigns.campaigns.${campaign.id}.keyMetrics.${metric.id}.prefix`}
                       />
                       <TextInput
                         label="Suffix"
                         value={metric.suffix}
                         onChange={(suffix) => updateMetric({ suffix })}
+                        previewField={`sections.campaigns.campaigns.${campaign.id}.keyMetrics.${metric.id}.suffix`}
                       />
                       <NumberInput
                         label="Decimal places"
                         value={metric.decimals ?? 0}
                         onChange={(decimals) => updateMetric({ decimals })}
                         step="1"
+                        previewField={`sections.campaigns.campaigns.${campaign.id}.keyMetrics.${metric.id}.decimals`}
                       />
                     </div>
                   )}
@@ -690,6 +709,7 @@ export function CategoriesView({ content, onChange }: AdminViewProps) {
                 label="Category name"
                 value={category.name}
                 onChange={(name) => update({ name })}
+                previewField={`categories.${category.id}.name`}
               />
               <p className="text-[11px] text-muted-foreground">
                 ID: <code>{category.id}</code>

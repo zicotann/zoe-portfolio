@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import {
   AlertTriangle,
   Check,
-  CloudUpload,
   Loader2,
   Save,
   Trash2,
@@ -15,9 +14,12 @@ import {
 import { AdminSidebar } from "@/components/admin/sidebar";
 import { AdminTopbar } from "@/components/admin/topbar";
 import { PreviewPanel } from "@/components/admin/preview-panel";
+import { PreviewLocateProvider } from "@/components/admin/preview-locate";
 import { PublishDialog } from "@/components/admin/publish-dialog";
+import { ViewChangesDialog } from "@/components/admin/view-changes-dialog";
 import { Button } from "@/components/ui/button";
-import type { AdminView } from "@/components/admin/types";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { VIEW_LABELS, type AdminView } from "@/components/admin/types";
 import {
   ClientsView,
   ContactView,
@@ -36,12 +38,18 @@ import {
   SocialsView,
 } from "@/components/admin/views/singletons";
 import { siteContentSchema, type SiteContent } from "@/content/schema";
-import { contentEquals, getChangedAreas } from "@/lib/diff";
+import {
+  contentEquals,
+  getChangedAreas,
+  getDetailedChanges,
+  type ContentChange,
+} from "@/lib/diff";
 import {
   clearDraft,
   loadDraft,
   persistDraft,
 } from "@/lib/draft-storage";
+import type { PreviewHighlightTarget } from "@/lib/preview-fields";
 import { cn } from "@/lib/utils";
 
 type StatusMessage = {
@@ -65,15 +73,24 @@ export function AdminDashboard({
   const [status, setStatus] = useState<StatusMessage | null>(null);
   const [saving, setSaving] = useState(false);
   const [publishOpen, setPublishOpen] = useState(false);
+  const [viewChangesOpen, setViewChangesOpen] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [publishError, setPublishError] = useState<string | null>(null);
   const [commitUrl, setCommitUrl] = useState<string | null>(null);
   const [previewFullscreen, setPreviewFullscreen] = useState(false);
+  const [highlight, setHighlight] = useState<PreviewHighlightTarget | null>(
+    null,
+  );
+  const previewAreaRef = useRef<HTMLDivElement>(null);
   const editedRef = useRef(false);
 
   const dirty = !contentEquals(baseline, draft);
   const changedAreas = useMemo(
     () => getChangedAreas(baseline, draft),
+    [baseline, draft],
+  );
+  const detailedChanges = useMemo(
+    () => getDetailedChanges(baseline, draft),
     [baseline, draft],
   );
   const showPreview = view !== "profile" && view !== "seo";
@@ -157,6 +174,45 @@ export function AdminDashboard({
     if (!showPreview) setPreviewFullscreen(false);
   }, [showPreview]);
 
+  useEffect(() => {
+    if (!highlight) return;
+    const handler = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setHighlight(null);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [highlight]);
+
+  useEffect(() => {
+    if (!highlight) return;
+    const handler = (event: PointerEvent) => {
+      const target = event.target as Element | null;
+      if (target?.closest("[data-preview-locate-button]")) return;
+      setHighlight(null);
+    };
+    document.addEventListener("pointerdown", handler);
+    return () => document.removeEventListener("pointerdown", handler);
+  }, [highlight]);
+
+  function locateInPreview(target: PreviewHighlightTarget) {
+    if (highlight?.field === target.field) {
+      setHighlight(null);
+      return;
+    }
+
+    setHighlight(target);
+
+    if (
+      !previewFullscreen &&
+      window.matchMedia("(max-width: 1023px)").matches
+    ) {
+      previewAreaRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }
+
   function handleContentChange(next: SiteContent) {
     editedRef.current = true;
     setDraft(next);
@@ -238,18 +294,19 @@ export function AdminDashboard({
   }
 
   async function logout() {
+    clearDraft();
     await fetch("/api/admin/logout", { method: "POST" });
     router.replace("/login");
     router.refresh();
   }
 
-  async function discardDraft() {
+  async function discardDraft(): Promise<boolean> {
     if (
       !window.confirm(
         "Discard all unpublished changes and restore the last published content?",
       )
     ) {
-      return;
+      return false;
     }
     clearDraft();
     try {
@@ -270,16 +327,37 @@ export function AdminDashboard({
     }
     setWarning(null);
     setStatus({ kind: "info", text: "Draft discarded." });
+    return true;
+  }
+
+  function undoChange(change: ContentChange) {
+    editedRef.current = true;
+    setDraft((current) => change.revert(current));
+    setStatus({ kind: "info", text: "Change undone." });
+  }
+
+  async function discardAllChanges() {
+    const discarded = await discardDraft();
+    if (discarded) setViewChangesOpen(false);
   }
 
   function handleNavigate(next: AdminView) {
     setView(next);
     setSidebarOpen(false);
     setStatus(null);
+    setHighlight(null);
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-secondary/20">
+    <PreviewLocateProvider
+      value={
+        showPreview
+          ? { activeField: highlight?.field ?? null, locate: locateInPreview }
+          : null
+      }
+    >
+      <TooltipProvider delayDuration={200}>
+        <div className="flex h-screen overflow-hidden bg-secondary/20">
       <div className="hidden w-60 shrink-0 lg:block">
         <AdminSidebar
           view={view}
@@ -320,9 +398,11 @@ export function AdminDashboard({
         <AdminTopbar
           view={view}
           dirty={dirty}
+          changeCount={detailedChanges.length}
           saving={saving}
           publishing={publishing}
           onSave={() => saveDraft()}
+          onViewChanges={() => setViewChangesOpen(true)}
           onPublish={openPublish}
           onOpenSidebar={() => setSidebarOpen(true)}
         />
@@ -372,12 +452,12 @@ export function AdminDashboard({
                   onNavigate={handleNavigate}
                 />
 
-                <div className="flex flex-col items-stretch justify-between gap-3 rounded-2xl border border-border bg-card p-4 sm:flex-row sm:items-center">
+                <div className="rounded-2xl border border-border bg-card p-4">
                   <p className="text-xs leading-relaxed text-muted-foreground">
-                    Save keeps this draft in the current tab. Publish commits all
-                    changes at once.
+                    Saving here means saving changes for this section. You may continue making changes in other sections. <br/> The
+                    draft remains in this browser tab until you publish.
                   </p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
                     <Button
                       type="button"
                       variant="ghost"
@@ -401,16 +481,7 @@ export function AdminDashboard({
                       ) : (
                         <Save className="h-4 w-4" />
                       )}
-                      Save changes
-                    </Button>
-                    <Button
-                      type="button"
-                      size="sm"
-                      onClick={openPublish}
-                      disabled={publishing || saving || !dirty}
-                    >
-                      <CloudUpload className="h-4 w-4" />
-                      Publish
+                      Save {VIEW_LABELS[view]} changes
                     </Button>
                   </div>
                 </div>
@@ -420,6 +491,7 @@ export function AdminDashboard({
 
           {showPreview ? (
             <div
+              ref={previewAreaRef}
               className={cn(
                 "order-1 flex min-h-0 flex-col overflow-hidden bg-secondary/20",
                 "border-b border-border lg:order-2 lg:border-b-0 lg:border-l",
@@ -431,6 +503,8 @@ export function AdminDashboard({
               <PreviewPanel
                 content={draft}
                 view={view}
+                highlight={highlight}
+                onHighlightCleared={() => setHighlight(null)}
                 fullscreen={previewFullscreen}
                 onToggleFullscreen={() =>
                   setPreviewFullscreen((current) => !current)
@@ -440,6 +514,14 @@ export function AdminDashboard({
           ) : null}
         </div>
       </div>
+
+      <ViewChangesDialog
+        open={viewChangesOpen}
+        onOpenChange={setViewChangesOpen}
+        changes={detailedChanges}
+        onUndo={undoChange}
+        onDiscardAll={discardAllChanges}
+      />
 
       <PublishDialog
         open={publishOpen}
@@ -495,7 +577,9 @@ export function AdminDashboard({
           </button>
         </div>
       ) : null}
-    </div>
+        </div>
+      </TooltipProvider>
+    </PreviewLocateProvider>
   );
 }
 

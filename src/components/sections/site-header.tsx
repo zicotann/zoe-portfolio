@@ -16,6 +16,7 @@ import {
 import { Dock, type DockItem } from "@/components/magicui/dock";
 import { ShimmerButton } from "@/components/magicui/shimmer-button";
 import type { NavIcon, SiteContent } from "@/content/schema";
+import { previewFields } from "@/lib/preview-fields";
 import { cn } from "@/lib/utils";
 
 const dockIcons: Record<NavIcon, React.ReactNode> = {
@@ -73,6 +74,7 @@ export function SiteHeader({ content }: { content: SiteContent }) {
     label: link.label,
     href: link.href,
     icon: dockIcons[link.icon],
+    previewField: `navigation.links.${link.id}.label navigation.links.${link.id}.href navigation.links.${link.id}.icon`,
   }));
 
   useEffect(() => {
@@ -130,6 +132,11 @@ export function SiteHeader({ content }: { content: SiteContent }) {
               <div className="hidden items-center gap-0.5 lg:flex">
                 {navLinks.map((link) => (
                   <a
+                    {...previewFields(
+                      `navigation.links.${link.id}.label`,
+                      `navigation.links.${link.id}.href`,
+                      `navigation.links.${link.id}.icon`,
+                    )}
                     key={link.id}
                     href={link.href}
                     aria-current={active === link.href ? "location" : undefined}
@@ -153,6 +160,10 @@ export function SiteHeader({ content }: { content: SiteContent }) {
           ) : null}
 
           <ShimmerButton
+            {...previewFields(
+              "navigation.ctaLabel",
+              "navigation.ctaHref",
+            )}
             href={content.navigation.ctaHref}
             target="_blank"
             rel="noopener noreferrer"

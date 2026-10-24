@@ -26,7 +26,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { previewFields, type PreviewField } from "@/lib/preview-fields";
 import { cn } from "@/lib/utils";
+import { PreviewLocateButton } from "./preview-locate";
 import type { AdminView } from "./types";
 
 export function Field({
@@ -34,15 +36,29 @@ export function Field({
   hint,
   children,
   className,
+  previewField,
+  previewLabel,
 }: {
   label?: string;
   hint?: string;
   children: React.ReactNode;
   className?: string;
+  previewField?: PreviewField;
+  previewLabel?: string;
 }) {
   return (
-    <div className={cn("space-y-1.5", className)}>
-      {label ? <Label className="text-xs font-semibold">{label}</Label> : null}
+    <div className={cn("group/field space-y-1.5", className)}>
+      {label ? (
+        <div className="flex min-h-5 items-center gap-2">
+          <Label className="text-xs font-semibold">{label}</Label>
+          {previewField ? (
+            <PreviewLocateButton
+              field={previewField}
+              label={previewLabel ?? label}
+            />
+          ) : null}
+        </div>
+      ) : null}
       {children}
       {hint ? (
         <p className="text-[11px] leading-relaxed text-muted-foreground">
@@ -61,6 +77,7 @@ export function TextInput({
   placeholder,
   mono,
   type = "text",
+  previewField,
 }: {
   label?: string;
   hint?: string;
@@ -69,10 +86,11 @@ export function TextInput({
   placeholder?: string;
   mono?: boolean;
   type?: string;
+  previewField?: PreviewField;
 }) {
   const id = useId();
   return (
-    <Field label={label} hint={hint}>
+    <Field label={label} hint={hint} previewField={previewField}>
       <Input
         id={id}
         type={type}
@@ -92,6 +110,7 @@ export function TextArea({
   onChange,
   placeholder,
   rows = 4,
+  previewField,
 }: {
   label?: string;
   hint?: string;
@@ -99,10 +118,11 @@ export function TextArea({
   onChange: (value: string) => void;
   placeholder?: string;
   rows?: number;
+  previewField?: PreviewField;
 }) {
   const id = useId();
   return (
-    <Field label={label} hint={hint}>
+    <Field label={label} hint={hint} previewField={previewField}>
       <Textarea
         id={id}
         value={value}
@@ -121,15 +141,17 @@ export function NumberInput({
   value,
   onChange,
   step = "any",
+  previewField,
 }: {
   label?: string;
   hint?: string;
   value: number;
   onChange: (value: number) => void;
   step?: string;
+  previewField?: PreviewField;
 }) {
   return (
-    <Field label={label} hint={hint}>
+    <Field label={label} hint={hint} previewField={previewField}>
       <Input
         type="number"
         step={step}
@@ -148,27 +170,43 @@ export function Toggle({
   checked,
   onChange,
   hint,
+  previewField,
 }: {
   label: string;
   checked: boolean;
   onChange: (value: boolean) => void;
   hint?: string;
+  previewField?: PreviewField;
 }) {
   return (
-    <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border bg-card p-3">
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={(event) => onChange(event.target.checked)}
-        className="mt-0.5 h-4 w-4 rounded border-input accent-[hsl(var(--primary))]"
-      />
-      <span className="space-y-0.5">
-        <span className="block text-sm font-medium">{label}</span>
-        {hint ? (
-          <span className="block text-[11px] text-muted-foreground">{hint}</span>
-        ) : null}
-      </span>
-    </label>
+    <div className="group/field relative">
+      <label
+        className={cn(
+          "flex cursor-pointer items-start gap-3 rounded-xl border border-border bg-card p-3",
+          previewField && "pr-9",
+        )}
+      >
+        <input
+          type="checkbox"
+          checked={checked}
+          onChange={(event) => onChange(event.target.checked)}
+          className="mt-0.5 h-4 w-4 rounded border-input accent-[hsl(var(--primary))]"
+        />
+        <span className="space-y-0.5">
+          <span className="block text-sm font-medium">{label}</span>
+          {hint ? (
+            <span className="block text-[11px] text-muted-foreground">
+              {hint}
+            </span>
+          ) : null}
+        </span>
+      </label>
+      {previewField ? (
+        <div className="absolute right-2 top-2">
+          <PreviewLocateButton field={previewField} label={label} />
+        </div>
+      ) : null}
+    </div>
   );
 }
 
@@ -178,11 +216,12 @@ export function SectionVisibility({
 }: {
   checked: boolean;
   onChange: (value: boolean) => void;
+  previewField?: PreviewField;
 }) {
   return (
     <Toggle
       label="Show this section on the website"
-      hint="Uncheck to hide the entire section. Changes apply when you publish."
+      hint="Uncheck to hide the entire section."
       checked={checked}
       onChange={onChange}
     />
@@ -195,15 +234,17 @@ export function Select({
   value,
   onChange,
   options,
+  previewField,
 }: {
   label?: string;
   hint?: string;
   value: string;
   onChange: (value: string) => void;
   options: Array<{ value: string; label: string }>;
+  previewField?: PreviewField;
 }) {
   return (
-    <Field label={label} hint={hint}>
+    <Field label={label} hint={hint} previewField={previewField}>
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
@@ -225,15 +266,17 @@ export function ColorChoice({
   value,
   onChange,
   options,
+  previewField,
 }: {
   label?: string;
   hint?: string;
   value: string;
   onChange: (value: string) => void;
   options: Array<{ value: string; label: string; swatch: string }>;
+  previewField?: PreviewField;
 }) {
   return (
-    <Field label={label} hint={hint}>
+    <Field label={label} hint={hint} previewField={previewField}>
       <div className="flex flex-wrap gap-2">
         {options.map((option) => (
           <button
@@ -286,12 +329,14 @@ export function ImageField({
   value,
   onChange,
   aspect = "video",
+  previewField,
 }: {
   label: string;
   hint?: string;
   value: string;
   onChange: (value: string) => void;
   aspect?: ImageFieldAspect;
+  previewField?: PreviewField;
 }) {
   const [broken, setBroken] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -418,7 +463,7 @@ export function ImageField({
   const busy = uploading || deleting;
 
   return (
-    <Field label={label} hint={hint}>
+    <Field label={label} hint={hint} previewField={previewField}>
       <div className="space-y-2">
         <Input
           value={value}
@@ -951,12 +996,13 @@ export function SectionCard({
 }) {
   return (
     <section className="rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-6">
-      <div className="mb-5 space-y-1">
-        <h2 className="font-display text-lg font-semibold tracking-tight">
+      <div className="mb-6">
+        <p className="text-lg font-display font-semibold">
           {title}
-        </h2>
+        </p>
+
         {description ? (
-          <p className="text-xs leading-relaxed text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {description}
           </p>
         ) : null}
@@ -1087,12 +1133,14 @@ export function StringListEditor({
   addLabel = "Add item",
   placeholder,
   label,
+  previewFieldForIndex,
 }: {
   items: string[];
   onChange: (items: string[]) => void;
   addLabel?: string;
   placeholder?: string;
   label?: string;
+  previewFieldForIndex?: (index: number) => string;
 }) {
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
@@ -1108,6 +1156,9 @@ export function StringListEditor({
         {items.map((item, index) => (
           <div
             key={index}
+            {...(previewFieldForIndex
+              ? previewFields(previewFieldForIndex(index))
+              : {})}
             onDragOver={(event) => {
               if (dragIndex === null) return;
               event.preventDefault();
@@ -1201,6 +1252,7 @@ interface ArrayEditorProps<T> {
   ) => React.ReactNode;
   defaultOpenFirst?: boolean;
   deleteBlocked?: (item: T, index: number) => string | null;
+  glowWhenOpen?: boolean;
 }
 
 export function ArrayEditor<T>({
@@ -1212,6 +1264,7 @@ export function ArrayEditor<T>({
   children,
   defaultOpenFirst = true,
   deleteBlocked,
+  glowWhenOpen = false,
 }: ArrayEditorProps<T>) {
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
@@ -1253,7 +1306,8 @@ export function ArrayEditor<T>({
             resetDrag();
           }}
           className={cn(
-            "group rounded-2xl border border-border bg-background/50 transition-colors",
+            "group rounded-2xl border border-border bg-background transition-colors",
+            glowWhenOpen && "glow-when-open",
             dragOverIndex === index &&
               dragIndex !== index &&
               "border-primary/60 bg-primary/5 ring-2 ring-primary/15",
