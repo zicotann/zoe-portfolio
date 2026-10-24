@@ -213,7 +213,6 @@ export function Toggle({
 export function SectionVisibility({
   checked,
   onChange,
-  previewField,
 }: {
   checked: boolean;
   onChange: (value: boolean) => void;
@@ -222,10 +221,9 @@ export function SectionVisibility({
   return (
     <Toggle
       label="Show this section on the website"
-      hint="Uncheck to hide the entire section. Changes apply when you publish."
+      hint="Uncheck to hide the entire section."
       checked={checked}
       onChange={onChange}
-      previewField={previewField}
     />
   );
 }
@@ -998,12 +996,13 @@ export function SectionCard({
 }) {
   return (
     <section className="rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-6">
-      <div className="mb-5 space-y-1">
-        <h2 className="font-display text-lg font-semibold tracking-tight">
+      <div className="mb-6">
+        <p className="text-lg font-display font-semibold">
           {title}
-        </h2>
+        </p>
+
         {description ? (
-          <p className="text-xs leading-relaxed text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {description}
           </p>
         ) : null}
