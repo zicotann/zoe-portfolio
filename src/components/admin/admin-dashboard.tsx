@@ -14,9 +14,11 @@ import {
 import { AdminSidebar } from "@/components/admin/sidebar";
 import { AdminTopbar } from "@/components/admin/topbar";
 import { PreviewPanel } from "@/components/admin/preview-panel";
+import { PreviewLocateProvider } from "@/components/admin/preview-locate";
 import { PublishDialog } from "@/components/admin/publish-dialog";
 import { ViewChangesDialog } from "@/components/admin/view-changes-dialog";
 import { Button } from "@/components/ui/button";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { VIEW_LABELS, type AdminView } from "@/components/admin/types";
 import {
   ClientsView,
@@ -47,6 +49,7 @@ import {
   loadDraft,
   persistDraft,
 } from "@/lib/draft-storage";
+import type { PreviewHighlightTarget } from "@/lib/preview-fields";
 import { cn } from "@/lib/utils";
 
 type StatusMessage = {
@@ -75,6 +78,10 @@ export function AdminDashboard({
   const [publishError, setPublishError] = useState<string | null>(null);
   const [commitUrl, setCommitUrl] = useState<string | null>(null);
   const [previewFullscreen, setPreviewFullscreen] = useState(false);
+  const [highlight, setHighlight] = useState<PreviewHighlightTarget | null>(
+    null,
+  );
+  const previewAreaRef = useRef<HTMLDivElement>(null);
   const editedRef = useRef(false);
 
   const dirty = !contentEquals(baseline, draft);
@@ -166,6 +173,45 @@ export function AdminDashboard({
   useEffect(() => {
     if (!showPreview) setPreviewFullscreen(false);
   }, [showPreview]);
+
+  useEffect(() => {
+    if (!highlight) return;
+    const handler = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setHighlight(null);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [highlight]);
+
+  useEffect(() => {
+    if (!highlight) return;
+    const handler = (event: PointerEvent) => {
+      const target = event.target as Element | null;
+      if (target?.closest("[data-preview-locate-button]")) return;
+      setHighlight(null);
+    };
+    document.addEventListener("pointerdown", handler);
+    return () => document.removeEventListener("pointerdown", handler);
+  }, [highlight]);
+
+  function locateInPreview(target: PreviewHighlightTarget) {
+    if (highlight?.field === target.field) {
+      setHighlight(null);
+      return;
+    }
+
+    setHighlight(target);
+
+    if (
+      !previewFullscreen &&
+      window.matchMedia("(max-width: 1023px)").matches
+    ) {
+      previewAreaRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }
 
   function handleContentChange(next: SiteContent) {
     editedRef.current = true;
@@ -299,10 +345,19 @@ export function AdminDashboard({
     setView(next);
     setSidebarOpen(false);
     setStatus(null);
+    setHighlight(null);
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-secondary/20">
+    <PreviewLocateProvider
+      value={
+        showPreview
+          ? { activeField: highlight?.field ?? null, locate: locateInPreview }
+          : null
+      }
+    >
+      <TooltipProvider delayDuration={200}>
+        <div className="flex h-screen overflow-hidden bg-secondary/20">
       <div className="hidden w-60 shrink-0 lg:block">
         <AdminSidebar
           view={view}
@@ -437,6 +492,7 @@ export function AdminDashboard({
 
           {showPreview ? (
             <div
+              ref={previewAreaRef}
               className={cn(
                 "order-1 flex min-h-0 flex-col overflow-hidden bg-secondary/20",
                 "border-b border-border lg:order-2 lg:border-b-0 lg:border-l",
@@ -448,6 +504,8 @@ export function AdminDashboard({
               <PreviewPanel
                 content={draft}
                 view={view}
+                highlight={highlight}
+                onHighlightCleared={() => setHighlight(null)}
                 fullscreen={previewFullscreen}
                 onToggleFullscreen={() =>
                   setPreviewFullscreen((current) => !current)
@@ -520,7 +578,9 @@ export function AdminDashboard({
           </button>
         </div>
       ) : null}
-    </div>
+        </div>
+      </TooltipProvider>
+    </PreviewLocateProvider>
   );
 }
 

@@ -14,6 +14,7 @@ import {
 import type { AdminViewProps } from "@/components/admin/types";
 import type { NavLink, SocialLink, SocialPlatform } from "@/content/schema";
 import { newId } from "@/lib/id";
+import type { PreviewField } from "@/lib/preview-fields";
 import { cn } from "@/lib/utils";
 
 const navIconOptions = [
@@ -64,14 +65,17 @@ const socialIconOptions: Array<{ value: SocialPlatform; label: string }> = [
 function SocialIconPicker({
   value,
   onChange,
+  previewField,
 }: {
   value: SocialPlatform;
   onChange: (value: SocialPlatform) => void;
+  previewField?: PreviewField;
 }) {
   return (
     <Field
       label="Icon"
       hint="Pick the icon shown with this link in the hero, contact section, and footer."
+      previewField={previewField}
     >
       <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
         {socialIconOptions.map((option) => (
@@ -168,6 +172,7 @@ export function NavigationView({ content, onChange }: AdminViewProps) {
           onChange={(ctaLabel) =>
             onChange({ ...content, navigation: { ...navigation, ctaLabel } })
           }
+          previewField="navigation.ctaLabel"
         />
         <TextInput
           label="Booking CTA URL"
@@ -175,6 +180,7 @@ export function NavigationView({ content, onChange }: AdminViewProps) {
           onChange={(ctaHref) =>
             onChange({ ...content, navigation: { ...navigation, ctaHref } })
           }
+          previewField="navigation.ctaHref"
         />
       </div>
 
@@ -200,12 +206,14 @@ export function NavigationView({ content, onChange }: AdminViewProps) {
                   label="Label"
                   value={link.label}
                   onChange={(label) => update({ label })}
+                  previewField={`navigation.links.${link.id}.label`}
                 />
                 <TextInput
                   label="Href"
                   value={link.href}
                   onChange={(href) => update({ href })}
                   mono
+                  previewField={`navigation.links.${link.id}.href`}
                 />
                 <Select
                   label="Dock icon"
@@ -214,6 +222,7 @@ export function NavigationView({ content, onChange }: AdminViewProps) {
                     update({ icon: icon as typeof link.icon })
                   }
                   options={navIconOptions}
+                  previewField={`navigation.links.${link.id}.icon`}
                 />
               </div>
             )}
@@ -249,17 +258,20 @@ export function SocialsView({ content, onChange }: AdminViewProps) {
               <SocialIconPicker
                 value={social.platform}
                 onChange={(platform) => update({ platform })}
+                previewField={`socials.${social.id}.platform`}
               />
             </div>
             <TextInput
               label="Label"
               value={social.label}
               onChange={(label) => update({ label })}
+              previewField={`socials.${social.id}.label`}
             />
             <TextInput
               label="Handle"
               value={social.handle}
               onChange={(handle) => update({ handle })}
+              previewField={`socials.${social.id}.handle`}
             />
             <div className="sm:col-span-2">
               <TextInput
@@ -267,6 +279,7 @@ export function SocialsView({ content, onChange }: AdminViewProps) {
                 value={social.href}
                 onChange={(href) => update({ href })}
                 mono
+                previewField={`socials.${social.id}.href`}
               />
             </div>
           </div>

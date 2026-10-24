@@ -3,6 +3,7 @@ import { Reveal } from "@/components/magicui/reveal";
 import { VideoSamplePlayer } from "@/components/video-sample-player";
 import { getReels } from "@/content/helpers";
 import type { SiteContent } from "@/content/schema";
+import { previewFields } from "@/lib/preview-fields";
 
 export function ContentReels({ content }: { content: SiteContent }) {
   const reelsContent = content.sections.reels;
@@ -13,23 +14,37 @@ export function ContentReels({ content }: { content: SiteContent }) {
 
   return (
     <section id="reels" className="py-16 sm:py-24">
-      <div className="container">
+      <div {...previewFields("sections.reels.visible")} className="container">
         <Reveal className="mb-10 max-w-2xl space-y-3">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+          <p
+            {...previewFields("sections.reels.eyebrow")}
+            className="text-xs font-semibold uppercase tracking-[0.22em] text-primary"
+          >
             {reelsContent.eyebrow}
           </p>
           <h2 className="text-balance text-4xl leading-[1.02] tracking-tight sm:text-5xl">
-            {reelsContent.headingLead}{" "}
-            <span className="text-gradient animate-gradient-x">
+            <span {...previewFields("sections.reels.headingLead")}>
+              {reelsContent.headingLead}
+            </span>{" "}
+            <span
+              {...previewFields("sections.reels.headingAccent")}
+              className="text-gradient animate-gradient-x"
+            >
               {reelsContent.headingAccent}
             </span>
           </h2>
-          <p className="text-pretty text-sm leading-relaxed text-muted-foreground">
+          <p
+            {...previewFields("sections.reels.description")}
+            className="text-pretty text-sm leading-relaxed text-muted-foreground"
+          >
             {reelsContent.description}
           </p>
         </Reveal>
 
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <div
+          {...previewFields("sections.reels.limit")}
+          className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"
+        >
           {reels.map((reel, index) => (
             <Reveal key={reel.id} delay={index * 0.05}>
               <figure className="group space-y-2">

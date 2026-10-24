@@ -1,5 +1,6 @@
 import { Marquee } from "@/components/magicui/marquee";
 import type { ClientLogo, SiteContent } from "@/content/schema";
+import { previewFields } from "@/lib/preview-fields";
 import { cn } from "@/lib/utils";
 
 const tileColors = [
@@ -10,7 +11,13 @@ const tileColors = [
 
 function LogoItem({ client, index }: { client: ClientLogo; index: number }) {
   return (
-    <div className="flex items-center gap-3 whitespace-nowrap">
+    <div
+      {...previewFields(
+        `sections.clients.clients.${client.id}.name`,
+        `sections.clients.clients.${client.id}.category`,
+      )}
+      className="flex items-center gap-3 whitespace-nowrap"
+    >
       <span
         className={cn(
           "flex h-10 w-10 items-center justify-center rounded-xl text-xs font-bold transition-transform duration-300 hover:scale-110",
@@ -32,9 +39,16 @@ export function LogoCloud({ content }: { content: SiteContent }) {
   const mentions = allClients.filter((c) => c.category !== "Client");
 
   return (
-    <section id="clients" className="border-y border-border bg-card/60 py-14">
+    <section
+      id="clients"
+      {...previewFields("sections.clients.visible")}
+      className="border-y border-border bg-card/60 py-14"
+    >
       <div className="container">
-        <p className="mb-8 text-center text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+        <p
+          {...previewFields("sections.clients.eyebrow")}
+          className="mb-8 text-center text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground"
+        >
           {eyebrow}
         </p>
       </div>

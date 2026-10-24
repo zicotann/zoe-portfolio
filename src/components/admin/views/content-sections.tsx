@@ -56,6 +56,7 @@ export function HeroView({ content, onChange, onNavigate }: AdminViewProps) {
       <SectionVisibility
         checked={hero.visible}
         onChange={(visible) => patch({ visible })}
+        previewField="sections.hero.visible"
       />
       <GlobalFields
         onNavigate={onNavigate}
@@ -88,24 +89,28 @@ export function HeroView({ content, onChange, onNavigate }: AdminViewProps) {
             label="Role"
             value={profile.role}
             onChange={(role) => patchProfile({ role })}
+            previewField="profile.role"
           />
           <TextInput
             label="Availability"
             hint="Leave empty to hide the availability badge from the hero."
             value={profile.availability}
             onChange={(availability) => patchProfile({ availability })}
+            previewField="profile.availability"
           />
           <TextInput
             label="Headline — lead"
             hint="The plain part of the hero headline."
             value={profile.headlineLead}
             onChange={(headlineLead) => patchProfile({ headlineLead })}
+            previewField="profile.headlineLead"
           />
           <TextInput
             label="Headline — gradient accent"
             hint="Rendered after an “&” with the gradient treatment."
             value={profile.headlineAccent}
             onChange={(headlineAccent) => patchProfile({ headlineAccent })}
+            previewField="profile.headlineAccent"
           />
         </div>
         <div className="mt-4">
@@ -114,6 +119,7 @@ export function HeroView({ content, onChange, onNavigate }: AdminViewProps) {
             value={profile.subheadline}
             onChange={(subheadline) => patchProfile({ subheadline })}
             rows={3}
+            previewField="profile.subheadline"
           />
         </div>
         <div className="mt-4">
@@ -128,6 +134,7 @@ export function HeroView({ content, onChange, onNavigate }: AdminViewProps) {
               })
             }
             options={availabilityColorOptions}
+            previewField="profile.availabilityColor"
           />
         </div>
         <div className="mt-4">
@@ -136,6 +143,7 @@ export function HeroView({ content, onChange, onNavigate }: AdminViewProps) {
             value={profile.portraitImage}
             onChange={(portraitImage) => patchProfile({ portraitImage })}
             aspect="portrait"
+            previewField="profile.portraitImage"
           />
         </div>
       </SectionCard>
@@ -149,46 +157,55 @@ export function HeroView({ content, onChange, onNavigate }: AdminViewProps) {
             label="Primary CTA label"
             value={hero.primaryCtaLabel}
             onChange={(primaryCtaLabel) => patch({ primaryCtaLabel })}
+            previewField="sections.hero.primaryCtaLabel"
           />
           <TextInput
             label="Primary CTA URL"
             value={hero.primaryCtaHref}
             onChange={(primaryCtaHref) => patch({ primaryCtaHref })}
+            previewField="sections.hero.primaryCtaHref"
           />
           <TextInput
             label="Secondary CTA label"
             value={hero.secondaryCtaLabel}
             onChange={(secondaryCtaLabel) => patch({ secondaryCtaLabel })}
+            previewField="sections.hero.secondaryCtaLabel"
           />
           <TextInput
             label="Secondary CTA URL"
             value={hero.secondaryCtaHref}
             onChange={(secondaryCtaHref) => patch({ secondaryCtaHref })}
+            previewField="sections.hero.secondaryCtaHref"
           />
           <TextInput
             label="Follow label"
             value={hero.followLabel}
             onChange={(followLabel) => patch({ followLabel })}
+            previewField="sections.hero.followLabel"
           />
           <TextInput
             label="Portrait alt text"
             value={hero.portraitAlt}
             onChange={(portraitAlt) => patch({ portraitAlt })}
+            previewField="sections.hero.portraitAlt"
           />
           <TextInput
             label="Floating stat value"
             value={hero.floatingStatValue}
             onChange={(floatingStatValue) => patch({ floatingStatValue })}
+            previewField="sections.hero.floatingStatValue"
           />
           <TextInput
             label="Floating stat label"
             value={hero.floatingStatLabel}
             onChange={(floatingStatLabel) => patch({ floatingStatLabel })}
+            previewField="sections.hero.floatingStatLabel"
           />
           <TextInput
             label="Floating badge"
             value={hero.floatingBadge}
             onChange={(floatingBadge) => patch({ floatingBadge })}
+            previewField="sections.hero.floatingBadge"
           />
         </div>
       </SectionCard>
@@ -212,6 +229,7 @@ export function MetricsView({ content, onChange }: AdminViewProps) {
       <SectionVisibility
         checked={metrics.visible}
         onChange={(visible) => patch({ visible })}
+        previewField="sections.metrics.visible"
       />
       <SectionCard
         title="Metrics bar"
@@ -236,27 +254,32 @@ export function MetricsView({ content, onChange }: AdminViewProps) {
               label="Label"
               value={stat.label}
               onChange={(label) => update({ label })}
+              previewField={`sections.metrics.stats.${stat.id}.label`}
             />
             <NumberInput
               label="Value"
               value={stat.value}
               onChange={(value) => update({ value })}
+              previewField={`sections.metrics.stats.${stat.id}.value`}
             />
             <TextInput
               label="Prefix"
               value={stat.prefix ?? ""}
               onChange={(prefix) => update({ prefix })}
+              previewField={`sections.metrics.stats.${stat.id}.prefix`}
             />
             <TextInput
               label="Suffix"
               value={stat.suffix ?? ""}
               onChange={(suffix) => update({ suffix })}
+              previewField={`sections.metrics.stats.${stat.id}.suffix`}
             />
             <NumberInput
               label="Decimal places"
               value={stat.decimals ?? 0}
               onChange={(decimals) => update({ decimals })}
               step="1"
+              previewField={`sections.metrics.stats.${stat.id}.decimals`}
             />
             <div className="sm:col-span-2">
               <TextArea
@@ -264,6 +287,7 @@ export function MetricsView({ content, onChange }: AdminViewProps) {
                 value={stat.description}
                 onChange={(description) => update({ description })}
                 rows={2}
+                previewField={`sections.metrics.stats.${stat.id}.description`}
               />
             </div>
           </div>
@@ -290,6 +314,7 @@ export function ClientsView({ content, onChange }: AdminViewProps) {
       <SectionVisibility
         checked={clients.visible}
         onChange={(visible) => patch({ visible })}
+        previewField="sections.clients.visible"
       />
       <SectionCard
         title="Clients & features"
@@ -299,6 +324,7 @@ export function ClientsView({ content, onChange }: AdminViewProps) {
           label="Marquee intro text"
           value={clients.eyebrow}
           onChange={(eyebrow) => patch({ eyebrow })}
+          previewField="sections.clients.eyebrow"
         />
         <div className="mt-6">
           <ArrayEditor<ClientLogo>
@@ -318,6 +344,7 @@ export function ClientsView({ content, onChange }: AdminViewProps) {
                   label="Name"
                   value={client.name}
                   onChange={(name) => update({ name })}
+                  previewField={`sections.clients.clients.${client.id}.name`}
                 />
                 <Select
                   label="Category"
@@ -326,6 +353,7 @@ export function ClientsView({ content, onChange }: AdminViewProps) {
                     update({ category: category as ClientLogo["category"] })
                   }
                   options={clientCategoryOptions}
+                  previewField={`sections.clients.clients.${client.id}.category`}
                 />
               </div>
             )}
@@ -349,6 +377,7 @@ export function ExperienceView({ content, onChange, onNavigate }: AdminViewProps
       <SectionVisibility
         checked={experience.visible}
         onChange={(visible) => patch({ visible })}
+        previewField="sections.experience.visible"
       />
       <GlobalFields
         onNavigate={onNavigate}
@@ -366,11 +395,13 @@ export function ExperienceView({ content, onChange, onNavigate }: AdminViewProps
             label="Eyebrow"
             value={experience.eyebrow}
             onChange={(eyebrow) => patch({ eyebrow })}
+            previewField="sections.experience.eyebrow"
           />
           <TextInput
             label="Résumé button label"
             value={experience.resumeLabel}
             onChange={(resumeLabel) => patch({ resumeLabel })}
+            previewField="sections.experience.resumeLabel"
           />
         </div>
         <div className="mt-4 space-y-4">
@@ -378,12 +409,14 @@ export function ExperienceView({ content, onChange, onNavigate }: AdminViewProps
             label="Heading"
             value={experience.heading}
             onChange={(heading) => patch({ heading })}
+            previewField="sections.experience.heading"
           />
           <TextArea
             label="Description"
             value={experience.description}
             onChange={(description) => patch({ description })}
             rows={3}
+            previewField="sections.experience.description"
           />
         </div>
       </SectionCard>
@@ -410,6 +443,7 @@ export function ExperienceView({ content, onChange, onNavigate }: AdminViewProps
                 label="Title"
                 value={service.title}
                 onChange={(title) => update({ title })}
+                previewField={`sections.experience.services.${service.id}.title`}
               />
               <Select
                 label="Icon"
@@ -418,6 +452,7 @@ export function ExperienceView({ content, onChange, onNavigate }: AdminViewProps
                   update({ icon: icon as ServiceItem["icon"] })
                 }
                 options={serviceIconOptions}
+                previewField={`sections.experience.services.${service.id}.icon`}
               />
               <div className="sm:col-span-2">
                 <TextArea
@@ -425,6 +460,7 @@ export function ExperienceView({ content, onChange, onNavigate }: AdminViewProps
                   value={service.description}
                   onChange={(description) => update({ description })}
                   rows={2}
+                  previewField={`sections.experience.services.${service.id}.description`}
                 />
               </div>
             </div>
@@ -459,21 +495,25 @@ export function ExperienceView({ content, onChange, onNavigate }: AdminViewProps
                   label="Role"
                   value={job.role}
                   onChange={(role) => update({ role })}
+                  previewField={`sections.experience.experience.${job.id}.role`}
                 />
                 <TextInput
                   label="Company"
                   value={job.company}
                   onChange={(company) => update({ company })}
+                  previewField={`sections.experience.experience.${job.id}.company`}
                 />
                 <TextInput
                   label="Period"
                   value={job.period}
                   onChange={(period) => update({ period })}
+                  previewField={`sections.experience.experience.${job.id}.period`}
                 />
                 <TextInput
                   label="Location"
                   value={job.location}
                   onChange={(location) => update({ location })}
+                  previewField={`sections.experience.experience.${job.id}.location`}
                 />
                 <Select
                   label="Type"
@@ -482,6 +522,7 @@ export function ExperienceView({ content, onChange, onNavigate }: AdminViewProps
                     update({ type: type as ExperienceItem["type"] })
                   }
                   options={experienceTypeOptions}
+                  previewField={`sections.experience.experience.${job.id}.type`}
                 />
               </div>
               <TextArea
@@ -489,12 +530,16 @@ export function ExperienceView({ content, onChange, onNavigate }: AdminViewProps
                 value={job.description}
                 onChange={(description) => update({ description })}
                 rows={2}
+                previewField={`sections.experience.experience.${job.id}.description`}
               />
               <StringListEditor
                 label="Highlights"
                 items={job.highlights}
                 onChange={(highlights) => update({ highlights })}
                 addLabel="Add highlight"
+                previewFieldForIndex={(index) =>
+                  `sections.experience.experience.${job.id}.highlights.${index}`
+                }
               />
             </div>
           )}
@@ -518,6 +563,7 @@ export function ReelsView({ content, onChange, onNavigate }: AdminViewProps) {
       <SectionVisibility
         checked={reels.visible}
         onChange={(visible) => patch({ visible })}
+        previewField="sections.reels.visible"
       />
       <SectionCard
         title="Reels section"
@@ -528,22 +574,26 @@ export function ReelsView({ content, onChange, onNavigate }: AdminViewProps) {
             label="Eyebrow"
             value={reels.eyebrow}
             onChange={(eyebrow) => patch({ eyebrow })}
+            previewField="sections.reels.eyebrow"
           />
           <NumberInput
             label="Maximum reels"
             value={reels.limit}
             onChange={(limit) => patch({ limit: Math.max(1, Math.round(limit)) })}
             step="1"
+            previewField="sections.reels.limit"
           />
           <TextInput
             label="Heading — lead"
             value={reels.headingLead}
             onChange={(headingLead) => patch({ headingLead })}
+            previewField="sections.reels.headingLead"
           />
           <TextInput
             label="Heading — gradient accent"
             value={reels.headingAccent}
             onChange={(headingAccent) => patch({ headingAccent })}
+            previewField="sections.reels.headingAccent"
           />
         </div>
         <div className="mt-4">
@@ -552,6 +602,7 @@ export function ReelsView({ content, onChange, onNavigate }: AdminViewProps) {
             value={reels.description}
             onChange={(description) => patch({ description })}
             rows={3}
+            previewField="sections.reels.description"
           />
         </div>
       </SectionCard>
@@ -615,6 +666,7 @@ export function TestimonialsView({ content, onChange }: AdminViewProps) {
       <SectionVisibility
         checked={testimonials.visible}
         onChange={(visible) => patch({ visible })}
+        previewField="sections.testimonials.visible"
       />
       <SectionCard title="Testimonials section">
         <div className="grid gap-4 sm:grid-cols-2">
@@ -622,11 +674,13 @@ export function TestimonialsView({ content, onChange }: AdminViewProps) {
             label="Eyebrow"
             value={testimonials.eyebrow}
             onChange={(eyebrow) => patch({ eyebrow })}
+            previewField="sections.testimonials.eyebrow"
           />
           <TextInput
             label="Heading"
             value={testimonials.heading}
             onChange={(heading) => patch({ heading })}
+            previewField="sections.testimonials.heading"
           />
         </div>
       </SectionCard>
@@ -653,27 +707,32 @@ export function TestimonialsView({ content, onChange }: AdminViewProps) {
                 value={testimonial.quote}
                 onChange={(quote) => update({ quote })}
                 rows={3}
+                previewField={`sections.testimonials.testimonials.${testimonial.id}.quote`}
               />
               <div className="grid gap-4 sm:grid-cols-2">
                 <TextInput
                   label="Name"
                   value={testimonial.name}
                   onChange={(name) => update({ name })}
+                  previewField={`sections.testimonials.testimonials.${testimonial.id}.name`}
                 />
                 <TextInput
                   label="Initials"
                   value={testimonial.initials}
                   onChange={(initials) => update({ initials })}
+                  previewField={`sections.testimonials.testimonials.${testimonial.id}.initials`}
                 />
                 <TextInput
                   label="Job title"
                   value={testimonial.title}
                   onChange={(title) => update({ title })}
+                  previewField={`sections.testimonials.testimonials.${testimonial.id}.title`}
                 />
                 <TextInput
                   label="Company"
                   value={testimonial.company}
                   onChange={(company) => update({ company })}
+                  previewField={`sections.testimonials.testimonials.${testimonial.id}.company`}
                 />
               </div>
             </div>
@@ -705,6 +764,7 @@ export function ContactView({ content, onChange, onNavigate }: AdminViewProps) {
       <SectionVisibility
         checked={contact.visible}
         onChange={(visible) => patchContact({ visible })}
+        previewField="sections.contact.visible"
       />
       <GlobalFields
         onNavigate={onNavigate}
@@ -746,27 +806,32 @@ export function ContactView({ content, onChange, onNavigate }: AdminViewProps) {
             label="Eyebrow"
             value={contact.eyebrow}
             onChange={(eyebrow) => patchContact({ eyebrow })}
+            previewField="sections.contact.eyebrow"
           />
           <TextInput
             label="Booking button label"
             value={contact.bookingLabel}
             onChange={(bookingLabel) => patchContact({ bookingLabel })}
+            previewField="sections.contact.bookingLabel"
           />
           <TextInput
             label="Heading — lead"
             value={contact.headingLead}
             onChange={(headingLead) => patchContact({ headingLead })}
+            previewField="sections.contact.headingLead"
           />
           <TextInput
             label="Heading — gradient accent"
             value={contact.headingAccent}
             onChange={(headingAccent) => patchContact({ headingAccent })}
+            previewField="sections.contact.headingAccent"
           />
           <TextInput
             label="Location prefix"
             hint="Rendered as “{prefix} {location} · {timezone}”."
             value={contact.basedInLabel}
             onChange={(basedInLabel) => patchContact({ basedInLabel })}
+            previewField="sections.contact.basedInLabel"
           />
         </div>
         <div className="mt-4">
@@ -775,6 +840,7 @@ export function ContactView({ content, onChange, onNavigate }: AdminViewProps) {
             value={contact.description}
             onChange={(description) => patchContact({ description })}
             rows={2}
+            previewField="sections.contact.description"
           />
         </div>
       </SectionCard>
@@ -788,36 +854,43 @@ export function ContactView({ content, onChange, onNavigate }: AdminViewProps) {
             label="Name label"
             value={contact.form.nameLabel}
             onChange={(nameLabel) => patchForm({ nameLabel })}
+            previewField="sections.contact.form.nameLabel"
           />
           <TextInput
             label="Name placeholder"
             value={contact.form.namePlaceholder}
             onChange={(namePlaceholder) => patchForm({ namePlaceholder })}
+            previewField="sections.contact.form.namePlaceholder"
           />
           <TextInput
             label="Email label"
             value={contact.form.emailLabel}
             onChange={(emailLabel) => patchForm({ emailLabel })}
+            previewField="sections.contact.form.emailLabel"
           />
           <TextInput
             label="Email placeholder"
             value={contact.form.emailPlaceholder}
             onChange={(emailPlaceholder) => patchForm({ emailPlaceholder })}
+            previewField="sections.contact.form.emailPlaceholder"
           />
           <TextInput
             label="Company label"
             value={contact.form.companyLabel}
             onChange={(companyLabel) => patchForm({ companyLabel })}
+            previewField="sections.contact.form.companyLabel"
           />
           <TextInput
             label="Company placeholder"
             value={contact.form.companyPlaceholder}
             onChange={(companyPlaceholder) => patchForm({ companyPlaceholder })}
+            previewField="sections.contact.form.companyPlaceholder"
           />
           <TextInput
             label="Message label"
             value={contact.form.messageLabel}
             onChange={(messageLabel) => patchForm({ messageLabel })}
+            previewField="sections.contact.form.messageLabel"
           />
           <TextInput
             label="Message placeholder"
@@ -825,31 +898,37 @@ export function ContactView({ content, onChange, onNavigate }: AdminViewProps) {
             onChange={(messagePlaceholder) =>
               patchForm({ messagePlaceholder })
             }
+            previewField="sections.contact.form.messagePlaceholder"
           />
           <TextInput
             label="Submit label"
             value={contact.form.submitLabel}
             onChange={(submitLabel) => patchForm({ submitLabel })}
+            previewField="sections.contact.form.submitLabel"
           />
           <TextInput
             label="Sent label"
             value={contact.form.sentLabel}
             onChange={(sentLabel) => patchForm({ sentLabel })}
+            previewField="sections.contact.form.sentLabel"
           />
           <TextInput
             label="Name error"
             value={contact.form.errorName}
             onChange={(errorName) => patchForm({ errorName })}
+            previewField="sections.contact.form.errorName"
           />
           <TextInput
             label="Email error"
             value={contact.form.errorEmail}
             onChange={(errorEmail) => patchForm({ errorEmail })}
+            previewField="sections.contact.form.errorEmail"
           />
           <TextInput
             label="Message error"
             value={contact.form.errorMessage}
             onChange={(errorMessage) => patchForm({ errorMessage })}
+            previewField="sections.contact.form.errorMessage"
           />
         </div>
       </SectionCard>
@@ -887,6 +966,7 @@ export function FooterView({ content, onChange, onNavigate }: AdminViewProps) {
               },
             })
           }
+          previewField="sections.footer.rightsLabel"
         />
       </SectionCard>
     </div>

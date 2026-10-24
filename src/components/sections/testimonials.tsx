@@ -3,6 +3,7 @@ import { Quote } from "lucide-react";
 import { Marquee } from "@/components/magicui/marquee";
 import { Reveal } from "@/components/magicui/reveal";
 import type { SiteContent, Testimonial } from "@/content/schema";
+import { previewFields } from "@/lib/preview-fields";
 
 const accentBorders = [
   "border-t-brand-violet",
@@ -22,16 +23,39 @@ function TestimonialCard({
       className={`flex w-[20rem] shrink-0 flex-col justify-between rounded-2xl border border-t-4 border-border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-lg sm:w-[24rem] ${accentBorders[index % accentBorders.length]}`}
     >
       <Quote className="h-6 w-6 text-primary" />
-      <blockquote className="mt-4 text-pretty text-sm leading-relaxed text-foreground/90">
+      <blockquote
+        {...previewFields(
+          `sections.testimonials.testimonials.${testimonial.id}.quote`,
+        )}
+        className="mt-4 text-pretty text-sm leading-relaxed text-foreground/90"
+      >
         &ldquo;{testimonial.quote}&rdquo;
       </blockquote>
       <figcaption className="mt-6 flex items-center gap-3">
-        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 font-display text-xs font-semibold text-primary">
+        <span
+          {...previewFields(
+            `sections.testimonials.testimonials.${testimonial.id}.initials`,
+          )}
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 font-display text-xs font-semibold text-primary"
+        >
           {testimonial.initials}
         </span>
         <span className="text-sm">
-          <span className="block font-semibold">{testimonial.name}</span>
-          <span className="block text-xs text-muted-foreground">
+          <span
+            {...previewFields(
+              `sections.testimonials.testimonials.${testimonial.id}.name`,
+            )}
+            className="block font-semibold"
+          >
+            {testimonial.name}
+          </span>
+          <span
+            {...previewFields(
+              `sections.testimonials.testimonials.${testimonial.id}.title`,
+              `sections.testimonials.testimonials.${testimonial.id}.company`,
+            )}
+            className="block text-xs text-muted-foreground"
+          >
             {testimonial.title}, {testimonial.company}
           </span>
         </span>
@@ -48,12 +72,22 @@ export function Testimonials({ content }: { content: SiteContent }) {
   const secondRow = testimonials.slice(half);
 
   return (
-    <section id="testimonials" className="overflow-hidden py-16 sm:py-24">
+    <section
+      id="testimonials"
+      {...previewFields("sections.testimonials.visible")}
+      className="overflow-hidden py-16 sm:py-24"
+    >
       <Reveal className="container mb-10 max-w-2xl space-y-3">
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+        <p
+          {...previewFields("sections.testimonials.eyebrow")}
+          className="text-xs font-semibold uppercase tracking-[0.22em] text-primary"
+        >
           {testimonialsContent.eyebrow}
         </p>
-        <h2 className="text-balance text-4xl leading-[1.02] tracking-tight sm:text-5xl">
+        <h2
+          {...previewFields("sections.testimonials.heading")}
+          className="text-balance text-4xl leading-[1.02] tracking-tight sm:text-5xl"
+        >
           {testimonialsContent.heading}
         </h2>
       </Reveal>
