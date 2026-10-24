@@ -253,6 +253,7 @@ export function CampaignsView({ content, onChange }: AdminViewProps) {
           itemLabel={(campaign) => campaign.clientName}
           addLabel="Add campaign"
           defaultOpenFirst={false}
+          glowWhenOpen
         >
           {(campaign, update) => (
             <div className="space-y-6">
